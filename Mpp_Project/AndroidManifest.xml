@@ -9,8 +9,21 @@
 		android:targetSdkVersion="20" />
 
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+	<permission
+		android:name="dk.aau.mpp_project.permission.C2D_MESSAGE"
+		android:protectionLevel="signature" />
+
+	<uses-permission android:name="dk.aau.mpp_project.permission.C2D_MESSAGE" />
 
 	<application
+		android:name="dk.aau.mpp_project.application.MyApplication"
 		android:allowBackup="true"
 		android:icon="@drawable/ic_launcher"
 		android:label="@string/app_name"
@@ -19,9 +32,11 @@
 			android:name="com.facebook.sdk.ApplicationId"
 			android:value="@string/app_id" />
 
-		<activity android:name="com.facebook.LoginActivity" />
 		<activity
-			android:name="dk.aau.mpp_project.activity.MainActivity"
+			android:name="com.facebook.LoginActivity"
+			android:label="@string/app_name" />
+		<activity
+			android:name="dk.aau.mpp_project.activity.LogInActivity"
 			android:label="@string/app_name" >
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -29,11 +44,29 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+		<activity
+			android:name="dk.aau.mpp_project.activity.MainActivity"
+			android:label="@string/app_name" >
+		</activity>
 
-<!-- 		<provider -->
-<!-- 			android:name="com.facebook.NativeAppCallContentProvider" -->
-<!-- 			android:authorities="com.facebook.app.NativeAppCallContentProvider675445415858318" -->
-<!-- 			android:exported="true" /> -->
+		<service android:name="com.parse.PushService" />
+
+		<receiver android:name="com.parse.ParseBroadcastReceiver" >
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+				<action android:name="android.intent.action.USER_PRESENT" />
+			</intent-filter>
+		</receiver>
+		<receiver
+			android:name="com.parse.GcmBroadcastReceiver"
+			android:permission="com.google.android.c2dm.permission.SEND" >
+			<intent-filter>
+				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
+				<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+				<category android:name="dk.aau.mpp_project" />
+			</intent-filter>
+		</receiver>
 	</application>
 
 </manifest>

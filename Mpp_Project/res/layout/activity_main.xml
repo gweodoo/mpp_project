@@ -4,12 +4,22 @@
 	android:layout_height="match_parent"
 	tools:context="dk.aau.mpp_project.activity.MainActivity" >
 
-	<com.facebook.widget.LoginButton
-			android:id="@+id/login_button"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center_horizontal"
-			android:layout_marginBottom="30dp"
-			android:layout_marginTop="30dp" />
+    <TextView
+    	android:id="@+id/textView1"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_centerHorizontal="true"
+    	android:layout_centerVertical="true"
+    	android:text="MainActivity" />
 
+    <Button
+		android:id="@+id/logoutButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"
+		android:layout_marginTop="100dp"
+		android:text="Log Out"
+		android:textColor="#fff"
+		android:textStyle="bold" />
+    
 </RelativeLayout>
