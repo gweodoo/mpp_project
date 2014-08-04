@@ -29,6 +29,11 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+
+<!-- 		<provider -->
+<!-- 			android:name="com.facebook.NativeAppCallContentProvider" -->
+<!-- 			android:authorities="com.facebook.app.NativeAppCallContentProvider675445415858318" -->
+<!-- 			android:exported="true" /> -->
 	</application>
 
 </manifest>

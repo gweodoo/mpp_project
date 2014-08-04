@@ -1,8 +1,6 @@
 package dk.aau.mpp_project.activity;
 
 import dk.aau.mpp_project.R;
-import com.facebook.*;
-import com.facebook.model.*;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,16 +13,6 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		// start Facebook Login
-		Session.openActiveSession(this, true, new Session.StatusCallback() {
-
-			// callback when session changes state
-			@Override
-			public void call(Session session, SessionState state,
-					Exception exception) {
-
-			}
-		});
 	}
 
 	@Override
