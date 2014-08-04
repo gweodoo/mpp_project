@@ -1,2 +1,6 @@
 
 Mpp_Project/.classpath
+
+*.properties
+
+Mpp_Project/project.properties
