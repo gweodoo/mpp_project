@@ -4,3 +4,5 @@ Mpp_Project/.classpath
 *.properties
 
 Mpp_Project/project.properties
+
+Mpp_Project/lint.xml
