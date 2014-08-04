@@ -1,8 +1,18 @@
 
-Mpp_Project/.classpath
-
-*.properties
-
+# MAC SPECIFIC
+*/.DS_Store
 Mpp_Project/project.properties
-
 Mpp_Project/lint.xml
+
+# COMMON
+*~
+*/.settings
+*/.classpath
+Mpp_Project/bin
+Mpp_Project/gen
+Mpp_Project/proguard-project.txt
+
+# IDEA SPECIFIC
+/.idea
+*.iml
+/out/
