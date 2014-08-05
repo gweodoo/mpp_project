@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string name="app_name">Colloc</string>
-	<string name="app_id">675445415858318</string>
+    <string name="app_name">Colloc</string>
+    <string name="app_id">675445415858318</string>
+    <string name="title_activity_flat">FlatActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
