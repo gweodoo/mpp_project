@@ -1,4 +1,4 @@
-package dk.aau.mpp_project.activity;
+package dk.aau.mpp_project.fragment;
 
 import android.app.Fragment;
 import android.graphics.Color;
