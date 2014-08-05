@@ -1,25 +1,22 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	tools:context="dk.aau.mpp_project.activity.MainActivity" >
+<!-- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="dk.aau.mpp_project.activity.MainActivity" xmlns:android1="http://schemas.android.com/apk/res/android">
+-->
+<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/pager"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
     <TextView
-    	android:id="@+id/textView1"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:layout_centerHorizontal="true"
-    	android:layout_centerVertical="true"
-    	android:text="MainActivity" />
-
-    <Button
-		android:id="@+id/logoutButton"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal"
-		android:layout_marginTop="100dp"
-		android:text="Log Out"
-		android:textColor="#fff"
-		android:textStyle="bold" />
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="MainActivity" />
     
-</RelativeLayout>
+
+</android.support.v4.view.ViewPager>
+<!-- </RelativeLayout> -->

@@ -20,18 +20,26 @@ import com.facebook.model.GraphUser;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.activity.LogInActivity;
 
-/**
- * URL Example
- * https://github.com/ParsePlatform/IntegratingFacebookTutorial/blob/master/
- * IntegratingFacebookTutorial
- * -Android/src/com/parse/integratingfacebooktutorial/UserDetailsActivity.java
- * 
- */
 
-public class MainActivity extends Activity {
+public class SettingsFragment extends Fragment {
+	
+	private Button logoutButton;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_section_settings, container, false);
 
+<<<<<<< HEAD:Mpp_Project/src/dk/aau/mpp_project/activity/MainActivity.java
 	protected static final String	TAG	= "MainActivity";
 	private Button					logoutButton;
 
@@ -41,6 +49,9 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		logoutButton = (Button) findViewById(R.id.logoutButton);
+=======
+		logoutButton = (Button) rootView.findViewById(R.id.logoutButton);
+>>>>>>> Tabs:Mpp_Project/src/fragments/SettingsFragment.java
 		logoutButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -55,26 +66,18 @@ public class MainActivity extends Activity {
 		} else {
 			startLoginActivity();
 		}
+        return rootView;
+    }
+    
+    
+	private void onLogoutButtonClicked() {
+		// Log the user out
+		ParseUser.logOut();
+
+		// Go to the login view
+		startLoginActivity();
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-
-		int id = item.getItemId();
-
-		switch (id) {
-		default:
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
+	
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -89,21 +92,14 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private void onLogoutButtonClicked() {
-		// Log the user out
-		ParseUser.logOut();
-
-		// Go to the login view
-		startLoginActivity();
-	}
-
 	private void startLoginActivity() {
-		Intent intent = new Intent(this, LogInActivity.class);
+		Intent intent = new Intent(getActivity(), LogInActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
-		finish();
+		getActivity().finish();
 	}
+<<<<<<< HEAD:Mpp_Project/src/dk/aau/mpp_project/activity/MainActivity.java
 
 	private void makeMeRequest() {
 		Request request = Request.newMeRequest(ParseFacebookUtils.getSession(),
@@ -159,3 +155,6 @@ public class MainActivity extends Activity {
 
 	}
 }
+=======
+}
+>>>>>>> Tabs:Mpp_Project/src/fragments/SettingsFragment.java

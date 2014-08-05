@@ -19,6 +19,7 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
 import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.activity.MainActivity;
 
 public class LogInActivity extends Activity {
 
