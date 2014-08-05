@@ -1,4 +1,4 @@
-package fragments;
+package dk.aau.mpp_project.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,14 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import dk.aau.mpp_project.R;
 
-public class HomeFragment extends Fragment {
-	
-	public String name ="Home";
+
+public class PlanFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_section_home, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_section_plan, container, false);
 
 
         return rootView;

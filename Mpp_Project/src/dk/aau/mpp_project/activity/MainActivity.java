@@ -5,6 +5,8 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,11 +15,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.WindowCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -26,10 +30,10 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
 import dk.aau.mpp_project.R;
-import fragments.ExpensesFragment;
-import fragments.HomeFragment;
-import fragments.PlanFragment;
-import fragments.SettingsFragment;
+import dk.aau.mpp_project.fragments.ExpensesFragment;
+import dk.aau.mpp_project.fragments.HomeFragment;
+import dk.aau.mpp_project.fragments.PlanFragment;
+import dk.aau.mpp_project.fragments.SettingsFragment;
 
 /**
  * URL Example
@@ -48,6 +52,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 		setContentView(R.layout.activity_main);
 		
         
@@ -59,6 +64,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
+        
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#aa0000ff")));
+        actionBar.setStackedBackgroundDrawable(new ColorDrawable(Color.parseColor("#aa0000ff")));
 
         // Specify that the Home/Up button should not be enabled, since there is no hierarchical
         // parent.
