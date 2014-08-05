@@ -69,7 +69,7 @@
         </receiver>
 
         <activity
-            android:name=".FlatActivity"
+            android:name="dk.aau.mpp_project.activity.FlatActivity"
             android:label="@string/title_activity_flat" >
         </activity>
     </application>

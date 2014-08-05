@@ -1,5 +1,9 @@
-package dk.aau.mpp_project;
+package dk.aau.mpp_project.activity;
 
+import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.R.id;
+import dk.aau.mpp_project.R.layout;
+import dk.aau.mpp_project.R.menu;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;

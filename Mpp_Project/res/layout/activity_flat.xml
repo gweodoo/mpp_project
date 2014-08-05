@@ -4,14 +4,19 @@
     android:layout_height="fill_parent"
     android:baselineAligned="false">
 
-    <fragment android:name="com.example.android.fragments.HeadlinesFragment"
-              android:id="@+id/headlines_fragment"
+    <fragment android:name="com.example.android.fragments.News"
+              android:id="@+id/news_fragment"
               android:layout_weight="1"
               android:layout_width="0dp"
               android:layout_height="match_parent" />
 
-    <fragment android:name="com.example.android.fragments.ArticleFragment"
-              android:id="@+id/article_fragment"
+    <fragment android:name="com.example.android.fragments.Economy"
+              android:id="@+id/economy_fragment"
+              android:layout_weight="2"
+              android:layout_width="0dp"
+              android:layout_height="match_parent" />
+    <fragment android:name="com.example.android.fragments.Settings"
+              android:id="@+id/settings_fragment"
               android:layout_weight="2"
               android:layout_width="0dp"
               android:layout_height="match_parent" />
