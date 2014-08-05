@@ -43,11 +43,11 @@ public class LogInActivity extends Activity {
 			goToMainActivity();
 		}
 	}
-	
+
 	private void initView() {
 		loginButton = (Button) findViewById(R.id.loginButton);
 	}
-	
+
 	private void initListener() {
 		loginButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -70,12 +70,12 @@ public class LogInActivity extends Activity {
 	}
 
 	private void onLoginButtonClicked() {
-		this.progressDialog = ProgressDialog.show(this, "", "Logging in bitches...",
-				true);
-		
+		this.progressDialog = ProgressDialog.show(this, "",
+				"Logging in bitches...", true);
+
 		List<String> permissions = Arrays.asList("basic_info", "user_about_me",
 				"user_relationships", "user_birthday", "user_location");
-		
+
 		ParseFacebookUtils.logIn(this, new LogInCallback() {
 			@Override
 			public void done(ParseUser user, ParseException err) {
