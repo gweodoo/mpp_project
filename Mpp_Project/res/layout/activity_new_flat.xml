@@ -16,8 +16,10 @@
         android:layout_height="wrap_content"
         android:text="Button" />
     
-    <it.gmariotti.cardslib.library.view.CardListView >
-        
-    </it.gmariotti.cardslib.library.view.CardListView>
+	<it.gmariotti.cardslib.library.view.CardListView 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/cardList">
+	</it.gmariotti.cardslib.library.view.CardListView>    
 
 </LinearLayout>
