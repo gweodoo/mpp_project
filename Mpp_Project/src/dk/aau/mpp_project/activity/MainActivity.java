@@ -52,7 +52,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+//		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 		setContentView(R.layout.activity_main);
 		
         
@@ -65,8 +65,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
         
-        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#aa0000ff")));
-        actionBar.setStackedBackgroundDrawable(new ColorDrawable(Color.parseColor("#aa0000ff")));
 
         // Specify that the Home/Up button should not be enabled, since there is no hierarchical
         // parent.
@@ -133,6 +131,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         public Fragment getItem(int i) {
             switch (i) {
                 case 0:
+                	//actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#aa78b2da")));
+                    //actionBar.setStackedBackgroundDrawable(new ColorDrawable(Color.parseColor("#aa78b2da")));
                     return new HomeFragment();
                 case 1:
                 	return new ExpensesFragment();
