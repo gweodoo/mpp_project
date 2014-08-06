@@ -28,7 +28,7 @@ public class OperationAdapter extends ArrayAdapter<Operation> {
 	
 		if (v == null) {
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = inflater.inflate(R.layout.fragment_expenses, null);
+			v = inflater.inflate(R.layout.layout_expensesitem, parent, false);
 		}
 		
 		Operation i=objects.get(position);
@@ -38,20 +38,23 @@ public class OperationAdapter extends ArrayAdapter<Operation> {
 			// on référencie les objets TextView 
 			//pour les remplir
 
-			TextView tt = (TextView) v.findViewById(R.id.titletext);
-			TextView ttd = (TextView) v.findViewById(R.id.valuetext);
-			TextView dtd= (TextView) v.findViewById(R.id.datetext);
+			TextView commentText = (TextView) v.findViewById(R.id.commenttext);
+			TextView priceText = (TextView) v.findViewById(R.id.pricetext);
+			TextView dateText= (TextView) v.findViewById(R.id.datetext);
 
 
 			// on vérifie que les TextView existe réellement et ne sont pas réutilisés
-			if (tt != null){
-				tt.setText(i.getTitle());
+			if (commentText != null){
+				//tt.setText(i.getTitle());
+				commentText.setText(i.getComment());
 			}
-			if (ttd != null){
-				ttd.setText(i.getValue());
+			if (priceText != null){
+				//ttd.setText(i.getValue());
+				priceText.setText(Double.toString(i.getAmount()));
 			}
-			if (dtd != null){
-				dtd.setText(i.getDate());
+			if (dateText != null){
+				//dtd.setText(i.getDate());
+				dateText.setText(i.getLender());
 			}
 
 		}
