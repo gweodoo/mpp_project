@@ -1,88 +1,85 @@
 package dk.aau.mpp_project.model;
 
+import com.parse.ParseClassName;
+import com.parse.ParseObject;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class News implements Parcelable {
+@ParseClassName("News")
+public class News extends ParseObject implements Parcelable {
 
-	public static final String	ID		= "newsID";
-	public static final String	FLAT_ID	= Flat.ID;
-	public static final String	USER_ID	= User.ID;
+	public static final String	ID		= "newsId";
+	public static final String	USER	= "user";
+	public static final String	FLAT	= "flat";
 	public static final String	COMMENT	= "comment";
 
-	private int					newsId;
-	private int					flatId;
-	private int					userId;
+	private Flat				flat;
+	private MyUser				user;
 	private String				comment;
 
 	public News() {
-		super();
 	}
 
-	public News(int flatId, int userId, String comment) {
+	public News(Flat flat, MyUser user, String comment) {
 		super();
-		this.flatId = flatId;
-		this.userId = userId;
+		this.flat = flat;
+		this.user = user;
 		this.comment = comment;
 	}
 
-	public int getNewsId() {
-		return newsId;
+	public Flat getFlat() {
+		return (Flat) get(FLAT);
 	}
 
-	public void setNewsId(int newsId) {
-		this.newsId = newsId;
+	public void setFlat(Flat flat) {
+		this.flat = flat;
+		put(FLAT, flat);
 	}
 
-	public int getFlatId() {
-		return flatId;
+	public MyUser getUser() {
+		return (MyUser) get(USER);
 	}
 
-	public void setFlatId(int flatId) {
-		this.flatId = flatId;
-	}
-
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUser(MyUser user) {
+		this.user = user;
+		put(USER, user);
 	}
 
 	public String getComment() {
-		return comment;
+		return getString(COMMENT);
 	}
 
 	public void setComment(String comment) {
 		this.comment = comment;
+		put(COMMENT, comment);
 	}
 
 	public News(Parcel in) {
-
-		this.flatId = in.readInt();
-		this.userId = in.readInt();
+		this.flat = in.readParcelable(Flat.class.getClassLoader());
+		this.user = in.readParcelable(MyUser.class.getClassLoader());
 		this.comment = in.readString();
 	}
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeInt(this.flatId);
-		dest.writeInt(this.userId);
+		dest.writeParcelable(this.flat, flags);
+		dest.writeParcelable(this.user, flags);
 		dest.writeString(this.comment);
 	}
 
 	public static final Parcelable.Creator<News>	CREATOR	= new Parcelable.Creator<News>() {
-														public News createFromParcel(
-																Parcel in) {
-															return new News(in);
-														}
+																public News createFromParcel(
+																		Parcel in) {
+																	return new News(
+																			in);
+																}
 
-														public News[] newArray(
-																int size) {
-															return new News[size];
-														}
-													};
+																public News[] newArray(
+																		int size) {
+																	return new News[size];
+																}
+															};
 
 	@Override
 	public int describeContents() {

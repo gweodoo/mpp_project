@@ -5,10 +5,12 @@ import android.os.Bundle;
 public class FinishedEvent {
 
 	private boolean	isSuccess;
+	private String	action;
 	private Bundle	extras;
 
-	public FinishedEvent(boolean isSuccess, Bundle extras) {
+	public FinishedEvent(boolean isSuccess, String action, Bundle extras) {
 		this.isSuccess = isSuccess;
+		this.action = action;
 		this.extras = extras;
 	}
 
@@ -26,5 +28,13 @@ public class FinishedEvent {
 
 	public void setExtras(Bundle extras) {
 		this.extras = extras;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
 	}
 }

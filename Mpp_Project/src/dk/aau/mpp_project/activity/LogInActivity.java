@@ -1,5 +1,6 @@
 package dk.aau.mpp_project.activity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.parse.LogInCallback;
@@ -18,15 +20,22 @@ import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
+import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
-import dk.aau.mpp_project.activity.MainActivity;
+import dk.aau.mpp_project.database.DatabaseHelper;
+import dk.aau.mpp_project.event.FinishedEvent;
+import dk.aau.mpp_project.event.StartEvent;
+import dk.aau.mpp_project.model.Flat;
+import dk.aau.mpp_project.model.MyUser;
 
 public class LogInActivity extends Activity {
 
 	protected static final String	TAG	= "LoginActivity";
 
 	private Button					loginButton;
-	private Dialog					progressDialog;
+	private Dialog					dialog;
+
+	private MyUser					myUser;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +48,34 @@ public class LogInActivity extends Activity {
 		// Check if there is a currently logged in user
 		// and they are linked to a Facebook account.
 		ParseUser currentUser = ParseUser.getCurrentUser();
+
 		if ((currentUser != null) && ParseFacebookUtils.isLinked(currentUser)) {
 			// Go to the user info activity
 			goToMainActivity();
 		}
+
+		((Button) findViewById(R.id.buttonCreateFlat))
+				.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+
+						if (EventBus.getDefault().isRegistered(
+								LogInActivity.this)) {
+
+							if (myUser != null) {
+								Flat flat = new Flat();
+
+								flat.setName("Aalborg");
+								flat.setAddress("Danemark");
+								flat.setAdminId(myUser.getObjectId());
+								flat.setRentAmount(800);
+
+								DatabaseHelper.createFlat(myUser, flat);
+							}
+						}
+					}
+				});
 	}
 
 	private void initView() {
@@ -71,8 +104,8 @@ public class LogInActivity extends Activity {
 	}
 
 	private void onLoginButtonClicked() {
-		this.progressDialog = ProgressDialog.show(this, "",
-				"Logging in bitches...", true);
+		this.dialog = ProgressDialog.show(this, "", "Logging in bitches...",
+				true);
 
 		List<String> permissions = Arrays.asList("basic_info", "user_about_me",
 				"user_relationships", "user_birthday", "user_location");
@@ -80,7 +113,7 @@ public class LogInActivity extends Activity {
 		ParseFacebookUtils.logIn(this, new LogInCallback() {
 			@Override
 			public void done(ParseUser user, ParseException err) {
-				LogInActivity.this.progressDialog.dismiss();
+				LogInActivity.this.dialog.dismiss();
 				if (user == null) {
 					Log.d(TAG, "Uh oh. The user cancelled the Facebook login.");
 				} else if (user.isNew()) {
@@ -88,7 +121,16 @@ public class LogInActivity extends Activity {
 					goToMainActivity();
 				} else {
 					Log.d(TAG, "User logged in through Facebook!");
-					goToMainActivity();
+					// TODO : to uncomment
+					// goToMainActivity();
+
+//					myUser = new MyUser(user.getString(MyUser.FACEBOOK_ID),
+//							user.getString(MyUser.EMAIL), user
+//									.getString(MyUser.NAME), user
+//									.getInt(MyUser.AGE));
+//					myUser.setObjectId(user.getObjectId());
+//
+//					DatabaseHelper.getUserFlats(myUser);
 				}
 			}
 		});
@@ -98,5 +140,76 @@ public class LogInActivity extends Activity {
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 		finish();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		EventBus.getDefault().register(this);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		EventBus.getDefault().unregister(this);
+	}
+
+	private ProgressDialog	progressDialog;
+
+	public void onEventMainThread(StartEvent e) {
+		Log.d(TAG, "# StartEvent");
+
+		if (progressDialog == null) {
+			progressDialog = new ProgressDialog(this);
+			progressDialog.setIndeterminate(true);
+			progressDialog.setMessage("Loading...");
+			progressDialog.setCancelable(true);
+		}
+
+		if (progressDialog != null && !progressDialog.isShowing())
+			progressDialog.show();
+	}
+
+	public void onEventMainThread(FinishedEvent e) {
+		Log.d(TAG, "# FinishedEvent");
+
+		if (progressDialog != null && progressDialog.isShowing()) {
+			progressDialog.dismiss();
+		}
+
+		// Success retreiving database
+		if (e.isSuccess()) {
+			Log.i(TAG, "# Request Success");
+
+			// Check for what you wanted to retrieve
+			if (DatabaseHelper.ACTION_GET_USER_FLATS.equals(e.getAction())) {
+				// You know what you need (List or simple object)
+				// If List: ArrayList<Flat> flatsList =
+				// e.getExtras().getParcelableArrayList("data");
+				// If Object only : Flat flat =
+				// e.getExtras().getParcelable("data");
+
+				ArrayList<Flat> flatsList = e.getExtras()
+						.getParcelableArrayList("data");
+
+				for (Flat f : flatsList)
+					Log.v(TAG,
+							"# Flat : " + f.getName() + " : "
+									+ f.getRentAmount() + "$");
+
+			} else if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e
+					.getAction())) {
+
+			} else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
+					.getAction())) {
+
+			}
+		}
+		// Error occured
+		else {
+			Log.i(TAG, "# Request NOT Success");
+		}
 	}
 }
