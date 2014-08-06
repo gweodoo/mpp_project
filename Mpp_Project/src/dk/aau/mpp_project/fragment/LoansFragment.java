@@ -24,7 +24,8 @@ public class LoansFragment extends ListFragment {
     private TextView titleField;
     private Spinner idPeople;
     private ListView tableView;
-
+    private LoanItemAdapter mAdapter;
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Hashtable<Integer, String> peopleTable = new Hashtable<Integer, String>();
@@ -48,6 +49,9 @@ public class LoansFragment extends ListFragment {
         spinnerContent.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         idPeople.setAdapter(spinnerContent);
 
+        mAdapter = new LoanItemAdapter(getActivity());
+        setListAdapter(mAdapter);
+        setListShown(false);
         /**
          * Setting add Button trigger
          */
@@ -89,7 +93,7 @@ public class LoansFragment extends ListFragment {
             list.add(new LoanItem("", "First", 10.0f, false));
         }
 
-        tableView.setAdapter(new LoanItemAdapter(getActivity(),R.layout.layout_loanitem, list));
+        mAdapter.setData(list);
 
 //            LinearLayout new_item = new LinearLayout(getActivity());
 //            ImageView picUser = new ImageView(getActivity());
