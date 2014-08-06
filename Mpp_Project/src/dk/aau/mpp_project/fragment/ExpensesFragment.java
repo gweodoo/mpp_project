@@ -1,4 +1,4 @@
-package fragments;
+package dk.aau.mpp_project.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;

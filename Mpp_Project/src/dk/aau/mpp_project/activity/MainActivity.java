@@ -30,10 +30,10 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
 import dk.aau.mpp_project.R;
-import dk.aau.mpp_project.fragments.ExpensesFragment;
-import dk.aau.mpp_project.fragments.HomeFragment;
-import dk.aau.mpp_project.fragments.PlanFragment;
-import dk.aau.mpp_project.fragments.SettingsFragment;
+import dk.aau.mpp_project.fragment.ExpensesFragment;
+import dk.aau.mpp_project.fragment.HomeFragment;
+import dk.aau.mpp_project.fragment.PlanFragment;
+import dk.aau.mpp_project.fragment.SettingsFragment;
 
 /**
  * URL Example
