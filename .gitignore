@@ -16,3 +16,5 @@ Mpp_Project/proguard-project.txt
 /.idea
 *.iml
 /out/
+
+Mpp_Project/libs/android-support-v4.jar
