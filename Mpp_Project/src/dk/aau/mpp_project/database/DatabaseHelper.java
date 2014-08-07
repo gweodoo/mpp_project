@@ -218,23 +218,23 @@ public class DatabaseHelper {
 		});
 	}
 
-	public static void getFlatById(Flat flat) {
-
-		ParseQuery<Flat> query = ParseQuery.getQuery(Flat.class);
-
-		query.whereEqualTo("objectId", flat.getObjectId());
-
-		query.getFirstInBackground(new GetCallback<Flat>() {
-			public void done(Flat object, ParseException e) {
-				if (e == null) {
-
-				} else {
-					Log.d(TAG, "Error: " + e.getMessage());
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void getFlatById(Flat flat) {
+//
+//		ParseQuery<Flat> query = ParseQuery.getQuery(Flat.class);
+//
+//		query.whereEqualTo("objectId", flat.getObjectId());
+//
+//		query.getFirstInBackground(new GetCallback<Flat>() {
+//			public void done(Flat object, ParseException e) {
+//				if (e == null) {
+//
+//				} else {
+//					Log.d(TAG, "Error: " + e.getMessage());
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	public static void getNewsByFlat(Flat flat) {
 		EventBus.getDefault().post(new StartEvent(ACTION_GET_NEWS_FLATS));

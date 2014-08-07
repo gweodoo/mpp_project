@@ -51,7 +51,13 @@ public class LogInActivity extends Activity {
 
 		if ((currentUser != null) && ParseFacebookUtils.isLinked(currentUser)) {
 			// Go to the user info activity
-			goToMainActivity();
+			myUser = new MyUser(currentUser.getString(MyUser.FACEBOOK_ID),
+					currentUser.getString(MyUser.EMAIL),
+					currentUser.getString(MyUser.NAME),
+					currentUser.getInt(MyUser.AGE));
+			myUser.setObjectId(currentUser.getObjectId());
+
+			DatabaseHelper.getUserFlats(myUser);
 		}
 
 		((Button) findViewById(R.id.buttonCreateFlat))
@@ -71,7 +77,8 @@ public class LogInActivity extends Activity {
 								flat.setAdminId(myUser.getObjectId());
 								flat.setRentAmount(800);
 
-								DatabaseHelper.createFlat(myUser, flat, "password");
+								DatabaseHelper.createFlat(myUser, flat,
+										"password");
 							}
 						}
 					}
@@ -104,8 +111,7 @@ public class LogInActivity extends Activity {
 	}
 
 	private void onLoginButtonClicked() {
-		this.dialog = ProgressDialog.show(this, "", "Logging in bitches...",
-				true);
+		this.dialog = ProgressDialog.show(this, "", "Logging in...", true);
 
 		List<String> permissions = Arrays.asList("basic_info", "user_about_me",
 				"user_relationships", "user_birthday", "user_location");
@@ -118,26 +124,31 @@ public class LogInActivity extends Activity {
 					Log.d(TAG, "Uh oh. The user cancelled the Facebook login.");
 				} else if (user.isNew()) {
 					Log.d(TAG, "User signed up and logged in through Facebook!");
-					goToMainActivity();
 				} else {
 					Log.d(TAG, "User logged in through Facebook!");
-					// TODO : to uncomment
-					goToMainActivity();
 
-//					myUser = new MyUser(user.getString(MyUser.FACEBOOK_ID),
-//							user.getString(MyUser.EMAIL), user
-//									.getString(MyUser.NAME), user
-//									.getInt(MyUser.AGE));
-//					myUser.setObjectId(user.getObjectId());
-//
-//					DatabaseHelper.getUserFlats(myUser);
+					myUser = new MyUser(user.getString(MyUser.FACEBOOK_ID),
+							user.getString(MyUser.EMAIL), user
+									.getString(MyUser.NAME), user
+									.getInt(MyUser.AGE));
+					myUser.setObjectId(user.getObjectId());
+
+					DatabaseHelper.getUserFlats(myUser);
 				}
 			}
 		});
 	}
 
-	private void goToMainActivity() {
+	private void goToMainActivity(Flat flat) {
 		Intent intent = new Intent(this, MainActivity.class);
+		intent.putExtra("data", flat);
+		startActivity(intent);
+		finish();
+	}
+
+	private void goToNewFlatActivity(ArrayList<Flat> flatsList) {
+		Intent intent = new Intent(this, NewFlatActivity.class);
+		intent.putParcelableArrayListExtra("data", flatsList);
 		startActivity(intent);
 		finish();
 	}
@@ -194,10 +205,18 @@ public class LogInActivity extends Activity {
 				ArrayList<Flat> flatsList = e.getExtras()
 						.getParcelableArrayList("data");
 
-				for (Flat f : flatsList)
-					Log.v(TAG,
-							"# Flat : " + f.getName() + " : "
-									+ f.getRentAmount() + "$");
+				if (flatsList.size() == 0) {
+					goToNewFlatActivity(flatsList);
+				} else if (flatsList.size() == 1) {
+					goToMainActivity(flatsList.get(0));
+				} else if (flatsList.size() > 1) {
+					goToNewFlatActivity(flatsList);
+				}
+
+				// for (Flat f : flatsList)
+				// Log.v(TAG,
+				// "# Flat : " + f.getName() + " : "
+				// + f.getRentAmount() + "$");
 
 			} else if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e
 					.getAction())) {
