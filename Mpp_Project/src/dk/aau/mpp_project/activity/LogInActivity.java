@@ -122,7 +122,7 @@ public class LogInActivity extends Activity {
 				} else {
 					Log.d(TAG, "User logged in through Facebook!");
 					// TODO : to uncomment
-					// goToMainActivity();
+					goToMainActivity();
 
 //					myUser = new MyUser(user.getString(MyUser.FACEBOOK_ID),
 //							user.getString(MyUser.EMAIL), user

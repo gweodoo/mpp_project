@@ -8,6 +8,7 @@ import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.model.Operation;
 import android.content.ClipData.Item;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,14 +48,17 @@ public class OperationAdapter extends ArrayAdapter<Operation> {
 			if (commentText != null){
 				//tt.setText(i.getTitle());
 				commentText.setText(i.getComment());
+				Log.d("debug_adapter",i.getComment()+"<-1->");
 			}
 			if (priceText != null){
 				//ttd.setText(i.getValue());
 				priceText.setText(Double.toString(i.getAmount()));
+				Log.d("debug_adapter: ",Double.toString(i.getAmount())+"<-2->");
 			}
 			if (dateText != null){
 				//dtd.setText(i.getDate());
 				dateText.setText(i.getLender());
+				Log.d("debug_adapter: ",i.getLender()+"<-3->");
 			}
 
 		}
