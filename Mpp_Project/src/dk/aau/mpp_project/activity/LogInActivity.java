@@ -59,7 +59,7 @@ public class LogInActivity extends Activity {
 
 		if ((currentUser != null) && ParseFacebookUtils.isLinked(currentUser)) {
 			// Go to the user info activity
-<<<<<<< HEAD
+
 			// myUser = new MyUser(currentUser.getString(MyUser.FACEBOOK_ID),
 			// currentUser.getString(MyUser.EMAIL),
 			// currentUser.getString(MyUser.NAME),
@@ -70,16 +70,6 @@ public class LogInActivity extends Activity {
 
 			goToMainActivity();
 			// makeMeRequest();
-=======
-//			myUser = new MyUser(currentUser.getString(MyUser.FACEBOOK_ID),
-//					currentUser.getString(MyUser.EMAIL),
-//					currentUser.getString(MyUser.NAME),
-//					currentUser.getInt(MyUser.AGE));
-//			myUser.setObjectId(currentUser.getObjectId());
-//
-//			DatabaseHelper.getUserFlats(myUser);
-			goToMainActivity(new Flat());
->>>>>>> FETCH_HEAD
 		}
 	}
 
@@ -186,7 +176,7 @@ public class LogInActivity extends Activity {
 											&& progressDialog.isShowing()) {
 										progressDialog.dismiss();
 									}
-									
+
 									goToMainActivity();
 								}
 							});
