@@ -137,7 +137,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 case 1:
                 	return new ExpensesFragment();
                 case 2:
-                	return new PlanFragment();
+			return new LoansFragment();
                 case 3:
                 	return new SettingsFragment();
                 default:
@@ -163,7 +163,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	            case 1:
 	            	return "Ex";
 	            case 2:
-	            	return "Cl";
+			return "Lo";
 	            case 3:
 	            	return "Se";
 	            default:

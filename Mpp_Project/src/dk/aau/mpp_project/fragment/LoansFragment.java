@@ -1,15 +1,21 @@
 package dk.aau.mpp_project.fragment;
 
-import android.app.ListFragment;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import dk.aau.mpp_project.R;
-import dk.aau.mpp_project.model.LoanItem;
-import dk.aau.mpp_project.model.LoanItemAdapter;
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
+import it.gmariotti.cardslib.library.internal.CardHeader;
+import it.gmariotti.cardslib.library.internal.CardThumbnail;
+import it.gmariotti.cardslib.library.view.CardListView;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -17,25 +23,44 @@ import java.util.Hashtable;
 /**
  * Created by adamj on 04/08/14.
  */
-public class LoansFragment extends ListFragment {
+public class LoansFragment extends Fragment {
     private View curView;
     private Button addButton;
     private TextView amountField;
     private TextView titleField;
     private Spinner idPeople;
-    private ListView tableView;
-    private LoanItemAdapter mAdapter;
-    
+    private CardListView tableView;
+    private CardArrayAdapter mCardArrayAdapter;
+
+    // TODO: To remove later (after parse integration)
+    private static int i = 0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Hashtable<Integer, String> peopleTable = new Hashtable<Integer, String>();
         Log.i("NEWS", "Hi");
         curView = inflater.inflate(R.layout.fragment_loans, container, false);
+        curView = inflater.inflate(R.layout.fragment_section_loans, container, false);
         addButton = (Button)curView.findViewById(R.id.addingButton);
         amountField = (TextView)curView.findViewById(R.id.amountField);
         titleField = (TextView)curView.findViewById(R.id.titleField);
         idPeople = (Spinner) curView.findViewById(R.id.personSpinner);
-        tableView = (ListView)curView.findViewById(R.id.listItem);
+        tableView = (CardListView)curView.findViewById(R.id.cardList);
+        //adding header text
+        TextView t = new TextView(this.getActivity());
+        t.setTextSize(20);
+        t.setText("Last loans");
+        t.setPadding(30, 50, 0, 30);
+        tableView.addHeaderView(t);
+
+        // setting CardListView
+       mCardArrayAdapter = new CardArrayAdapter(getActivity(),new ArrayList<Card>());
+
+        if (tableView!=null){
+            tableView.setAdapter(mCardArrayAdapter);
+        }
+
+        refreshItemsList();
 
         /**
          * Fill the person spinner
@@ -49,9 +74,6 @@ public class LoansFragment extends ListFragment {
         spinnerContent.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         idPeople.setAdapter(spinnerContent);
 
-        mAdapter = new LoanItemAdapter(getActivity());
-        setListAdapter(mAdapter);
-        setListShown(false);
         /**
          * Setting add Button trigger
          */
@@ -62,8 +84,35 @@ public class LoansFragment extends ListFragment {
             }
         });
         Log.i("NEWS", "Hi");
+
+        amountField.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN)
+                    if(!v.isFocused()){
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+                return false;
+            }
+        });
+
+        titleField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus && v.getId() == R.id.titleField){
+                    InputMethodManager imm =  (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+        });
+
         return curView;
     }
+
+
+
+
 
     private void addNewItem(){
         if(amountField.getText().toString().equals("") || idPeople.getSelectedItemId() == Spinner.INVALID_POSITION){
@@ -86,14 +135,25 @@ public class LoansFragment extends ListFragment {
     }
 
     private void refreshItemsList() {
+        Log.i("LOANS", "REFRESH");
         //TODO: Interact with Parse to get Items
         Toast.makeText(getActivity().getBaseContext(), "Refresh", Toast.LENGTH_LONG).show();
-        ArrayList<LoanItem> list = new ArrayList<LoanItem>();
-        for(int i = 0; i < 1; i++) {
-            list.add(new LoanItem("", "First", 10.0f, false));
-        }
+        ArrayList<Card> cards = new ArrayList<Card>();
 
         mAdapter.setData(list);
+        //TODO: Get previous entries with parse
+        //Generating cards
+        Card card = new Card(this.getActivity());
+        CardThumbnail thumb = new CardThumbnail(this.getActivity());
+        thumb.setDrawableResource(R.drawable.ic_launcher);
+
+        card.addCardThumbnail(thumb);
+        card.setTitle("Card "+(i++));
+        //Create a CardHeader
+        CardHeader header = new CardHeader(curView.getContext());
+        header.setTitle("Card " + i);
+        //Add Header to card
+        card.addCardHeader(header);
 
 //            LinearLayout new_item = new LinearLayout(getActivity());
 //            ImageView picUser = new ImageView(getActivity());
