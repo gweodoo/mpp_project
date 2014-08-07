@@ -51,13 +51,14 @@ public class LogInActivity extends Activity {
 
 		if ((currentUser != null) && ParseFacebookUtils.isLinked(currentUser)) {
 			// Go to the user info activity
-			myUser = new MyUser(currentUser.getString(MyUser.FACEBOOK_ID),
-					currentUser.getString(MyUser.EMAIL),
-					currentUser.getString(MyUser.NAME),
-					currentUser.getInt(MyUser.AGE));
-			myUser.setObjectId(currentUser.getObjectId());
-
-			DatabaseHelper.getUserFlats(myUser);
+//			myUser = new MyUser(currentUser.getString(MyUser.FACEBOOK_ID),
+//					currentUser.getString(MyUser.EMAIL),
+//					currentUser.getString(MyUser.NAME),
+//					currentUser.getInt(MyUser.AGE));
+//			myUser.setObjectId(currentUser.getObjectId());
+//
+//			DatabaseHelper.getUserFlats(myUser);
+			goToMainActivity(new Flat());
 		}
 
 		((Button) findViewById(R.id.buttonCreateFlat))
