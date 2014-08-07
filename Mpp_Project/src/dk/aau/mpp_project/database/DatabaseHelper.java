@@ -33,6 +33,7 @@ public class DatabaseHelper {
 	public static final String	USER						= "MyUser";
 	public static final String	FILLING_TABLE				= "FillingTable";
 
+	public static final String	ACTION_LOGIN				= "ACTION_LOGIN";
 	public static final String	ACTION_CREATE_FLAT			= "ACTION_CREATE_FLAT";
 	public static final String	ACTION_JOIN_FLAT			= "ACTION_JOIN_FLAT";
 	public static final String	ACTION_UPDATE_FLAT			= "ACTION_UPDATE_FLAT";
@@ -208,8 +209,9 @@ public class DatabaseHelper {
 					});
 
 				} else {
-					Log.d(TAG, "Error: " + e.getMessage());
+					Log.d(TAG, "Error: " + e.getMessage() + " : " + e.getCode() + " => " + ParseException.OBJECT_NOT_FOUND);
 					e.printStackTrace();
+					
 					EventBus.getDefault().post(
 							new FinishedEvent(false, ACTION_GET_USER_FLATS,
 									null));
@@ -218,23 +220,23 @@ public class DatabaseHelper {
 		});
 	}
 
-//	public static void getFlatById(Flat flat) {
-//
-//		ParseQuery<Flat> query = ParseQuery.getQuery(Flat.class);
-//
-//		query.whereEqualTo("objectId", flat.getObjectId());
-//
-//		query.getFirstInBackground(new GetCallback<Flat>() {
-//			public void done(Flat object, ParseException e) {
-//				if (e == null) {
-//
-//				} else {
-//					Log.d(TAG, "Error: " + e.getMessage());
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
+	// public static void getFlatById(Flat flat) {
+	//
+	// ParseQuery<Flat> query = ParseQuery.getQuery(Flat.class);
+	//
+	// query.whereEqualTo("objectId", flat.getObjectId());
+	//
+	// query.getFirstInBackground(new GetCallback<Flat>() {
+	// public void done(Flat object, ParseException e) {
+	// if (e == null) {
+	//
+	// } else {
+	// Log.d(TAG, "Error: " + e.getMessage());
+	// e.printStackTrace();
+	// }
+	// }
+	// });
+	// }
 
 	public static void getNewsByFlat(Flat flat) {
 		EventBus.getDefault().post(new StartEvent(ACTION_GET_NEWS_FLATS));
