@@ -50,6 +50,14 @@ public class Operation extends ParseObject implements Parcelable {
 		String minute = Integer.toString(cal.get(Calendar.MINUTE));
 
 		this.date = day + "/" + month + "/" + year + ", " + hour + ":" + minute;
+
+		setComment(comment);
+		setDate(date);
+		setFlat(flat);
+		setIsPaid(isPaid);
+		setLender(lender);
+		setTo(to);
+		setAmount(amount);
 	}
 
 	public String getLender() {

@@ -29,6 +29,11 @@ public class Flat extends ParseObject implements Parcelable {
 		this.address = address;
 		this.adminId = adminId;
 		this.rentAmount = rent;
+		
+		setAddress(address);
+		setAdminId(adminId);
+		setName(name);
+		setRentAmount(rentAmount);
 	}
 
 	public String getName() {

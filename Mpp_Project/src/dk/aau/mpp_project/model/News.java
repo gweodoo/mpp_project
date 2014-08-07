@@ -26,6 +26,10 @@ public class News extends ParseObject implements Parcelable {
 		this.flat = flat;
 		this.user = user;
 		this.comment = comment;
+		
+		setComment(comment);
+		setFlat(flat);
+		setUser(user);
 	}
 
 	public Flat getFlat() {

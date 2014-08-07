@@ -30,6 +30,11 @@ public class MyUser extends ParseUser implements Parcelable {
 		this.email = email;
 		this.name = name;
 		this.age = age;
+		
+		setAge(age);
+		setEmail(email);
+		setFacebookId(facebookId);
+		setName(name);
 	}
 
 	public String getFacebookId() {
