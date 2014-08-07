@@ -1,11 +1,5 @@
 package dk.aau.mpp_project.fragment;
 
-import java.util.ArrayList;
-
-import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
-import it.gmariotti.cardslib.library.internal.CardHeader;
-import it.gmariotti.cardslib.library.view.CardListView;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +11,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import dk.aau.mpp_project.R;
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
+import it.gmariotti.cardslib.library.internal.CardHeader;
+import it.gmariotti.cardslib.library.view.CardListView;
+
+import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
@@ -48,8 +48,8 @@ public class HomeFragment extends Fragment {
 				getActivity(), cards);
 
 		CardListView listView = (CardListView) rootView
-				.findViewById(R.id.cardList);
-
+				.findViewById(R.id.cardListHome);
+        listView.setId(0);
 		// Adding header flat image
 		View v = null;
 		LinearLayout main = new LinearLayout(rootView.getContext());

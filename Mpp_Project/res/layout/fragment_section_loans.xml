@@ -49,22 +49,12 @@
                 android:textStyle="bold"/>
     </LinearLayout>
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Last Expenses"
-            android:id="@+id/titleExpenses"
-            android:background="@android:color/transparent"
-            android:textStyle="bold|italic"
-            android:textColor="#707070"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="10dp"/>
-    <include layout="@android:layout/list_content" />
-    <ListView
+    <it.gmariotti.cardslib.library.view.CardListView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/listItem"/>
+            android:layout_height="match_parent"
+            android:id="@+id/cardListLoans"
+            android:focusableInTouchMode="true">
+    </it.gmariotti.cardslib.library.view.CardListView>
 
 
 </LinearLayout>

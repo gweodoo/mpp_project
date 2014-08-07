@@ -1,20 +1,17 @@
 package dk.aau.mpp_project.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import dk.aau.mpp_project.R;
-
-
-import dk.aau.mpp_project.adapter.OperationAdapter;
-import dk.aau.mpp_project.model.Flat;
-import dk.aau.mpp_project.model.Operation;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.adapter.OperationAdapter;
+import dk.aau.mpp_project.model.Flat;
+import dk.aau.mpp_project.model.Operation;
+
+import java.util.ArrayList;
 
 public class ExpensesFragment extends ListFragment {
 	
@@ -34,7 +31,7 @@ public class ExpensesFragment extends ListFragment {
 		{
 //			temp= new Operation(i, i*2,(i*2)+1, 1000*i,
 //					(i+3)+" month "+(2013+i),"This is the expense number : "+i);
-			temp=new Operation(new Flat(), "test", "test", 10.2,	"hello", "hello", false);
+			temp=new Operation(new Flat(), "test", "test", 10.2, "hello", false);
 			
 			Log.d("expenses",temp.getComment()+"<-5->");
 			Log.d("expenses",temp.getDate()+"<-6->");
