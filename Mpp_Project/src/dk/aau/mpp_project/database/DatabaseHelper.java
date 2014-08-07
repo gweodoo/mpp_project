@@ -8,6 +8,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -32,44 +33,117 @@ public class DatabaseHelper {
 	public static final String	USER						= "MyUser";
 	public static final String	FILLING_TABLE				= "FillingTable";
 
+	public static final String	ACTION_CREATE_FLAT			= "ACTION_CREATE_FLAT";
+	public static final String	ACTION_JOIN_FLAT			= "ACTION_JOIN_FLAT";
+	public static final String	ACTION_UPDATE_FLAT			= "ACTION_UPDATE_FLAT";
 	public static final String	ACTION_GET_USER_FLATS		= "ACTION_GET_USER_FLATS";
 	public static final String	ACTION_GET_NEWS_FLATS		= "ACTION_GET_NEWS_FLATS";
 	public static final String	ACTION_GET_OPERATIONS_FLATS	= "ACTION_GET_OPERATIONS_FLATS";
 
 	public static void createOperation(Flat flat, Operation operation) {
 		// ParseObject operationObject = new ParseObject(OPERATION);
-
 		// operationObject.put(Operation.LENDER, operation.getLender());
 		// operationObject.put(Operation.TO, operation.getTo());
 		// operationObject.put(Operation.AMOUNT, operation.getAmount());
 		// operationObject.put(Operation.COMMENT, operation.getComment());
 		// operationObject.put(Operation.IS_PAID, operation.getIsPaid());
+		// operationObject.put(Operation.FLAT, flat);
 
 		operation.put(Operation.FLAT, flat);
-
-		// operationObject.put(Operation.FLAT, flat);
 
 		operation.saveInBackground();
 	}
 
-	public static void createFlat(final MyUser user, final Flat flat) {
+	public static void createFlat(final MyUser user, final Flat flat,
+			final String password) {
+		EventBus.getDefault().post(new StartEvent(ACTION_CREATE_FLAT));
+
+		flat.put(Flat.PASSWORD, password);
 
 		flat.saveInBackground(new SaveCallback() {
 
 			@Override
 			public void done(ParseException e) {
-				joinFlat(user, flat);
+				joinFlat(user, flat, password);
 			}
 		});
 	}
 
-	public static void joinFlat(MyUser user, Flat flat) {
-		ParseObject object = new ParseObject(FILLING_TABLE);
+	/**
+	 * 
+	 * @param flat
+	 *            to update to the databse
+	 * @param password
+	 *            (optionnal) : can be null if don't want to update the password
+	 */
+	public static void updateFlat(Flat flat, String password) {
+		EventBus.getDefault().post(new StartEvent(ACTION_UPDATE_FLAT));
+
+		if (password != null) {
+			flat.put(Flat.PASSWORD, password);
+		}
+
+		flat.saveInBackground(new SaveCallback() {
+
+			@Override
+			public void done(ParseException e) {
+				if (e == null) {
+					EventBus.getDefault().post(
+							new FinishedEvent(true, ACTION_UPDATE_FLAT, null));
+				} else {
+					EventBus.getDefault().post(
+							new FinishedEvent(false, ACTION_UPDATE_FLAT, null));
+				}
+			}
+		});
+	}
+
+	public static void joinFlat(MyUser user, Flat flat, final String password) {
+		EventBus.getDefault().post(new StartEvent(ACTION_JOIN_FLAT));
+
+		final ParseObject object = new ParseObject(FILLING_TABLE);
 
 		object.put(FillingTable.FLAT, flat);
 		object.put(FillingTable.USER, user);
 
-		object.saveInBackground();
+		ParseQuery<Flat> query = ParseQuery.getQuery(Flat.class);
+
+		query.whereEqualTo("objectId", flat.getObjectId());
+
+		query.getFirstInBackground(new GetCallback<Flat>() {
+			public void done(Flat flat, ParseException e) {
+				if (e == null) {
+					if (flat.getString(Flat.PASSWORD).equals(password)) {
+
+						object.saveInBackground(new SaveCallback() {
+
+							@Override
+							public void done(ParseException e) {
+								if (e == null) {
+									EventBus.getDefault().post(
+											new FinishedEvent(true,
+													ACTION_JOIN_FLAT, null));
+								} else {
+									EventBus.getDefault().post(
+											new FinishedEvent(false,
+													ACTION_JOIN_FLAT, null));
+								}
+							}
+						});
+					} else {
+						EventBus.getDefault()
+								.post(new FinishedEvent(false,
+										ACTION_JOIN_FLAT, null));
+					}
+				} else {
+					Log.d(TAG, "Error: " + e.getMessage());
+					e.printStackTrace();
+					EventBus.getDefault().post(
+							new FinishedEvent(false, ACTION_JOIN_FLAT, null));
+				}
+			}
+		});
+
 	}
 
 	public static void createNews(Flat flat, MyUser user, News news) {
@@ -106,13 +180,6 @@ public class DatabaseHelper {
 						Log.v(TAG, "# My Flat ID : " + f.getObjectId());
 					}
 
-					// Bundle extras = new Bundle();
-					// extras.putParcelableArrayList("data",
-					// (ArrayList<? extends Parcelable>) flats);
-					//
-					// EventBus.getDefault().post(
-					// new FinishedEvent(true, FLAT, extras));
-
 					ParseQuery<Flat> query2 = ParseQuery.getQuery(Flat.class);
 					query2.whereContainedIn("objectId", flatIds);
 
@@ -122,31 +189,20 @@ public class DatabaseHelper {
 								Log.d(TAG, "# Retrieved " + objectList.size()
 										+ " flats");
 
-								// ArrayList<Flat> flatsList = new
-								// ArrayList<Flat>();
-								//
-								// for (ParseObject o : objectList) {
-								// Flat flat = new Flat(
-								// o.getString(Flat.NAME), o
-								// .getString(Flat.ADDRESS), o
-								// .getString(Flat.ADMIN_ID),
-								// o.getDouble(Flat.RENT_AMOUNT));
-								//
-								// flatsList.add(flat);
-								// }
-
 								Bundle extras = new Bundle();
 								extras.putParcelableArrayList(
 										"data",
 										(ArrayList<? extends Parcelable>) objectList);
 
 								EventBus.getDefault().post(
-										new FinishedEvent(true, ACTION_GET_USER_FLATS, extras));
+										new FinishedEvent(true,
+												ACTION_GET_USER_FLATS, extras));
 
 							} else {
 								Log.d(TAG, "Error: " + e.getMessage());
 								EventBus.getDefault().post(
-										new FinishedEvent(false, ACTION_GET_USER_FLATS, null));
+										new FinishedEvent(false,
+												ACTION_GET_USER_FLATS, null));
 							}
 						}
 					});
@@ -155,41 +211,30 @@ public class DatabaseHelper {
 					Log.d(TAG, "Error: " + e.getMessage());
 					e.printStackTrace();
 					EventBus.getDefault().post(
-							new FinishedEvent(false, ACTION_GET_USER_FLATS, null));
+							new FinishedEvent(false, ACTION_GET_USER_FLATS,
+									null));
 				}
 			}
 		});
 	}
 
-	// public static void getFlatById(String flatId) {
-	// EventBus.getDefault().post(new StartEvent());
-	//
-	// ParseQuery<Flat> query = ParseQuery.getQuery(Flat.class);
-	//
-	// query.whereEqualTo("objectId", flatId);
-	//
-	// query.getFirstInBackground(new GetCallback<Flat>() {
-	// public void done(Flat object, ParseException e) {
-	// if (e == null) {
-	// // Flat flat = new Flat(object.getString(Flat.NAME), object
-	// // .getString(Flat.ADDRESS), object
-	// // .getString(Flat.ADMIN_ID), object
-	// // .getDouble(Flat.RENT_AMOUNT));
-	//
-	// Bundle extras = new Bundle();
-	// extras.putParcelable("data", object);
-	//
-	// EventBus.getDefault().post(
-	// new FinishedEvent(true, FLAT, extras));
-	// } else {
-	// Log.d(TAG, "Error: " + e.getMessage());
-	// e.printStackTrace();
-	// EventBus.getDefault().post(
-	// new FinishedEvent(false, FLAT, null));
-	// }
-	// }
-	// });
-	// }
+	public static void getFlatById(Flat flat) {
+
+		ParseQuery<Flat> query = ParseQuery.getQuery(Flat.class);
+
+		query.whereEqualTo("objectId", flat.getObjectId());
+
+		query.getFirstInBackground(new GetCallback<Flat>() {
+			public void done(Flat object, ParseException e) {
+				if (e == null) {
+
+				} else {
+					Log.d(TAG, "Error: " + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
 	public static void getNewsByFlat(Flat flat) {
 		EventBus.getDefault().post(new StartEvent(ACTION_GET_NEWS_FLATS));
@@ -203,27 +248,20 @@ public class DatabaseHelper {
 				if (e == null) {
 					Log.d(TAG, "# Retrieved " + objectList.size() + " news");
 
-					// ArrayList<News> newsList = new ArrayList<News>();
-					//
-					// for (ParseObject o : objectList) {
-					// News news = new News((Flat) o.get(News.FLAT), (User) o
-					// .get(News.USER), o.getString(News.COMMENT));
-					//
-					// newsList.add(news);
-					// }
-
 					Bundle extras = new Bundle();
 					extras.putParcelableArrayList("data",
 							(ArrayList<? extends Parcelable>) objectList);
 
 					EventBus.getDefault().post(
-							new FinishedEvent(true, ACTION_GET_NEWS_FLATS, extras));
+							new FinishedEvent(true, ACTION_GET_NEWS_FLATS,
+									extras));
 
 				} else {
 					Log.d(TAG, "Error: " + e.getMessage());
 					e.printStackTrace();
 					EventBus.getDefault().post(
-							new FinishedEvent(false, ACTION_GET_NEWS_FLATS, null));
+							new FinishedEvent(false, ACTION_GET_NEWS_FLATS,
+									null));
 				}
 			}
 		});
@@ -242,34 +280,20 @@ public class DatabaseHelper {
 					Log.d(TAG, "# Retrieved " + objectList.size()
 							+ " operations");
 
-					// ArrayList<Operation> operationsList = new
-					// ArrayList<Operation>();
-					//
-					// for (ParseObject o : objectList) {
-					// Operation operation = new Operation((Flat) o
-					// .get(Operation.FLAT), o
-					// .getString(Operation.LENDER), o
-					// .getString(Operation.TO), o
-					// .getDouble(Operation.AMOUNT), o
-					// .getString(Operation.DATE), o
-					// .getString(Operation.COMMENT), o
-					// .getBoolean(Operation.IS_PAID));
-					//
-					// operationsList.add(operation);
-					// }
-
 					Bundle extras = new Bundle();
 					extras.putParcelableArrayList("data",
 							(ArrayList<? extends Parcelable>) objectList);
 
 					EventBus.getDefault().post(
-							new FinishedEvent(true, ACTION_GET_OPERATIONS_FLATS, extras));
+							new FinishedEvent(true,
+									ACTION_GET_OPERATIONS_FLATS, extras));
 
 				} else {
 					Log.d(TAG, "Error: " + e.getMessage());
 					e.printStackTrace();
 					EventBus.getDefault().post(
-							new FinishedEvent(false, ACTION_GET_OPERATIONS_FLATS, null));
+							new FinishedEvent(false,
+									ACTION_GET_OPERATIONS_FLATS, null));
 				}
 			}
 		});

@@ -14,6 +14,7 @@ public class Flat extends ParseObject implements Parcelable {
 	public static final String	ADDRESS		= "address";
 	public static final String	ADMIN_ID	= "adminID";
 	public static final String	RENT_AMOUNT	= "rentAmount";
+	public static final String	PASSWORD	= "password";
 
 	private String				name;
 	private String				address;
@@ -29,7 +30,7 @@ public class Flat extends ParseObject implements Parcelable {
 		this.address = address;
 		this.adminId = adminId;
 		this.rentAmount = rent;
-		
+
 		setAddress(address);
 		setAdminId(adminId);
 		setName(name);

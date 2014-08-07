@@ -71,7 +71,7 @@ public class LogInActivity extends Activity {
 								flat.setAdminId(myUser.getObjectId());
 								flat.setRentAmount(800);
 
-								DatabaseHelper.createFlat(myUser, flat);
+								DatabaseHelper.createFlat(myUser, flat, "password");
 							}
 						}
 					}
