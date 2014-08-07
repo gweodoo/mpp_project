@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class NewFlatActivity extends Activity {
 
@@ -32,19 +33,22 @@ public class NewFlatActivity extends Activity {
 			Card card = new Card(getApplicationContext());
 //			card.setTitle("This is a sample card...");
 			// Create a CardHeader
-			CardHeader header = new CardHeader(getApplicationContext());
+//			CardHeader header = new CardHeader(getApplicationContext());
 //			header.setTitle("Card " + (i + 1));
 			// Add Header to card
-			card.addCardHeader(header);
+//			card.addCardHeader(header);
 	        //Create thumbnail
-			card.setBackgroundResourceId(R.drawable.flat1small);
-	        CardThumbnail thumb = new CardThumbnail(getApplicationContext());
-
+			
+			TextView t = (TextView) findViewById(R.id.choose_card_text);
+			ImageView img = (ImageView) findViewById(R.id.choose_card_image);
+			t.setText("This is a test flat");
+			img.setBackgroundResource(R.drawable.flat1small);
+			
+			card.setInnerLayout(R.layout.choose_flat);
+			
 	        //Set resource
-	        thumb.setDrawableResource(R.drawable.flat1small);
 
 	        //Add thumbnail to a card
-	        card.addCardThumbnail(thumb);
 //			card.setCardView(view);
 			
 			cards.add(card);
@@ -59,6 +63,8 @@ public class NewFlatActivity extends Activity {
 			listView.setAdapter(mCardArrayAdapter);
 		}
 	}
+	
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
