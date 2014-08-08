@@ -40,10 +40,10 @@ public class NewFlatActivity extends Activity {
 	        //Create thumbnail
 			
 			card.setInnerLayout(R.layout.choose_flat);
-			TextView t = (TextView) findViewById(R.id.choose_card_text);
-			ImageView img = (ImageView) findViewById(R.id.choose_card_image);
-			t.setText("This is a test flat");
-			img.setBackgroundResource(R.drawable.flat1small);
+//			TextView t = (TextView) findViewById(R.id.choose_card_text);
+//			ImageView img = (ImageView) findViewById(R.id.choose_card_image);
+//			t.setText("This is a test flat");
+//			img.setBackgroundResource(R.drawable.flat1small);
 			
 			
 	        //Set resource

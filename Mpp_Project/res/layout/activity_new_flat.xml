@@ -27,7 +27,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/cardList"
-        card:list_card_layout_resourceID="@layout/layout_loan_card">
+        card:list_card_layout_resourceID="@layout/choose_flat_card_view"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        >
 	</it.gmariotti.cardslib.library.view.CardListView>    
 
 </LinearLayout>

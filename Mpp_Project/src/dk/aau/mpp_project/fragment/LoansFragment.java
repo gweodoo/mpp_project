@@ -42,7 +42,7 @@ public class LoansFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         curView = inflater.inflate(R.layout.fragment_section_loans, container, false);
-        tableView = (CardListView)curView.findViewById(R.id.cardListLoans);
+        //tableView = (CardListView)curView.findViewById(R.id.cardListLoans);
         tableView.setId(4);
         //adding header text
         TextView t = new TextView(this.getActivity());
