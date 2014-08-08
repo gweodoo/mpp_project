@@ -1,90 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="dk.aau.mpp_project"
-	android:versionCode="1"
-	android:versionName="1.0" >
+    package="dk.aau.mpp_project"
+    android:versionCode="1"
+    android:versionName="1.0" >
 
-	<uses-sdk
-		android:minSdkVersion="14"
-		android:targetSdkVersion="20" />
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="20" />
 
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.WAKE_LOCK" />
-	<uses-permission android:name="android.permission.VIBRATE" />
-	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
-	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-	<permission
-		android:name="dk.aau.mpp_project.permission.C2D_MESSAGE"
-		android:protectionLevel="signature" />
+    <permission
+        android:name="dk.aau.mpp_project.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
 
-	<uses-permission android:name="dk.aau.mpp_project.permission.C2D_MESSAGE" />
+    <uses-permission android:name="dk.aau.mpp_project.permission.C2D_MESSAGE" />
 
-	<application
-		android:name="dk.aau.mpp_project.application.MyApplication"
-		android:allowBackup="true"
-		android:icon="@drawable/ic_launcher"
-		android:label="@string/app_name"
-		android:theme="@style/Theme.Colloc" >
-		<meta-data
-			android:name="com.facebook.sdk.ApplicationId"
-			android:value="@string/app_id" />
+    <application
+        android:name="dk.aau.mpp_project.application.MyApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Colloc" >
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
 
-		<activity
-			android:name="com.facebook.LoginActivity"
-			android:label="@string/app_name" />
-		<activity
-			android:name="dk.aau.mpp_project.activity.LogInActivity"
-			android:label="@string/app_name"
-			android:screenOrientation="portrait" >
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:label="@string/app_name" />
+        <activity
+            android:name="dk.aau.mpp_project.activity.LogInActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
-		<activity
-			android:name="dk.aau.mpp_project.activity.MainActivity"
-			android:label="@string/app_name" >
-		</activity>
-		
-		<receiver
-			android:name="dk.aau.mpp_project.receiver.NotificationReceiver"
-			android:exported="false" >
-			<intent-filter>
-				<action android:name="dk.aau.mpp_project.action.push" />
-			</intent-filter>
-		</receiver>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="dk.aau.mpp_project.activity.MainActivity"
+            android:label="@string/app_name" >
+        </activity>
 
-		<service android:name="com.parse.PushService" />
+        <receiver
+            android:name="dk.aau.mpp_project.receiver.NotificationReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="dk.aau.mpp_project.action.push" />
+            </intent-filter>
+        </receiver>
 
-		<receiver android:name="com.parse.ParseBroadcastReceiver" >
-			<intent-filter>
-				<action android:name="android.intent.action.BOOT_COMPLETED" />
-				<action android:name="android.intent.action.USER_PRESENT" />
-			</intent-filter>
-		</receiver>
-		<receiver
-			android:name="com.parse.GcmBroadcastReceiver"
-			android:permission="com.google.android.c2dm.permission.SEND" >
-			<intent-filter>
-				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
-				<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+        <service android:name="com.parse.PushService" />
 
-				<category android:name="dk.aau.mpp_project" />
-			</intent-filter>
-		</receiver>
+        <receiver android:name="com.parse.ParseBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.parse.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-		<activity
-			android:name="dk.aau.mpp_project.activity.FlatActivity"
-			android:label="@string/title_activity_flat" >
-		</activity>
-		<activity
-			android:name="dk.aau.mpp_project.activity.NewFlatActivity"
-			android:label="@string/title_activity_new_flat" >
-		</activity>
-	</application>
+                <category android:name="dk.aau.mpp_project" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="dk.aau.mpp_project.activity.FlatActivity"
+            android:label="@string/title_activity_flat" >
+        </activity>
+        <activity
+            android:name="dk.aau.mpp_project.activity.NewFlatActivity"
+            android:label="@string/title_activity_new_flat" >
+        </activity>
+        <activity
+            android:name="dk.aau.mpp_project.AddNewFlatActivity"
+            android:label="@string/title_activity_add_new_flat" >
+        </activity>
+    </application>
 
 </manifest>

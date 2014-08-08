@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_new_flat">Add new flat</string>
+    <string name="join_existing_flat">Join existing flat</string>
+    <string name="create_new_flat">Create new flat</string>
+</resources>
