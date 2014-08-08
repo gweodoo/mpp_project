@@ -48,17 +48,14 @@ public class OperationAdapter extends ArrayAdapter<Operation> {
 			if (commentText != null){
 				//tt.setText(i.getTitle());
 				commentText.setText(i.getComment());
-				Log.d("debug_adapter",i.getComment()+"<-1->");
 			}
 			if (priceText != null){
 				//ttd.setText(i.getValue());
 				priceText.setText(Double.toString(i.getAmount()));
-				Log.d("debug_adapter: ",Double.toString(i.getAmount())+"<-2->");
 			}
 			if (dateText != null){
 				//dtd.setText(i.getDate());
 				dateText.setText(i.getLender());
-				Log.d("debug_adapter: ",i.getLender()+"<-3->");
 			}
 
 		}

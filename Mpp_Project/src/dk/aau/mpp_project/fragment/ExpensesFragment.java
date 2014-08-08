@@ -46,9 +46,6 @@ public class ExpensesFragment extends ListFragment {
 		{
 			temp=new Operation(new Flat(), "test", "test", 10.2,"hello", "hello", false);
 			
-			Log.d("expenses",temp.getComment()+"<-5->");
-			Log.d("expenses",temp.getDate()+"<-6->");
-			Log.d("expenses",temp.getLender()+"<-7->");
 			
 			myArray.add(temp);
 			
