@@ -31,7 +31,7 @@ public class Operation extends ParseObject implements Parcelable {
 	public Operation() {
 	}
 
-	public Operation(Flat flat, String lender, String to, double amount, String comment, boolean isPaid) {
+	public Operation(Flat flat, String lender, String to, double amount, String date, String comment, boolean isPaid) {
 
 		this.flat = flat;
 		this.lender = lender;
@@ -39,7 +39,9 @@ public class Operation extends ParseObject implements Parcelable {
 		this.amount = amount;
 		this.isPaid = isPaid;
 		this.comment = comment;
-		this.date = (new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
+        this.date = date;
+        if(this.date.equals(""))
+		    this.date = (new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
 
 		setComment(comment);
 		setDate(date);

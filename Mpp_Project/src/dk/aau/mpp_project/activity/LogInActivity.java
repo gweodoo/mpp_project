@@ -4,18 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.facebook.FacebookRequestError;
@@ -30,6 +25,7 @@ import com.parse.SaveCallback;
 
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
@@ -41,9 +37,6 @@ public class LogInActivity extends Activity {
 	protected static final String	TAG	= "LoginActivity";
 
 	private Button					loginButton;
-	// private Dialog dialog;
-
-	private MyUser					myUser;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +64,7 @@ public class LogInActivity extends Activity {
 			
 //			goToNewFlatActivity();
 //			goToMainActivity(new Flat());
+
 		}
 	}
 
@@ -85,30 +79,6 @@ public class LogInActivity extends Activity {
 				onLoginButtonClicked();
 			}
 		});
-
-		((Button) findViewById(R.id.buttonCreateFlat))
-				.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-
-						if (EventBus.getDefault().isRegistered(
-								LogInActivity.this)) {
-
-							if (myUser != null) {
-								Flat flat = new Flat();
-
-								flat.setName("Aalborg");
-								flat.setAddress("Danemark");
-								flat.setAdminId(myUser.getObjectId());
-								flat.setRentAmount(800);
-
-								DatabaseHelper.createFlat(myUser, flat,
-										"password");
-							}
-						}
-					}
-				});
 	}
 
 	@Override
@@ -142,14 +112,6 @@ public class LogInActivity extends Activity {
 				} else {
 					Log.d(TAG, "User logged in through Facebook!");
 
-					// myUser = new MyUser(user.getString(MyUser.FACEBOOK_ID),
-					// user.getString(MyUser.EMAIL), user
-					// .getString(MyUser.NAME), user
-					// .getInt(MyUser.AGE));
-					// myUser.setObjectId(user.getObjectId());
-					//
-					// DatabaseHelper.getUserFlats(myUser);
-
 					makeMeRequest();
 				}
 			}
@@ -163,20 +125,28 @@ public class LogInActivity extends Activity {
 					public void onCompleted(GraphUser user, Response response) {
 						if (user != null) {
 
-							myUser = new MyUser(user.getId(), user.getName(),
-									user.getBirthday());
+							final MyUser myUser = new MyUser(user.getId(), user
+									.getName(), user.getBirthday());
 
-							Log.v(TAG, "# USER NAME : " + myUser.getName());
+							Log.v(TAG,
+									"# FACEBOOK ID : " + myUser.getFacebookId());
 
 							myUser.saveInBackground(new SaveCallback() {
 
 								@Override
 								public void done(ParseException e) {
-									// DatabaseHelper.getUserFlats(myUser);
+
 									if (progressDialog != null
 											&& progressDialog.isShowing()) {
 										progressDialog.dismiss();
 									}
+
+									MyApplication.setOption(MyUser.FACEBOOK_ID,
+											myUser.getFacebookId());
+									MyApplication.setOption(MyUser.NAME,
+											myUser.getName());
+									MyApplication.setOption(MyUser.BIRTHDAY,
+											myUser.getBirthday());
 
 									goToMainActivity();
 								}
