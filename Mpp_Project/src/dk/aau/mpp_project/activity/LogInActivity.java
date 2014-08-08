@@ -58,7 +58,11 @@ public class LogInActivity extends Activity {
 //			myUser.setObjectId(currentUser.getObjectId());
 //
 //			DatabaseHelper.getUserFlats(myUser);
-			goToMainActivity(new Flat());
+			
+			Intent intent = new Intent(this, NewFlatActivity.class);
+			startActivity(intent);
+			
+			//goToMainActivity(new Flat());
 		}
 
 		((Button) findViewById(R.id.buttonCreateFlat))
