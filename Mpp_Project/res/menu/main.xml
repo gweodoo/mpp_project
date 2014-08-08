@@ -4,7 +4,9 @@
 
 	<item
 		android:id="@+id/action_new_flat"
-		android:showAsAction="never"
-		android:title="Create or join a flat"/>
+		android:showAsAction="ifRoom"
+		android:title="Create or join a flat"
+		android:icon="@drawable/ic_action_change_flat"
+   		/>
 
 </menu>
