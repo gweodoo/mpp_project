@@ -228,8 +228,8 @@ public class LogInActivity extends Activity {
 				// If Object only : Flat flat =
 				// e.getExtras().getParcelable("data");
 
-				ArrayList<Flat> flatsList = e.getExtras()
-						.getParcelableArrayList("data");
+//				ArrayList<Flat> flatsList = e.getExtras()
+//						.getParcelableArrayList("data");
 
 				// if (flatsList.size() == 0) {
 				// goToNewFlatActivity();
