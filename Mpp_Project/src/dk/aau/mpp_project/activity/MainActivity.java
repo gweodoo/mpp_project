@@ -1,9 +1,5 @@
 package dk.aau.mpp_project.activity;
 
-import com.facebook.Session;
-import com.parse.ParseFacebookUtils;
-import com.parse.ParseUser;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.content.Intent;
@@ -14,12 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import com.facebook.Session;
+import com.parse.ParseFacebookUtils;
+import com.parse.ParseUser;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.fragment.ExpensesFragment;
@@ -27,6 +22,8 @@ import dk.aau.mpp_project.fragment.HomeFragment;
 import dk.aau.mpp_project.fragment.LoansFragment;
 import dk.aau.mpp_project.fragment.SettingsFragment;
 import dk.aau.mpp_project.model.MyUser;
+
+import java.util.ArrayList;
 
 /**
  * URL Example
@@ -42,7 +39,7 @@ public class MainActivity extends FragmentActivity implements
 	private static final String		TAG	= null;
 	ViewPager						mViewPager;
 	private AppSectionsPagerAdapter	mAppSectionsPagerAdapter;
-
+    private ArrayList<Fragment>     listFragments;
 	private MyUser					myUser;
 
 	@Override
@@ -67,6 +64,13 @@ public class MainActivity extends FragmentActivity implements
 
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
+
+        //creating Fragments
+        listFragments = new ArrayList<Fragment>();
+        listFragments.add(new HomeFragment());
+        listFragments.add(new ExpensesFragment());
+        listFragments.add(new LoansFragment());
+        listFragments.add(new SettingsFragment());
 
 		// Specify that the Home/Up button should not be enabled, since there is
 		// no hierarchical
@@ -106,7 +110,6 @@ public class MainActivity extends FragmentActivity implements
 					.setTabListener(this));
 			// actionBar.addTab(actionBar.newTab().setText(mAppSectionsPagerAdapter.getPageTitle(i)).setTabListener(this));
 		}
-
 	}
 
 	@Override
@@ -168,7 +171,7 @@ public class MainActivity extends FragmentActivity implements
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the primary sections of the app.
 	 */
-	public static class AppSectionsPagerAdapter extends FragmentPagerAdapter {
+	public class AppSectionsPagerAdapter extends FragmentPagerAdapter {
 
 		public AppSectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -176,32 +179,12 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public Fragment getItem(int i) {
-			switch (i) {
-			case 0:
-				// actionBar.setBackgroundDrawable(new
-				// ColorDrawable(Color.parseColor("#aa78b2da")));
-				// actionBar.setStackedBackgroundDrawable(new
-				// ColorDrawable(Color.parseColor("#aa78b2da")));
-				return new HomeFragment();
-			case 1:
-				return new ExpensesFragment();
-			case 2:
-				return new LoansFragment();
-			case 3:
-				return new SettingsFragment();
-			default:
-				// The other sections of the app are dummy placeholders.
-				Fragment fragment = new DummySectionFragment();
-				Bundle args = new Bundle();
-				args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i + 1);
-				fragment.setArguments(args);
-				return fragment;
-			}
+            return listFragments.get(i);
 		}
 
 		@Override
 		public int getCount() {
-			return 4;
+			return listFragments.size();
 		}
 
 		@Override
@@ -233,27 +216,6 @@ public class MainActivity extends FragmentActivity implements
 			default:
 				return R.drawable.ic_action_home;
 			}
-		}
-	}
-
-	/**
-	 * A dummy fragment representing a section of the app, but that simply
-	 * displays dummy text.
-	 */
-	public static class DummySectionFragment extends Fragment {
-
-		public static final String	ARG_SECTION_NUMBER	= "section_number";
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_section_dummy,
-					container, false);
-			Bundle args = getArguments();
-			((TextView) rootView.findViewById(android.R.id.text1))
-					.setText(getString(R.string.dummy_section_text,
-							args.getInt(ARG_SECTION_NUMBER)));
-			return rootView;
 		}
 	}
 
