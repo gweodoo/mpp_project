@@ -36,4 +36,10 @@
             android:textColor="#fff"
             android:textStyle="bold" />
 
+        <Button
+        	android:id="@+id/buttonCreateFlat"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:text="Flat" />
+
 </FrameLayout>

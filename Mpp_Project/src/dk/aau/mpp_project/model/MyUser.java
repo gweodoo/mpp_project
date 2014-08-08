@@ -13,13 +13,10 @@ public class MyUser extends ParseUser implements Parcelable {
 	public final static String	FACEBOOK_ID	= "facebookId";
 	public final static String	BIRTHDAY	= "birthday";
 	public final static String	NAME		= "name";
-//	public final static String	AGE			= "age";
 
 	private String				facebookId;
 	private String				birthday;
 	private String				name;
-
-	// private int age;
 
 	public MyUser() {
 	}

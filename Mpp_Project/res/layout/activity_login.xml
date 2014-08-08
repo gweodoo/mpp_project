@@ -35,21 +35,4 @@
 		android:textColor="#fff"
 		android:textStyle="bold" />
 
-	<Button
-		android:id="@+id/buttonCreateFlat"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignParentLeft="true"
-		android:layout_alignParentTop="true"
-		android:layout_marginLeft="22dp"
-		android:text="Flat" />
-
-	<Button
-		android:id="@+id/buttonCreateNews"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignParentTop="true"
-		android:layout_alignRight="@+id/logo"
-		android:text="News" />
-
 </RelativeLayout>
