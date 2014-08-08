@@ -44,7 +44,7 @@ public class NewFlatActivity extends Activity {
 //			header.setTitle("Card " + (i + 1));
 			// Add Header to card
 //			card.addCardHeader(header);
-	        //Create thumbnail
+	        //Create thumbnail 
 			
 			card.setInnerLayout(R.layout.choose_flat);
 //			TextView t = (TextView) findViewById(R.id.choose_card_text);
