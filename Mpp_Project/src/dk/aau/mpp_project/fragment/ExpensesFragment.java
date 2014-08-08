@@ -44,7 +44,7 @@ public class ExpensesFragment extends ListFragment {
         Operation temp;
 		for(int i=0;i<20;i++)
 		{
-			temp=new Operation(new Flat(), "test", "test", 10.2,	"hello", "hello", false);
+			temp=new Operation(new Flat(), "test", "test", 10.2,"hello", "hello", false);
 			
 			Log.d("expenses",temp.getComment()+"<-5->");
 			Log.d("expenses",temp.getDate()+"<-6->");
