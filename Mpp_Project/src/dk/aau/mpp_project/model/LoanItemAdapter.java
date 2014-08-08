@@ -34,7 +34,7 @@ public class LoanItemAdapter extends ArrayAdapter<LoanItem> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null){
-            convertView = mInflater.inflate(R.layout.layout_loanitem, null);
+            convertView = mInflater.inflate(R.layout.layout_loan_item, null);
         }
 
         TextView info = (TextView)convertView.findViewById(R.id.infoItem);
