@@ -1,12 +1,12 @@
 package dk.aau.mpp_project.model;
 
-import java.util.Calendar;
-
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @ParseClassName("Operation")
 public class Operation extends ParseObject implements Parcelable {
@@ -31,8 +31,7 @@ public class Operation extends ParseObject implements Parcelable {
 	public Operation() {
 	}
 
-	public Operation(Flat flat, String lender, String to, double amount,
-			String createdAt, String comment, boolean isPaid) {
+	public Operation(Flat flat, String lender, String to, double amount, String comment, boolean isPaid) {
 
 		this.flat = flat;
 		this.lender = lender;
@@ -40,16 +39,7 @@ public class Operation extends ParseObject implements Parcelable {
 		this.amount = amount;
 		this.isPaid = isPaid;
 		this.comment = comment;
-
-		Calendar cal = Calendar.getInstance();
-
-		String day = Integer.toString(cal.get(Calendar.DAY_OF_MONTH));
-		String month = Integer.toString(cal.get(Calendar.MONTH));
-		String year = Integer.toString(cal.get(Calendar.YEAR));
-		String hour = Integer.toString(cal.get(Calendar.HOUR_OF_DAY));
-		String minute = Integer.toString(cal.get(Calendar.MINUTE));
-
-		this.date = day + "/" + month + "/" + year + ", " + hour + ":" + minute;
+		this.date = (new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
 
 		setComment(comment);
 		setDate(date);
@@ -75,7 +65,7 @@ public class Operation extends ParseObject implements Parcelable {
 
 	public void setDate(String date) {
 		this.date = date;
-		put(DATE, lender);
+		put(DATE, this.date);
 	}
 
 	public Flat getFlat() {

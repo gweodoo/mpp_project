@@ -3,36 +3,19 @@ package dk.aau.mpp_project.activity;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
-import android.app.ActionBar.TabListener;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.WindowCompat;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
+import android.view.*;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.facebook.Session;
-import com.parse.ParseFacebookUtils;
-import com.parse.ParseUser;
-
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.fragment.ExpensesFragment;
 import dk.aau.mpp_project.fragment.HomeFragment;
-import dk.aau.mpp_project.fragment.PlanFragment;
+import dk.aau.mpp_project.fragment.LoansFragment;
 import dk.aau.mpp_project.fragment.SettingsFragment;
 
 /**
@@ -137,7 +120,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 case 1:
                 	return new ExpensesFragment();
                 case 2:
-                	return new PlanFragment();
+			        return new LoansFragment();
                 case 3:
                 	return new SettingsFragment();
                 default:
@@ -163,7 +146,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	            case 1:
 	            	return "Ex";
 	            case 2:
-	            	return "Cl";
+			return "Lo";
 	            case 3:
 	            	return "Se";
 	            default:
