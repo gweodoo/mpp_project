@@ -20,6 +20,12 @@ public class ChooseFlatCard extends Card {
         public ChooseFlatCard(Context context) {
             this(context, R.layout.choose_flat);
         }
+        
+        public ChooseFlatCard(Context context, TextView title, ImageView image) {
+            this(context, R.layout.choose_flat);
+            this.mTitle = title;
+            this.mImage = image;
+        }
 
         /**
          *

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.R.layout;
 import dk.aau.mpp_project.R.menu;
+import dk.aau.mpp_project.cards.ChooseFlatCard;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
@@ -30,7 +31,13 @@ public class NewFlatActivity extends Activity {
 		// Generating cards
 		for (int i = 0; i < 5; i++) {
 			// Create a Card
-			Card card = new Card(getApplicationContext());
+			TextView t = new TextView(getApplicationContext());
+			t.setText("This is a test flat");
+			t.setTextSize(30);
+			ImageView img = new ImageView(getApplicationContext());
+			img.setBackgroundResource(R.drawable.flat1small);
+			img.setPadding(0, 0, 0, 10);
+			Card card = new ChooseFlatCard(getApplicationContext(), t, img);
 //			card.setTitle("This is a sample card...");
 			// Create a CardHeader
 //			CardHeader header = new CardHeader(getApplicationContext());
@@ -50,6 +57,8 @@ public class NewFlatActivity extends Activity {
 
 	        //Add thumbnail to a card
 //			card.setCardView(view);
+			
+			
 			
 			cards.add(card);
 		}
