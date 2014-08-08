@@ -49,6 +49,14 @@
 			android:name="dk.aau.mpp_project.activity.MainActivity"
 			android:label="@string/app_name" >
 		</activity>
+		
+		<receiver
+			android:name="dk.aau.mpp_project.receiver.NotificationReceiver"
+			android:exported="false" >
+			<intent-filter>
+				<action android:name="dk.aau.mpp_project.action.push" />
+			</intent-filter>
+		</receiver>
 
 		<service android:name="com.parse.PushService" />
 
