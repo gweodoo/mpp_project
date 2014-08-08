@@ -60,9 +60,8 @@ public class LogInActivity extends Activity {
 		if ((currentUser != null) && ParseFacebookUtils.isLinked(currentUser)) {
 			// Go to the user info activity
 //			myUser = new MyUser(currentUser.getString(MyUser.FACEBOOK_ID),
-//					currentUser.getString(MyUser.EMAIL),
 //					currentUser.getString(MyUser.NAME),
-//					currentUser.getInt(MyUser.AGE));
+//					currentUser.getString(MyUser.BIRTHDAY));
 //			myUser.setObjectId(currentUser.getObjectId());
 //
 //			DatabaseHelper.getUserFlats(myUser);
@@ -70,7 +69,8 @@ public class LogInActivity extends Activity {
 			Intent intent = new Intent(this, NewFlatActivity.class);
 			startActivity(intent);
 			
-			//goToMainActivity(new Flat());
+//			goToNewFlatActivity();
+//			goToMainActivity(new Flat());
 		}
 	}
 
