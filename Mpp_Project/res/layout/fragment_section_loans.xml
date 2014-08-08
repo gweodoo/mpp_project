@@ -8,53 +8,13 @@
         android:background="#f0f0f0"
         android:id="@+id/mainLayout">
 
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="#ffffff"
-            android:weightSum="1"
-            android:id="@+id/addLayout">
-
-        <EditText
-                android:layout_width="103dp"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:ems="10"
-                android:id="@+id/amountField"
-                android:hint="Amount"/>
-
-        <EditText
-                android:layout_width="103dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/titleField"
-                android:hint="Title"/>
-
-        <Spinner
-                android:layout_width="98dp"
-                android:layout_height="match_parent"
-                android:id="@+id/personSpinner"
-                />
-
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="+"
-                android:id="@+id/addingButton"
-                android:background="#0ab1ff"
-                android:textColor="#fefff9"
-                android:fontFamily="bold"
-                android:textSize="40dp"
-                android:layout_gravity="center_vertical"
-                android:textStyle="bold"/>
-    </LinearLayout>
-
     <it.gmariotti.cardslib.library.view.CardListView
+            xmlns:card="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/cardListLoans"
-            android:focusableInTouchMode="true">
-    </it.gmariotti.cardslib.library.view.CardListView>
+            card:list_card_layout_resourceID="@layout/layout_loan_card">
 
+    </it.gmariotti.cardslib.library.view.CardListView>
 
 </LinearLayout>

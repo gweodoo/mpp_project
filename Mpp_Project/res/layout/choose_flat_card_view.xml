@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/itemLayout"
+            android:background="#ffffff"
+            android:weightSum="1"
+            >
+
+    <it.gmariotti.cardslib.library.view.CardView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/list_cardId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card:card_layout_resourceID="@layout/card_layout"
+            >
+    
+		    <LinearLayout
+		    android:id="@+id/choose_card_layout"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical" >
+		    <ImageView
+		        android:id="@+id/choose_card_image"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1" />
+		    
+		    <TextView
+		        android:id="@+id/choose_card_text"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1"
+		        android:text="Test" />
+
+		</LinearLayout>
+	</it.gmariotti.cardslib.library.view.CardView>
+</RelativeLayout>

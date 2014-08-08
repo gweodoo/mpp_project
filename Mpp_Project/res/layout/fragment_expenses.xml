@@ -5,43 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/editText1"
-        android:layout_width="76dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:ems="10" >
-
-        <requestFocus />
-    </EditText>
-
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="93dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="14dp"
-        android:layout_toRightOf="@+id/editText1"
-        android:ems="10" />
-
-    <Spinner
-        android:id="@+id/spinner1"
-        android:layout_width="113dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/editText2"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/editText2" />
-
-    <Button
-        android:id="@+id/okButton"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="Button" />
-
     <ListView
         android:id="@android:id/list"
         android:layout_width="wrap_content"
@@ -54,9 +17,45 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/okButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="14dp" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/textView1" >
+
+        <EditText
+            android:id="@+id/commentText"
+            android:layout_width="133dp"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:hint="Comment" >
+
+            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:hint="$" />
+
+        <Spinner
+            android:id="@+id/peopleSpinner"
+            android:layout_width="98dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/okButton"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:background="@drawable/button_round"
+            android:layout_height="match_parent"
+            android:text="Ok" />
+
+    </LinearLayout>
 
 </RelativeLayout>

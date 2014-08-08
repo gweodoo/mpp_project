@@ -1,25 +1,20 @@
 package dk.aau.mpp_project.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.Operation;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
-import it.gmariotti.cardslib.library.internal.CardHeader;
-import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,7 +38,7 @@ public class LoansFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         curView = inflater.inflate(R.layout.fragment_section_loans, container, false);
         tableView = (CardListView)curView.findViewById(R.id.cardListLoans);
-        tableView.setId(4);
+
         //adding header text
         TextView t = new TextView(this.getActivity());
         t.setTextSize(20);
@@ -70,7 +65,7 @@ public class LoansFragment extends Fragment {
         ArrayList<Operation> tabItems = new ArrayList<Operation>();
 
         //TODO: Get previous entries with parse
-        tabItems.add(new Operation(new Flat(), "Me", "You", 10.0f, "This is the first Loan Test", false));
+        tabItems.add(new Operation(new Flat(), "Me", "You", 10.0f, "", "This is the first Loan Test", false));
 
         Collections.sort(tabItems, new Comparator<Operation>() {
             @Override
@@ -82,19 +77,43 @@ public class LoansFragment extends Fragment {
         });
         for(Operation item : tabItems) {
             //Generating cards
-            Card card = new Card(this.getActivity());
-            CardThumbnail thumb = new CardThumbnail(this.getActivity());
-            thumb.setDrawableResource(R.drawable.ic_launcher);
-
-            card.addCardThumbnail(thumb);
-            card.setTitle("Date          : "+ item.getDate()+"" +"\nComment : "+item.getComment());
-            //Create a CardHeader
-            CardHeader header = new CardHeader(curView.getContext());
-            header.setTitle(item.getTo()+ " ows "+item.getLender() + " "+(new DecimalFormat("#.00")).format(item.getAmount())+" €");
-            //Add Header to card
-            card.addCardHeader(header);
+            CustomCard card = new CustomCard(getActivity(), item);
+            card.init();
             cards.add(card);
         }
-        mCardArrayAdapter.addAll(cards);
+        mCardArrayAdapter = new CardArrayAdapter(getActivity(), cards);
+        tableView.setAdapter(mCardArrayAdapter);
+
+    }
+    public class CustomCard extends Card {
+
+        private Operation cur;
+        public CustomCard(Context context, Operation item) {
+            super(context, R.layout.layout_loan_item);
+            cur = item;
+        }
+
+        public void init(){
+            //setTitle("Date          : "+ cur.getDate()+"" +"\nComment : "+cur.getComment());
+            //Create a CardHeader
+            //CardHeader header = new CardHeader(curView.getContext());
+            //header.setTitle(cur.getTo()+ " ows "+cur.getLender() + " "+(new DecimalFormat("#.00")).format(cur.getAmount())+" €");
+            //Add Header to card
+            //addCardHeader(header);
+            Log.i("Debug", " PROUT");
+        }
+
+        @Override
+        public void setupInnerViewElements(ViewGroup parent, View view) {
+            TextView toto = (TextView)parent.findViewById(R.id.infoItem);
+            Log.e("Debug"," : toto = "+toto);
+            toto.setText("Banzai...");
+            ((CheckBox)parent.findViewById(R.id.isPaid)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Toast.makeText(getActivity(), "PlopMagic", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }
