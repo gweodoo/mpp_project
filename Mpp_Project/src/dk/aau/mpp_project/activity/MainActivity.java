@@ -39,7 +39,7 @@ public class MainActivity extends FragmentActivity implements
 	private static final String		TAG	= null;
 	ViewPager						mViewPager;
 	private AppSectionsPagerAdapter	mAppSectionsPagerAdapter;
-    private ArrayList<Fragment>     listFragments;
+	private ArrayList<Fragment>		listFragments;
 	private MyUser					myUser;
 
 	@Override
@@ -65,12 +65,12 @@ public class MainActivity extends FragmentActivity implements
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 
-        //creating Fragments
-        listFragments = new ArrayList<Fragment>();
-        listFragments.add(new HomeFragment());
-        listFragments.add(new ExpensesFragment());
-        listFragments.add(new LoansFragment());
-        listFragments.add(new SettingsFragment());
+		// creating Fragments
+		listFragments = new ArrayList<Fragment>();
+		listFragments.add(new HomeFragment());
+		listFragments.add(new ExpensesFragment());
+		listFragments.add(new LoansFragment());
+		listFragments.add(new SettingsFragment());
 
 		// Specify that the Home/Up button should not be enabled, since there is
 		// no hierarchical
@@ -124,6 +124,11 @@ public class MainActivity extends FragmentActivity implements
 		int id = item.getItemId();
 
 		switch (id) {
+		case R.id.action_new_flat:
+			Intent intent = new Intent(this, NewFlatActivity.class);
+			startActivity(intent);
+			break;
+
 		default:
 			break;
 		}
@@ -179,7 +184,7 @@ public class MainActivity extends FragmentActivity implements
 
 		@Override
 		public Fragment getItem(int i) {
-            return listFragments.get(i);
+			return listFragments.get(i);
 		}
 
 		@Override
