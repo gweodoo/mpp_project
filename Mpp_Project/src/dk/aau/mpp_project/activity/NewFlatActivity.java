@@ -3,20 +3,14 @@ package dk.aau.mpp_project.activity;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.Card.OnCardClickListener;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
-import it.gmariotti.cardslib.library.internal.CardHeader;
-import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
-import it.gmariotti.cardslib.library.view.CardView;
 
 import java.util.ArrayList;
 
 import dk.aau.mpp_project.AddNewFlatActivity;
 import dk.aau.mpp_project.R;
-import dk.aau.mpp_project.R.layout;
-import dk.aau.mpp_project.R.menu;
 import dk.aau.mpp_project.cards.ChooseFlatCard;
 import android.os.Bundle;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
