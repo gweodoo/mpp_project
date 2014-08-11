@@ -316,7 +316,7 @@ public class DatabaseHelper {
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery(FILLING_TABLE);
 
-        query.whereEqualTo(MyUser.FLAT, flat);
+        query.whereEqualTo(FillingTable.FLAT, flat);
 
         ArrayList<String> selectedKeys = new ArrayList<String>();
         selectedKeys.add(FillingTable.USER);
