@@ -57,6 +57,8 @@ public class MainActivity extends FragmentActivity implements
 	private int						curFragment						= -1;
 	private ProgressDialog			progressDialog;
 
+	private ActionBar				actionBar;
+
 	public ProgressDialog getProgressDialog() {
 		return progressDialog;
 	}
@@ -111,15 +113,7 @@ public class MainActivity extends FragmentActivity implements
 				getSupportFragmentManager());
 
 		// Set up the action bar.
-		final ActionBar actionBar = getActionBar();
-
-		// creating Fragments
-		listFragments = new ArrayList<Fragment>();
-		listFragments.add(new HomeFragment());
-		listFragments.add(new ExpensesFragment());
-		listFragments.add(new LoansFragment());
-		listFragments.add(new SettingsFragment());
-
+		actionBar = getActionBar();
 		// Specify that the Home/Up button should not be enabled, since there is
 		// no hierarchical
 		// parent.
@@ -127,6 +121,15 @@ public class MainActivity extends FragmentActivity implements
 
 		// Specify that we will be displaying tabs in the action bar.
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+	}
+
+	private void initTabsPlease() {
+		// creating Fragments
+		listFragments = new ArrayList<Fragment>();
+		listFragments.add(new HomeFragment());
+		listFragments.add(new ExpensesFragment());
+		listFragments.add(new LoansFragment());
+		listFragments.add(new SettingsFragment());
 
 		// Set up the ViewPager, attaching the adapter and setting up a listener
 		// for when the
@@ -196,6 +199,8 @@ public class MainActivity extends FragmentActivity implements
 				EventBus.getDefault().unregister(this);
 
 				myFlat = e.getExtras().getParcelable("data");
+				
+				initTabsPlease();
 			}
 		}
 		// Error occured
