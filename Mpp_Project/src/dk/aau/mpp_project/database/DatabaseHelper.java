@@ -61,11 +61,17 @@ public class DatabaseHelper {
 		EventBus.getDefault().post(new StartEvent(ACTION_CREATE_FLAT));
 
 		flat.put(Flat.PASSWORD, password);
+		
+		if(flat==null)
+			System.out.println("NULL!!!!!");
 
 		flat.saveInBackground(new SaveCallback() {
 
 			@Override
 			public void done(ParseException e) {
+				
+				if(flat==null)
+					System.out.println("2222NULL!!!!!");
 				joinFlat(user, flat, password);
 			}
 		});

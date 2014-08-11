@@ -2,6 +2,7 @@ package dk.aau.mpp_project.activity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
+import java.nio.ByteBuffer;
 
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -106,13 +107,15 @@ public class AddNewFlatActivity extends Activity {
 				// save flat data
 				ParseUser currentUser = ParseUser.getCurrentUser();
 				if (currentUser != null) {
+					flatImage.buildDrawingCache();
 					Bitmap b = flatImage.getDrawingCache();
 					flatImage.setDrawingCacheEnabled(false);
-					if(b==null)
-						System.out.println("NULL!!!!!");
+
 					ByteArrayOutputStream stream = new ByteArrayOutputStream();
 					b.compress(Bitmap.CompressFormat.PNG, 100, stream);
 					byte[] byteArray = stream.toByteArray();
+					
+					
 					ParseFile img = new ParseFile("flat.png", byteArray);
 //					img.saveInBackground();
 					Flat flat = new Flat(flatName.getText().toString(), address
@@ -166,7 +169,7 @@ public class AddNewFlatActivity extends Activity {
 		flatImage = (ImageView) findViewById(R.id.new_flat_image);
 		if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
 			Bitmap b = (Bitmap) data.getExtras().get("data");
-			flatImage.setImageBitmap(rescale(b));
+			flatImage.setImageBitmap(rescale(b, 300, false));
 		} else if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
 			Uri selectedImage = data.getData();
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
@@ -178,15 +181,15 @@ public class AddNewFlatActivity extends Activity {
 			cursor.close();
 
 			bitmap = BitmapFactory.decodeFile(picturePath);
-			bitmap = rescale(bitmap);
+			bitmap = rescale(bitmap, 300, false);
 			flatImage.setDrawingCacheEnabled(true);
 			flatImage.setImageBitmap(bitmap);
 			// flatImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 		}
 	}
 
-	public Bitmap rescale(Bitmap b) {
-		final int maxSize = 1000;
+	public Bitmap rescale(Bitmap b, int width, boolean filter) {
+		final int maxSize = width;
 		int outWidth;
 		int outHeight;
 		int inWidth = b.getWidth();
@@ -198,8 +201,8 @@ public class AddNewFlatActivity extends Activity {
 			outHeight = maxSize;
 			outWidth = (inWidth * maxSize) / inHeight;
 		}
-		b = Bitmap.createScaledBitmap(b, outWidth, outHeight, false);
-		return Filter.fastblur(b, 10);
+		b = Bitmap.createScaledBitmap(b, outWidth, outHeight, filter);
+		return b; //Filter.fastblur(b, 10);
 	}
 
 	private boolean validateData() {
