@@ -1,27 +1,30 @@
 package dk.aau.mpp_project.fragment;
 
-import com.facebook.Session;
-import com.parse.ParseFacebookUtils;
-import com.parse.ParseUser;
-
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
+import com.parse.ParseUser;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.activity.LogInActivity;
 import dk.aau.mpp_project.activity.MainActivity;
 import dk.aau.mpp_project.database.DatabaseHelper;
+import dk.aau.mpp_project.event.FinishedEvent;
+import dk.aau.mpp_project.event.StartEvent;
 import dk.aau.mpp_project.model.Flat;
 
-public class SettingsFragment extends Fragment {
+import java.util.ArrayList;
+
+public class SettingsFragment extends Fragment implements FragmentEventHandler{
 
 	private Button	logoutButton;
+    private ProgressDialog progressDialog;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,4 +104,70 @@ public class SettingsFragment extends Fragment {
 		startActivity(intent);
 		getActivity().finish();
 	}
+
+    @Override
+    public void onResumeEvent() {
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPauseEvent() {
+
+        EventBus.getDefault().unregister(this);
+    }
+    public void onEventMainThread(StartEvent e) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage("Loading...");
+            progressDialog.setCancelable(true);
+        }
+
+        if (progressDialog != null && !progressDialog.isShowing())
+            progressDialog.show();
+    }
+
+    public void onEventMainThread(FinishedEvent e) {
+
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+
+        // Success retreiving database
+        if (e.isSuccess()) {
+
+            // Check for what you wanted to retrieve
+            if (DatabaseHelper.ACTION_GET_USER_FLATS.equals(e.getAction())) {
+                // You know what you need (List or simple object)
+                // If List: ArrayList<Flat> flatsList =
+                // e.getExtras().getParcelableArrayList("data");
+                // If Object only : Flat flat =
+                // e.getExtras().getParcelable("data");
+
+                ArrayList<Flat> flatsList = e.getExtras()
+                        .getParcelableArrayList("data");
+
+                // if (flatsList.size() == 0) {
+                // goToNewFlatActivity();
+                // } else if (flatsList.size() == 1) {
+                // goToMainActivity(flatsList.get(0));
+                // } else if (flatsList.size() > 1) {
+                // goToNewFlatActivity(flatsList);
+                // }
+
+                // for (Flat f : flatsList)
+                // Log.v(TAG,
+                // "# Flat : " + f.getName() + " : "
+                // + f.getRentAmount() + "$");
+
+            } else if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e
+                    .getAction())) {
+
+            } else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
+                    .getAction())) {
+
+            }
+        }
+    }
 }

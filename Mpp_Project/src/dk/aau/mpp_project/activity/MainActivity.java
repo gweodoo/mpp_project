@@ -2,6 +2,7 @@ package dk.aau.mpp_project.activity;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,10 +18,8 @@ import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.application.MyApplication;
-import dk.aau.mpp_project.fragment.ExpensesFragment;
-import dk.aau.mpp_project.fragment.HomeFragment;
-import dk.aau.mpp_project.fragment.LoansFragment;
-import dk.aau.mpp_project.fragment.SettingsFragment;
+import dk.aau.mpp_project.fragment.*;
+import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
 
 import java.util.ArrayList;
@@ -40,7 +39,16 @@ public class MainActivity extends FragmentActivity implements
 	ViewPager						mViewPager;
 	private AppSectionsPagerAdapter	mAppSectionsPagerAdapter;
 	private ArrayList<Fragment>		listFragments;
-	private MyUser					myUser;
+    private MyUser					myUser;
+    private Flat                    myFlat;
+    private int                     curFragment = -1;
+    private ProgressDialog          progressDialog;
+
+    public ProgressDialog getProgressDialog() {
+        return progressDialog;
+    }
+
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +103,11 @@ public class MainActivity extends FragmentActivity implements
 						// we have a reference to the
 						// Tab.
 						actionBar.setSelectedNavigationItem(position);
+                        if(curFragment > -1) {
+                            ((FragmentEventHandler) listFragments.get(curFragment)).onPauseEvent();
+                        }
+                        curFragment = position;
+                        ((FragmentEventHandler)listFragments.get(curFragment)).onResumeEvent();
 					}
 				});
 
@@ -117,6 +130,9 @@ public class MainActivity extends FragmentActivity implements
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+    public Flat getMyFlat() {
+        return myFlat;
+    }
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -233,6 +249,7 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onTabSelected(Tab tab, android.app.FragmentTransaction ft) {
 		mViewPager.setCurrentItem(tab.getPosition());
+
 	}
 
 	@Override
@@ -240,5 +257,4 @@ public class MainActivity extends FragmentActivity implements
 		// TODO Auto-generated method stub
 
 	}
-
 }

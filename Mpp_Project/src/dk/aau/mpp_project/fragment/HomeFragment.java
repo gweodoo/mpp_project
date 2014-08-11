@@ -1,5 +1,6 @@
 package dk.aau.mpp_project.fragment;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,7 +11,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.database.DatabaseHelper;
+import dk.aau.mpp_project.event.FinishedEvent;
+import dk.aau.mpp_project.event.StartEvent;
+import dk.aau.mpp_project.model.Flat;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
@@ -18,9 +24,10 @@ import it.gmariotti.cardslib.library.view.CardListView;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements FragmentEventHandler{
 
 	public String	name	= "Home";
+    private ProgressDialog progressDialog;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -124,5 +131,72 @@ public class HomeFragment extends Fragment {
 		}
 
 		return rootView;
-	}
+    }
+
+    @Override
+    public void onResumeEvent() {
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onPauseEvent() {
+
+        EventBus.getDefault().unregister(this);
+    }
+
+    public void onEventMainThread(StartEvent e) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage("Loading...");
+            progressDialog.setCancelable(true);
+        }
+
+        if (progressDialog != null && !progressDialog.isShowing())
+            progressDialog.show();
+    }
+
+    public void onEventMainThread(FinishedEvent e) {
+
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+
+        // Success retreiving database
+        if (e.isSuccess()) {
+
+            // Check for what you wanted to retrieve
+            if (DatabaseHelper.ACTION_GET_USER_FLATS.equals(e.getAction())) {
+                // You know what you need (List or simple object)
+                // If List: ArrayList<Flat> flatsList =
+                // e.getExtras().getParcelableArrayList("data");
+                // If Object only : Flat flat =
+                // e.getExtras().getParcelable("data");
+
+                ArrayList<Flat> flatsList = e.getExtras()
+                        .getParcelableArrayList("data");
+
+                // if (flatsList.size() == 0) {
+                // goToNewFlatActivity();
+                // } else if (flatsList.size() == 1) {
+                // goToMainActivity(flatsList.get(0));
+                // } else if (flatsList.size() > 1) {
+                // goToNewFlatActivity(flatsList);
+                // }
+
+                // for (Flat f : flatsList)
+                // Log.v(TAG,
+                // "# Flat : " + f.getName() + " : "
+                // + f.getRentAmount() + "$");
+
+            } else if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e
+                    .getAction())) {
+
+            } else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
+                    .getAction())) {
+
+            }
+        }
+    }
 }

@@ -1,9 +1,5 @@
 package dk.aau.mpp_project.activity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -12,17 +8,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-
 import com.facebook.FacebookRequestError;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
-import com.parse.LogInCallback;
-import com.parse.ParseException;
-import com.parse.ParseFacebookUtils;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
+import com.parse.*;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.application.MyApplication;
@@ -32,10 +22,14 @@ import dk.aau.mpp_project.event.StartEvent;
 import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class LogInActivity extends Activity {
 
 	protected static final String	TAG	= "LoginActivity";
-
+    private ProgressDialog	progressDialog;
 	private Button					loginButton;
 
 	@Override
@@ -193,8 +187,6 @@ public class LogInActivity extends Activity {
 		EventBus.getDefault().unregister(this);
 	}
 
-	private ProgressDialog	progressDialog;
-
 	public void onEventMainThread(StartEvent e) {
 		Log.d(TAG, "# StartEvent");
 
@@ -202,7 +194,7 @@ public class LogInActivity extends Activity {
 			progressDialog = new ProgressDialog(this);
 			progressDialog.setIndeterminate(true);
 			progressDialog.setMessage("Loading...");
-			progressDialog.setCancelable(true);
+			progressDialog.setCancelable(false);
 		}
 
 		if (progressDialog != null && !progressDialog.isShowing())
