@@ -79,8 +79,8 @@ public class LogInActivity extends Activity {
 
 		EventBus.getDefault().post(new StartEvent(DatabaseHelper.ACTION_LOGIN));
 
-//		List<String> permissions = Arrays.asList("basic_info", "user_about_me",
-//				"user_birthday");
+		List<String> permissions = Arrays.asList("basic_info", "user_about_me",
+				"user_birthday");
 
 		ParseFacebookUtils.logIn(this, new LogInCallback() {
 			@Override
