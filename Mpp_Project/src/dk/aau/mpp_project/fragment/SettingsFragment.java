@@ -11,6 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import com.parse.ParseUser;
 import de.greenrobot.event.EventBus;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.parse.ParseUser;
+
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.activity.LogInActivity;
 import dk.aau.mpp_project.activity.MainActivity;
@@ -23,8 +29,10 @@ import java.util.ArrayList;
 
 public class SettingsFragment extends Fragment implements FragmentEventHandler{
 
-	private Button	logoutButton;
     private ProgressDialog progressDialog;
+	private TextView	textViewLogout;
+	private TextView	textViewChangeDetails;
+	private TextView	textViewLeaveFlat;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,47 +40,39 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler{
 		View rootView = inflater.inflate(R.layout.fragment_section_settings,
 				container, false);
 
-		logoutButton = (Button) rootView.findViewById(R.id.logoutButton);
-		logoutButton.setOnClickListener(new View.OnClickListener() {
+		textViewLogout = (TextView) rootView.findViewById(R.id.textViewLogout);
+		textViewChangeDetails = (TextView) rootView
+				.findViewById(R.id.textViewChangeDetails);
+		textViewLeaveFlat = (TextView) rootView
+				.findViewById(R.id.textViewLeaveFlat);
+
+		textViewLogout.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				onLogoutButtonClicked();
 			}
 		});
 
-		((Button) rootView.findViewById(R.id.buttonCreateFlat))
-				.setOnClickListener(new OnClickListener() {
+		textViewChangeDetails.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
 
-					@Override
-					public void onClick(View v) {
+			}
+		});
 
-						if (EventBus.getDefault().isRegistered(getActivity())) {
+		textViewLeaveFlat.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onLeaveButtonClicked();
+			}
+		});
 
-							if (((MainActivity) getActivity()).getMyUser() != null) {
-								Flat flat = new Flat();
-
-								flat.setName("Aalborg");
-								flat.setAddress("Danemark");
-								flat.setAdminId(((MainActivity) getActivity())
-										.getMyUser().getObjectId());
-								flat.setRentAmount(800);
-
-								DatabaseHelper.createFlat(
-										((MainActivity) getActivity())
-												.getMyUser(), flat, "password");
-							}
-						}
-					}
-				});
-
-//		// Fetch Facebook user info if the session is active
-//		Session session = ParseFacebookUtils.getSession();
-//		if (session != null && session.isOpened()) {
-//			
-//		} else {
-//			startLoginActivity();
-//		}
 		return rootView;
+	}
+
+	protected void onLeaveButtonClicked() {
+		DatabaseHelper.leaveFlat(((MainActivity) getActivity()).getMyUser(),
+				((MainActivity) getActivity()).getMyFlat());
 	}
 
 	private void onLogoutButtonClicked() {
@@ -83,19 +83,19 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler{
 		startLoginActivity();
 	}
 
-//	@Override
-//	public void onResume() {
-//		super.onResume();
-//
-//		ParseUser currentUser = ParseUser.getCurrentUser();
-//		if (currentUser != null) {
-//
-//		} else {
-//			// If the user is not logged in, go to the
-//			// activity showing the login view.
-//			startLoginActivity();
-//		}
-//	}
+	// @Override
+	// public void onResume() {
+	// super.onResume();
+	//
+	// ParseUser currentUser = ParseUser.getCurrentUser();
+	// if (currentUser != null) {
+	//
+	// } else {
+	// // If the user is not logged in, go to the
+	// // activity showing the login view.
+	// startLoginActivity();
+	// }
+	// }
 
 	private void startLoginActivity() {
 		Intent intent = new Intent(getActivity(), LogInActivity.class);
