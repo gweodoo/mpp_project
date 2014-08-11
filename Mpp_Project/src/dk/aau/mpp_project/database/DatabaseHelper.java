@@ -3,7 +3,6 @@ package dk.aau.mpp_project.database;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
-import com.parse.*;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;

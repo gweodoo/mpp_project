@@ -1,15 +1,11 @@
 package dk.aau.mpp_project.model;
 
-import java.io.File;
-
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.ImageView;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
-import com.parse.codec.BinaryEncoder;
 
 @ParseClassName("Flat")
 public class Flat extends ParseObject implements Parcelable {

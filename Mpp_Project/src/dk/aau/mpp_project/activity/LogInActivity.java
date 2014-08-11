@@ -149,12 +149,6 @@ public class LogInActivity extends Activity {
 		request.executeAsync();
 	}
 
-	private void goToMainActivity() {
-		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
-		finish();
-	}
-
 	private void goToNewFlatActivity() {
 		Intent intent = new Intent(this, NewFlatActivity.class);
 		startActivity(intent);
