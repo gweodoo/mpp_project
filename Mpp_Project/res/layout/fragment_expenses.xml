@@ -22,7 +22,7 @@
         </EditText>
 
         <EditText
-            android:id="@+id/new_flat_name"
+            android:id="@+id/amountText"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:hint="$" />
@@ -40,7 +40,7 @@
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="4dp"
-            android:background="@drawable/button_round"
+            android:background="@drawable/selector_button"
             android:src="@drawable/ic_action_add_expense"
             android:textColor="#FFFFFF"
             android:textSize="30sp" />
