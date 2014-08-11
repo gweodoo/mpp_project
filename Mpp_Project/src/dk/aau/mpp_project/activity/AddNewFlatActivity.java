@@ -93,9 +93,12 @@ public class AddNewFlatActivity extends Activity {
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);
 			break;
-
-		default:
-			break;
+        case android.R.id.home:
+            // app icon in action bar clicked; goto parent activity.
+            this.finish();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
 		}
 		return super.onOptionsItemSelected(item);
 	}
