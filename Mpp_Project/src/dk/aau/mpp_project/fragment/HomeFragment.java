@@ -1,16 +1,28 @@
 package dk.aau.mpp_project.fragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.xmlpull.v1.XmlPullParser;
+
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.AttributeSet;
+import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.activity.MainActivity;
@@ -20,93 +32,82 @@ import dk.aau.mpp_project.event.StartEvent;
 import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
 import dk.aau.mpp_project.model.News;
-import it.gmariotti.cardslib.library.internal.Card;
-import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
-import it.gmariotti.cardslib.library.internal.CardHeader;
-import it.gmariotti.cardslib.library.internal.CardThumbnail;
-import it.gmariotti.cardslib.library.view.CardListView;
+import dk.aau.mpp_project.widget.CircularImageView;
 
-import java.util.ArrayList;
+public class HomeFragment extends Fragment implements FragmentEventHandler {
 
-public class HomeFragment extends Fragment implements FragmentEventHandler{
+	public String			name	= "Home";
+	private ProgressDialog	progressDialog;
+	private ArrayList<News>	newsList;
 
-	public String	name	= "Home";
-    private ProgressDialog progressDialog;
-    private ArrayList<News> tabNews;
+	private ListView		listView;
+	private NewsAdapter		adapter;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_section_home,
-				container, false);
+		LinearLayout rootView = (LinearLayout) inflater.inflate(
+				R.layout.fragment_section_home, container, false);
 
-        //getting information about the current environment
-        final MyUser user = ((MainActivity)getActivity()).getMyUser();
-        final Flat flat = ((MainActivity)getActivity()).getMyFlat();
-        ArrayList<Card> cards = new ArrayList<Card>();
-		CardListView listView = (CardListView) rootView
-				.findViewById(R.id.cardListHome);
+		newsList = new ArrayList<News>();
 
-        if(flat == null){
-            Toast.makeText(getActivity(), "Error : No flat found !", Toast.LENGTH_LONG).show();
-            return rootView;
-        }
-		// Adding header flat image
-		View v = null;
-		LinearLayout main = new LinearLayout(rootView.getContext());
-		main.setBackgroundDrawable(getResources().getDrawable(
-				R.drawable.flat1small));
-		LinearLayout top = new LinearLayout(rootView.getContext());
-		main.setOrientation(LinearLayout.VERTICAL);
-		top.setOrientation(LinearLayout.HORIZONTAL);
-		LinearLayout bottom = new LinearLayout(rootView.getContext());
-		bottom.setOrientation(LinearLayout.HORIZONTAL);
+		// getting information about the current environment
+		final MyUser user = ((MainActivity) getActivity()).getMyUser();
+		final Flat flat = ((MainActivity) getActivity()).getMyFlat();
 
-		// adding FLat Title and navigation button
-		TextView title = new TextView(this.getActivity());
-		title.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-		title.setTextSize(30);
-		title.setTextColor(Color.WHITE);
-		title.setText(flat.getName());
-		title.setPadding(20, 10, 0, 0);
-		top.addView(title, 0);
-		final ImageButton loc = new ImageButton(rootView.getContext());
-		loc.setBackgroundResource(android.R.color.transparent);
-		loc.setImageDrawable(getResources().getDrawable(
-				R.drawable.ic_action_loc));
+		listView = (ListView) rootView.findViewById(R.id.list);
 
-        loc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(flat != null) {
-                    String map = "http://maps.google.co.in/maps?q=" + flat.getAddress();
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(map));
-                    startActivity(i);
-                }
-            }
-        });
-		top.addView(loc);
-		top.setPadding(0, 0, 0, 150);
+		if (flat == null) {
+			Toast.makeText(getActivity(), "Error : No flat found !",
+					Toast.LENGTH_LONG).show();
+			return rootView;
+		}
+
+		RelativeLayout rlMain = (RelativeLayout) inflater.inflate(
+				R.layout.layout_home_top_view, null, false);
+
+		RelativeLayout llMain = (RelativeLayout) rlMain.findViewById(R.id.main);
+		llMain.setBackgroundResource(R.drawable.flat1small);
+
+		TextView titleFlat = (TextView) rlMain.findViewById(R.id.titleFlat);
+		titleFlat.setText(flat.getName());
+
+		ImageButton buttonLocation = (ImageButton) rlMain
+				.findViewById(R.id.buttonLocation);
+		buttonLocation.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (flat != null) {
+					String map = "http://maps.google.co.in/maps?q="
+							+ flat.getAddress();
+					Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(map));
+					startActivity(i);
+				}
+			}
+		});
+
+		LinearLayout bottom = (LinearLayout) rlMain.findViewById(R.id.bottom);
 
 		// Adding roommate avatars
-		ImageView a1 = new ImageView(rootView.getContext());
+		CircularImageView a1 = new CircularImageView(rootView.getContext());
 		a1.setImageDrawable(getResources().getDrawable(R.drawable.av1));
 		a1.setAdjustViewBounds(true);
 		a1.setMaxHeight(200);
 		a1.setMaxWidth(200);
 
-		ImageView a2 = new ImageView(rootView.getContext());
+		CircularImageView a2 = new CircularImageView(rootView.getContext());
 		a2.setImageDrawable(getResources().getDrawable(R.drawable.av2));
 		a2.setAdjustViewBounds(true);
 		a2.setMaxHeight(200);
 		a2.setMaxWidth(200);
 
-		ImageView a3 = new ImageView(rootView.getContext());
+		CircularImageView a3 = new CircularImageView(rootView.getContext());
 		a3.setImageDrawable(getResources().getDrawable(R.drawable.av3));
 		a3.setAdjustViewBounds(true);
 		a3.setMaxHeight(200);
 		a3.setMaxWidth(200);
 
-		ImageView a4 = new ImageView(rootView.getContext());
+		CircularImageView a4 = new CircularImageView(rootView.getContext());
 		a4.setImageDrawable(getResources().getDrawable(R.drawable.av4));
 		a4.setAdjustViewBounds(true);
 		a4.setMaxHeight(200);
@@ -117,113 +118,111 @@ public class HomeFragment extends Fragment implements FragmentEventHandler{
 		bottom.addView(a3, 2);
 		bottom.addView(a4, 3);
 
-		main.addView(top);
-		main.addView(bottom);
+		listView.addHeaderView(rlMain);
 
-		listView.addHeaderView(main);
+		adapter = new NewsAdapter(getActivity(), R.layout.layout_item_news,
+				newsList);
+		listView.setAdapter(adapter);
 
-		// adding header text
-		TextView t = new TextView(this.getActivity());
-		t.setTextSize(20);
-		t.setText("Last activities");
-		t.setPadding(30, 50, 0, 30);
-		// t.setTypeface(tf, style)
-		listView.addHeaderView(t);
+		return rootView;
+	}
 
-        if(flat != null){
-            DatabaseHelper.getNewsByFlat(flat);
-            if(tabNews != null) {
-                for (News item : tabNews){
-                    Card cur = new Card(getActivity());
-                    CardHeader head = new CardHeader(getActivity());
-                    CardThumbnail thumb = new CardThumbnail(getActivity());
+	@Override
+	public void onResumeEvent() {
 
-                    thumb.setDrawableResource(R.drawable.av1);
-                    head.setTitle("From "+item.getUser().getName());
+		EventBus.getDefault().register(this);
+	}
 
-                    cur.addCardThumbnail(thumb);
-                    cur.addCardHeader(head);
-                    cur.setTitle(item.getComment());
+	@Override
+	public void onPauseEvent() {
 
-                    cards.add(cur);
-                }
-            }
-        }
+		EventBus.getDefault().unregister(this);
+	}
 
-        CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(
-                getActivity(), cards);
-        if (listView != null) {
-            listView.setAdapter(mCardArrayAdapter);
-        }
+	public void onEventMainThread(StartEvent e) {
+		if (progressDialog == null) {
+			progressDialog = new ProgressDialog(getActivity());
+			progressDialog.setIndeterminate(true);
+			progressDialog.setMessage("Loading...");
+			progressDialog.setCancelable(true);
+		}
 
-        return rootView;
-    }
+		if (progressDialog != null && !progressDialog.isShowing())
+			progressDialog.show();
+	}
 
-    @Override
-    public void onResumeEvent() {
+	public void onEventMainThread(FinishedEvent e) {
 
-        EventBus.getDefault().register(this);
-    }
+		if (progressDialog != null && progressDialog.isShowing()) {
+			progressDialog.dismiss();
+		}
 
-    @Override
-    public void onPauseEvent() {
+		// Success retreiving database
+		if (e.isSuccess()) {
 
-        EventBus.getDefault().unregister(this);
-    }
+			if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e.getAction())) {
+				ArrayList<News> tmp = e.getExtras().getParcelableArrayList(
+						"data");
 
-    public void onEventMainThread(StartEvent e) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Loading...");
-            progressDialog.setCancelable(true);
-        }
+				newsList.clear();
+				newsList.addAll(tmp);
 
-        if (progressDialog != null && !progressDialog.isShowing())
-            progressDialog.show();
-    }
+				adapter.notifyDataSetChanged();
 
-    public void onEventMainThread(FinishedEvent e) {
+			} else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
+					.getAction())) {
 
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
+			}
+		}
+	}
 
-        // Success retreiving database
-        if (e.isSuccess()) {
+	public class NewsAdapter extends ArrayAdapter<News> {
 
-            // Check for what you wanted to retrieve
-            if (DatabaseHelper.ACTION_GET_USER_FLATS.equals(e.getAction())) {
-                // You know what you need (List or simple object)
-                // If List: ArrayList<Flat> flatsList =
-                // e.getExtras().getParcelableArrayList("data");
-                // If Object only : Flat flat =
-                // e.getExtras().getParcelable("data");
+		public class ViewHolder {
+			public CircularImageView	photo;
+			public TextView				comment;
+			public TextView				date;
+		}
 
-                ArrayList<Flat> flatsList = e.getExtras()
-                        .getParcelableArrayList("data");
+		private Context	context;
+		private int		resource;
 
-                // if (flatsList.size() == 0) {
-                // goToNewFlatActivity();
-                // } else if (flatsList.size() == 1) {
-                // goToMainActivity(flatsList.get(0));
-                // } else if (flatsList.size() > 1) {
-                // goToNewFlatActivity(flatsList);
-                // }
+		public NewsAdapter(Context context, int resource, List<News> objects) {
+			super(context, resource, objects);
 
-                // for (Flat f : flatsList)
-                // Log.v(TAG,
-                // "# Flat : " + f.getName() + " : "
-                // + f.getRentAmount() + "$");
+			this.context = context;
+			this.resource = resource;
+		}
 
-            } else if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e
-                    .getAction())) {
-                tabNews =  e.getExtras().getParcelableArrayList("data");
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ViewHolder viewHolder = null;
 
-            } else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
-                    .getAction())) {
+			if (convertView == null) {
+				LayoutInflater inflater = (LayoutInflater) context
+						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				convertView = inflater.inflate(resource, parent, false);
 
-            }
-        }
-    }
+				viewHolder = new ViewHolder();
+
+				viewHolder.photo = (CircularImageView) convertView
+						.findViewById(R.id.photo);
+				viewHolder.comment = (TextView) convertView
+						.findViewById(R.id.comment);
+				viewHolder.date = (TextView) convertView
+						.findViewById(R.id.date);
+
+				convertView.setTag(viewHolder);
+			} else {
+				viewHolder = (ViewHolder) convertView.getTag();
+			}
+
+			News news = this.getItem(position);
+
+			viewHolder.comment.setText(news.getComment());
+			viewHolder.date.setText(news.getDate());
+
+			return convertView;
+		}
+	}
 }

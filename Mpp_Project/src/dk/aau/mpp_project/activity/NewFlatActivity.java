@@ -99,7 +99,9 @@ public class NewFlatActivity extends Activity {
 					startActivity(intent);
 					finish();
 				} else {
-					setResult(RESULT_OK);
+					Intent data = new Intent();
+					data.putExtra("data", flatId);
+					setResult(RESULT_OK, data);
 					finish();
 				}
 			}
@@ -176,7 +178,6 @@ public class NewFlatActivity extends Activity {
 			progressDialog.show();
 	}
 
-	@SuppressWarnings("unchecked")
 	public void onEventMainThread(FinishedEvent e) {
 		Log.d(TAG, "# FinishedEvent");
 
