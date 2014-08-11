@@ -23,6 +23,7 @@ import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.activity.LogInActivity;
 import dk.aau.mpp_project.activity.MainActivity;
 import dk.aau.mpp_project.activity.NewFlatActivity;
+import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
@@ -31,10 +32,9 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 
 	private ProgressDialog	progressDialog;
 
-    private ProgressDialog progressDialog;
-	private TextView	textViewLogout;
-	private TextView	textViewChangeDetails;
-	private TextView	textViewLeaveFlat;
+	private TextView		textViewLogout;
+	private TextView		textViewChangeDetails;
+	private TextView		textViewLeaveFlat;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -147,6 +147,8 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 				// e.getExtras().getParcelableArrayList("data");
 				// If Object only : Flat flat =
 				// e.getExtras().getParcelable("data");
+
+				MyApplication.setOption(MyApplication.CURRENT_FLAT, "-1");
 
 				Intent intent = new Intent(getActivity(), NewFlatActivity.class);
 				getActivity().startActivity(intent);
