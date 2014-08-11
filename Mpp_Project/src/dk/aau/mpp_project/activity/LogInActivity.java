@@ -19,10 +19,8 @@ import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
-import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,20 +43,10 @@ public class LogInActivity extends Activity {
 		ParseUser currentUser = ParseUser.getCurrentUser();
 
 		if ((currentUser != null) && ParseFacebookUtils.isLinked(currentUser)) {
-			// Go to the user info activity
-//			myUser = new MyUser(currentUser.getString(MyUser.FACEBOOK_ID),
-//					currentUser.getString(MyUser.NAME),
-//					currentUser.getString(MyUser.BIRTHDAY));
-//			myUser.setObjectId(currentUser.getObjectId());
-//
-//			DatabaseHelper.getUserFlats(myUser);
-			
+
 			Intent intent = new Intent(this, NewFlatActivity.class);
 			startActivity(intent);
-			
-//			goToNewFlatActivity();
-//			goToMainActivity(new Flat());
-
+			finish();
 		}
 	}
 
@@ -142,7 +130,7 @@ public class LogInActivity extends Activity {
 									MyApplication.setOption(MyUser.BIRTHDAY,
 											myUser.getBirthday());
 
-									goToMainActivity();
+									goToNewFlatActivity();
 								}
 							});
 
@@ -211,38 +199,6 @@ public class LogInActivity extends Activity {
 		// Success retreiving database
 		if (e.isSuccess()) {
 			Log.i(TAG, "# Request Success");
-
-			// Check for what you wanted to retrieve
-			if (DatabaseHelper.ACTION_GET_USER_FLATS.equals(e.getAction())) {
-				// You know what you need (List or simple object)
-				// If List: ArrayList<Flat> flatsList =
-				// e.getExtras().getParcelableArrayList("data");
-				// If Object only : Flat flat =
-				// e.getExtras().getParcelable("data");
-
-//				ArrayList<Flat> flatsList = e.getExtras()
-//						.getParcelableArrayList("data");
-
-				// if (flatsList.size() == 0) {
-				// goToNewFlatActivity();
-				// } else if (flatsList.size() == 1) {
-				// goToMainActivity(flatsList.get(0));
-				// } else if (flatsList.size() > 1) {
-				// goToNewFlatActivity(flatsList);
-				// }
-
-				// for (Flat f : flatsList)
-				// Log.v(TAG,
-				// "# Flat : " + f.getName() + " : "
-				// + f.getRentAmount() + "$");
-
-			} else if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e
-					.getAction())) {
-
-			} else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
-					.getAction())) {
-
-			}
 		}
 		// Error occured
 		else {

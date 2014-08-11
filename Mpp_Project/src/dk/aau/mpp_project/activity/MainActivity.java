@@ -1,7 +1,10 @@
 package dk.aau.mpp_project.activity;
 
+import java.util.ArrayList;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,16 +16,24 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.facebook.Session;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
+
+import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.application.MyApplication;
-import dk.aau.mpp_project.fragment.*;
+import dk.aau.mpp_project.database.DatabaseHelper;
+import dk.aau.mpp_project.event.FinishedEvent;
+import dk.aau.mpp_project.event.StartEvent;
+import dk.aau.mpp_project.fragment.ExpensesFragment;
+import dk.aau.mpp_project.fragment.FragmentEventHandler;
+import dk.aau.mpp_project.fragment.HomeFragment;
+import dk.aau.mpp_project.fragment.LoansFragment;
+import dk.aau.mpp_project.fragment.SettingsFragment;
 import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
-
-import java.util.ArrayList;
 
 /**
  * URL Example
@@ -35,20 +46,20 @@ import java.util.ArrayList;
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
 
-	private static final String		TAG	= null;
-	ViewPager						mViewPager;
+	private static final String		TAG								= "MainActivity";
+	private static final int		REQUEST_CODE_NEW_FLAT_ACTIVITY	= 1;
+
+	private ViewPager				mViewPager;
 	private AppSectionsPagerAdapter	mAppSectionsPagerAdapter;
 	private ArrayList<Fragment>		listFragments;
-    private MyUser					myUser;
-    private Flat                    myFlat;
-    private int                     curFragment = -1;
-    private ProgressDialog          progressDialog;
+	private MyUser					myUser;
+	private Flat					myFlat;
+	private int						curFragment						= -1;
+	private ProgressDialog			progressDialog;
 
-    public ProgressDialog getProgressDialog() {
-        return progressDialog;
-    }
-
-
+	public ProgressDialog getProgressDialog() {
+		return progressDialog;
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +70,36 @@ public class MainActivity extends FragmentActivity implements
 		// Fetch Facebook user info if the session is active
 		Session session = ParseFacebookUtils.getSession();
 		if (session != null && session.isOpened()) {
+			ParseUser currentUser = ParseUser.getCurrentUser();
+			if (currentUser != null) {
+				myUser = (MyUser) currentUser;
 
+				String facebookId = MyApplication.getOption(MyUser.FACEBOOK_ID,
+						"0");
+				String name = MyApplication.getOption(MyUser.NAME, "0");
+				String birthday = MyApplication.getOption(MyUser.BIRTHDAY, "0");
+
+				myUser.setBirthday(birthday);
+				myUser.setFacebookId(facebookId);
+				myUser.setName(name);
+
+				Log.v(TAG, "# First Name :" + myUser.getName());
+
+				if (MyApplication.getSharedPref().contains(
+						MyApplication.CURRENT_FLAT)) {
+					String flatId = MyApplication.getOption(
+							MyApplication.CURRENT_FLAT, "-1");
+
+					EventBus.getDefault().register(this);
+
+					DatabaseHelper.getFlatById(flatId);
+				}
+
+			} else {
+				// If the user is not logged in, go to the
+				// activity showing the login view.
+				startLoginActivity();
+			}
 		} else {
 			startLoginActivity();
 		}
@@ -103,11 +143,13 @@ public class MainActivity extends FragmentActivity implements
 						// we have a reference to the
 						// Tab.
 						actionBar.setSelectedNavigationItem(position);
-                        if(curFragment > -1) {
-                            ((FragmentEventHandler) listFragments.get(curFragment)).onPauseEvent();
-                        }
-                        curFragment = position;
-                        ((FragmentEventHandler)listFragments.get(curFragment)).onResumeEvent();
+						if (curFragment > -1) {
+							((FragmentEventHandler) listFragments
+									.get(curFragment)).onPauseEvent();
+						}
+						curFragment = position;
+						((FragmentEventHandler) listFragments.get(curFragment))
+								.onResumeEvent();
 					}
 				});
 
@@ -125,14 +167,52 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
+	public void onEventMainThread(StartEvent e) {
+		Log.d(TAG, "# StartEvent");
+
+		if (progressDialog == null) {
+			progressDialog = new ProgressDialog(this);
+			progressDialog.setIndeterminate(true);
+			progressDialog.setMessage("Loading...");
+			progressDialog.setCancelable(false);
+		}
+
+		if (progressDialog != null && !progressDialog.isShowing())
+			progressDialog.show();
+	}
+
+	public void onEventMainThread(FinishedEvent e) {
+		Log.d(TAG, "# FinishedEvent");
+
+		if (progressDialog != null && progressDialog.isShowing()) {
+			progressDialog.dismiss();
+		}
+
+		// Success retreiving database
+		if (e.isSuccess()) {
+
+			// Check for what you wanted to retrieve
+			if (DatabaseHelper.ACTION_GET_FLAT_BY_ID.equals(e.getAction())) {
+				EventBus.getDefault().unregister(this);
+
+				myFlat = e.getExtras().getParcelable("data");
+			}
+		}
+		// Error occured
+		else {
+
+		}
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-    public Flat getMyFlat() {
-        return myFlat;
-    }
+
+	public Flat getMyFlat() {
+		return myFlat;
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -142,7 +222,8 @@ public class MainActivity extends FragmentActivity implements
 		switch (id) {
 		case R.id.action_new_flat:
 			Intent intent = new Intent(this, NewFlatActivity.class);
-			startActivity(intent);
+			intent.putExtra("should_check", false);
+			startActivityForResult(intent, REQUEST_CODE_NEW_FLAT_ACTIVITY);
 			break;
 
 		default:
@@ -155,25 +236,6 @@ public class MainActivity extends FragmentActivity implements
 	public void onResume() {
 		super.onResume();
 
-		ParseUser currentUser = ParseUser.getCurrentUser();
-		if (currentUser != null) {
-			myUser = (MyUser) currentUser;
-
-			String facebookId = MyApplication
-					.getOption(MyUser.FACEBOOK_ID, "0");
-			String name = MyApplication.getOption(MyUser.NAME, "0");
-			String birthday = MyApplication.getOption(MyUser.BIRTHDAY, "0");
-
-			myUser.setBirthday(birthday);
-			myUser.setFacebookId(facebookId);
-			myUser.setName(name);
-
-			Log.v(TAG, "# First Name :" + myUser.getName());
-		} else {
-			// If the user is not logged in, go to the
-			// activity showing the login view.
-			startLoginActivity();
-		}
 	}
 
 	private void startLoginActivity() {
@@ -186,6 +248,17 @@ public class MainActivity extends FragmentActivity implements
 
 	public MyUser getMyUser() {
 		return myUser;
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == Activity.RESULT_OK) {
+			if (requestCode == REQUEST_CODE_NEW_FLAT_ACTIVITY) {
+
+			}
+		}
+
 	}
 
 	/**
