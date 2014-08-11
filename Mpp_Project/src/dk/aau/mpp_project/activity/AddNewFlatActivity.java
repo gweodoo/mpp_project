@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -33,6 +35,7 @@ public class AddNewFlatActivity extends Activity {
 	protected final int GALLERY_REQUEST = 1777;
     private static final int CAMERA_REQUEST = 1888; 
 
+    protected String errorMessage;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,12 @@ public class AddNewFlatActivity extends Activity {
 		
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
+		
+		flatName = (EditText) findViewById(R.id.new_flat_name);
+		password = (EditText) findViewById(R.id.new_flat_password);
+		passwordRepeat = (EditText) findViewById(R.id.new_flat_password_repeat);
+		address = (EditText) findViewById(R.id.new_flat_address);
+		flatImage = (ImageView) findViewById(R.id.new_flat_image);
 		
 		ImageButton addFromGallery = (ImageButton) findViewById(R.id.add_pic_gallery);
 		ImageButton addFromCamera = (ImageButton) findViewById(R.id.add_pic_camera);
@@ -65,16 +74,6 @@ public class AddNewFlatActivity extends Activity {
 			}
 		});
 		
-//		CardListView cardList = (CardListView) findViewById(R.id.cardList);
-//		Card c1 = new AddFlatLoginCard(getApplication());
-//		c1.setClickable(false);
-//		Card c2 = new AddFlatDetailCard(getApplication());
-//		c2.setClickable(false);
-//		ArrayList<Card> cards = new ArrayList<Card>();
-//		cards.add(c1);
-//		cards.add(c2);
-//		CardArrayAdapter adapter = new CardArrayAdapter(getApplicationContext(), cards);
-//		cardList.setAdapter(adapter);
 	}
 	
 	@Override
@@ -90,8 +89,12 @@ public class AddNewFlatActivity extends Activity {
 
 		switch (id) {
 		case R.id.action_new_flat_ok:
-			Intent intent = new Intent(this, MainActivity.class);
-			startActivity(intent);
+			if(validateData()){
+				Intent intent = new Intent(this, MainActivity.class);
+				startActivity(intent);
+			}else{
+				//save flat data
+			}
 			break;
         case android.R.id.home:
             // app icon in action bar clicked; goto parent activity.
@@ -103,7 +106,8 @@ public class AddNewFlatActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {  
         flatImage = (ImageView) findViewById(R.id.new_flat_image);
     	if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {  
             Bitmap b = (Bitmap) data.getExtras().get("data"); 
@@ -141,6 +145,22 @@ public class AddNewFlatActivity extends Activity {
         }
         b = Bitmap.createScaledBitmap(b, outWidth, outHeight, false);
         return Filter.fastblur(b, 20);
+    }
+    
+    private boolean validateData(){
+    	Boolean valid = true;
+    	if(flatName.getText().toString().equals(""))
+    		{flatName.setError("Please enter a flat name.\n");valid=false;}
+    	if(password.getText().toString().equals(""))
+    		{password.setError("Please enter a password.\n"); valid=false;}
+    	if(passwordRepeat.getText().toString().equals(""))
+    		{passwordRepeat.setError("Please repeat password.\n"); valid=false;}
+        if(address.getText().toString().equals(""))
+        	{address.setError("Please enter an address.\n"); valid=false;}
+         
+        if(!password.getText().toString().equals(passwordRepeat.getText().toString()))
+        	{passwordRepeat.setError("Please enter same password again.\n"); valid=false;}
+    	return valid;
     }
 
 }
