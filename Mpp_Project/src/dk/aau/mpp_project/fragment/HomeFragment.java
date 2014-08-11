@@ -1,25 +1,28 @@
 package dk.aau.mpp_project.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.activity.MainActivity;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
 import dk.aau.mpp_project.model.Flat;
+import dk.aau.mpp_project.model.MyUser;
+import dk.aau.mpp_project.model.News;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardHeader;
+import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
 
 import java.util.ArrayList;
@@ -28,35 +31,24 @@ public class HomeFragment extends Fragment implements FragmentEventHandler{
 
 	public String	name	= "Home";
     private ProgressDialog progressDialog;
-
+    private ArrayList<News> tabNews;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_section_home,
 				container, false);
 
-		ArrayList<Card> cards = new ArrayList<Card>();
-
-		// Generating cards
-		for (int i = 0; i <= 20; i++) {
-			// Create a Card
-			Card card = new Card(rootView.getContext());
-			card.setTitle("This is a sample card...");
-			// Create a CardHeader
-			CardHeader header = new CardHeader(rootView.getContext());
-			header.setTitle("Card " + (i + 1));
-			// Add Header to card
-			card.addCardHeader(header);
-
-			cards.add(card);
-		}
-
-		CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(
-				getActivity(), cards);
-
+        //getting information about the current environment
+        final MyUser user = ((MainActivity)getActivity()).getMyUser();
+        final Flat flat = ((MainActivity)getActivity()).getMyFlat();
+        ArrayList<Card> cards = new ArrayList<Card>();
 		CardListView listView = (CardListView) rootView
 				.findViewById(R.id.cardListHome);
-        listView.setId(0);
+
+        if(flat == null){
+            Toast.makeText(getActivity(), "Error : No flat found !", Toast.LENGTH_LONG).show();
+            return rootView;
+        }
 		// Adding header flat image
 		View v = null;
 		LinearLayout main = new LinearLayout(rootView.getContext());
@@ -72,7 +64,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler{
 		TextView title = new TextView(this.getActivity());
 		title.setTextSize(30);
 		title.setTextColor(Color.WHITE);
-		title.setText("Flat Title");
+		title.setText(flat.getName());
 		title.setPadding(20, 10, 0, 0);
 		top.addView(title, 0);
 		final ImageButton loc = new ImageButton(rootView.getContext());
@@ -80,6 +72,16 @@ public class HomeFragment extends Fragment implements FragmentEventHandler{
 		loc.setImageDrawable(getResources().getDrawable(
 				R.drawable.ic_action_loc));
 
+        loc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(flat != null) {
+                    String map = "http://maps.google.co.in/maps?q=" + flat.getAddress();
+                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(map));
+                    startActivity(i);
+                }
+            }
+        });
 		top.addView(loc);
 		top.setPadding(0, 0, 0, 150);
 
@@ -126,11 +128,33 @@ public class HomeFragment extends Fragment implements FragmentEventHandler{
 		// t.setTypeface(tf, style)
 		listView.addHeaderView(t);
 
-		if (listView != null) {
-			listView.setAdapter(mCardArrayAdapter);
-		}
+        if(flat != null){
+            DatabaseHelper.getNewsByFlat(flat);
+            if(tabNews != null) {
+                for (News item : tabNews){
+                    Card cur = new Card(getActivity());
+                    CardHeader head = new CardHeader(getActivity());
+                    CardThumbnail thumb = new CardThumbnail(getActivity());
 
-		return rootView;
+                    thumb.setDrawableResource(R.drawable.av1);
+                    head.setTitle("From "+item.getUser().getName());
+
+                    cur.addCardThumbnail(thumb);
+                    cur.addCardHeader(head);
+                    cur.setTitle(item.getComment());
+
+                    cards.add(cur);
+                }
+            }
+        }
+
+        CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(
+                getActivity(), cards);
+        if (listView != null) {
+            listView.setAdapter(mCardArrayAdapter);
+        }
+
+        return rootView;
     }
 
     @Override
@@ -192,6 +216,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler{
 
             } else if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e
                     .getAction())) {
+                tabNews =  e.getExtras().getParcelableArrayList("data");
 
             } else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
                     .getAction())) {
