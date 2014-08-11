@@ -1,11 +1,9 @@
 package dk.aau.mpp_project.database;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import com.parse.*;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -18,11 +16,10 @@ import com.parse.SaveCallback;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
-import dk.aau.mpp_project.model.FillingTable;
-import dk.aau.mpp_project.model.Flat;
-import dk.aau.mpp_project.model.News;
-import dk.aau.mpp_project.model.Operation;
-import dk.aau.mpp_project.model.MyUser;
+import dk.aau.mpp_project.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper {
 
@@ -42,6 +39,7 @@ public class DatabaseHelper {
 	public static final String	ACTION_GET_FLAT_BY_ID		= "ACTION_GET_FLAT_BY_ID";
 	public static final String	ACTION_GET_NEWS_FLATS		= "ACTION_GET_NEWS_FLATS";
 	public static final String	ACTION_GET_OPERATIONS_FLATS	= "ACTION_GET_OPERATIONS_FLATS";
+    public static final String	ACTION_GET_USERS_IN_FLAT	= "ACTION_GET_USERS_IN_FLAT";
 	public static final String	ACTION_LEAVE_FLAT			= "ACTION_LEAVE_FLAT";
 
 	public static void createOperation(Flat flat, Operation operation) {
@@ -313,7 +311,66 @@ public class DatabaseHelper {
 		});
 	}
 
-	public static void getOperationsByFlat(Flat flat) {
+    public static void getUsersByFlat(Flat flat) {
+        EventBus.getDefault().post(new StartEvent(ACTION_GET_USERS_IN_FLAT));
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery(FILLING_TABLE);
+
+        query.whereEqualTo(MyUser.FLAT, flat);
+
+        ArrayList<String> selectedKeys = new ArrayList<String>();
+        selectedKeys.add(FillingTable.USER);
+        query.selectKeys(selectedKeys);
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> objectList, ParseException e) {
+                if (e == null) {
+                    Log.d(TAG, "# Retrieved " + objectList.size()
+                            + " user for this flat");
+
+                    List<String> userIds = new ArrayList<String>();
+
+                    for (ParseObject o : objectList) {
+                        MyUser f = (MyUser) o.get(FillingTable.USER);
+
+                        userIds.add(f.getObjectId());
+                        Log.v(TAG, "# My User ID : " + f.getObjectId());
+                    }
+
+                    ParseQuery<MyUser> query2 = ParseQuery.getQuery(MyUser.class);
+                    query2.whereContainedIn("objectId", userIds);
+
+                    query2.findInBackground(new FindCallback<MyUser>() {
+                        public void done(List<MyUser> objectList, ParseException e) {
+                            if (e == null) {
+                                Log.d(TAG, "# Retrieved " + objectList.size()
+                                        + " users");
+
+                                Bundle extras = new Bundle();
+                                extras.putParcelableArrayList(
+                                        "data",
+                                        (ArrayList<? extends Parcelable>) objectList);
+
+                                EventBus.getDefault().post(
+                                        new FinishedEvent(true,
+                                                ACTION_GET_USERS_IN_FLAT, extras)
+                                );
+
+                            } else {
+                                Log.d(TAG, "Error: " + e.getMessage());
+                                EventBus.getDefault().post(
+                                        new FinishedEvent(false,
+                                                ACTION_GET_USERS_IN_FLAT, null)
+                                );
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public static void getOperationsByFlat(Flat flat) {
 		EventBus.getDefault().post(new StartEvent(ACTION_GET_OPERATIONS_FLATS));
 
 		ParseQuery<Operation> query = ParseQuery.getQuery(Operation.class);

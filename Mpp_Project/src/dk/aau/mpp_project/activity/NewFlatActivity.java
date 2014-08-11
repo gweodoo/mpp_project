@@ -1,32 +1,20 @@
 package dk.aau.mpp_project.activity;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import com.parse.ParseUser;
-
-import dk.aau.mpp_project.R;
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
+import com.parse.ParseUser;
 import de.greenrobot.event.EventBus;
-import dk.aau.mpp_project.activity.AddNewFlatActivity;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
@@ -34,6 +22,9 @@ import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
 import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewFlatActivity extends Activity {
 
@@ -198,9 +189,9 @@ public class NewFlatActivity extends Activity {
 
 			// Check for what you wanted to retrieve
 			if (DatabaseHelper.ACTION_GET_USER_FLATS.equals(e.getAction())) {
+                ArrayList<Flat> tmp = e.getExtras().getParcelableArrayList("data");
 				flatsList.clear();
-				flatsList.addAll((Collection<? extends Flat>) e.getExtras()
-						.getParcelableArrayList("data"));
+				flatsList.addAll(tmp);
 
 				adapter.notifyDataSetChanged();
 			}
