@@ -197,7 +197,7 @@ public class AddNewFlatActivity extends Activity {
 			outWidth = (inWidth * maxSize) / inHeight;
 		}
 		b = Bitmap.createScaledBitmap(b, outWidth, outHeight, false);
-		return Filter.fastblur(b, 20);
+		return Filter.fastblur(b, 10);
 	}
 
 	private boolean validateData() {
