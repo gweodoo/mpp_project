@@ -1,33 +1,24 @@
 package dk.aau.mpp_project.activity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 
-import com.facebook.FacebookRequestError;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.model.GraphUser;
-import com.parse.ParseException;
-import com.parse.ParseFacebookUtils;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import dk.aau.mpp_project.R;
-import dk.aau.mpp_project.R.layout;
-import dk.aau.mpp_project.application.MyApplication;
+import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.StartEvent;
 import dk.aau.mpp_project.filter.Filter;
 import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -37,7 +28,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -52,6 +42,7 @@ public class AddNewFlatActivity extends Activity {
 	private ProgressDialog progressDialog;
 	protected final int GALLERY_REQUEST = 1777;
 	private static final int CAMERA_REQUEST = 1888;
+	private static Bitmap bitmap;
 
 	protected String errorMessage;
 
@@ -115,19 +106,29 @@ public class AddNewFlatActivity extends Activity {
 				// save flat data
 				ParseUser currentUser = ParseUser.getCurrentUser();
 				if (currentUser != null) {
+					Bitmap b = flatImage.getDrawingCache();
+					flatImage.setDrawingCacheEnabled(false);
+					if(b==null)
+						System.out.println("NULL!!!!!");
+					ByteArrayOutputStream stream = new ByteArrayOutputStream();
+					b.compress(Bitmap.CompressFormat.PNG, 100, stream);
+					byte[] byteArray = stream.toByteArray();
+					ParseFile img = new ParseFile("flat.png", byteArray);
+//					img.saveInBackground();
 					Flat flat = new Flat(flatName.getText().toString(), address
 							.getText().toString(), currentUser.getObjectId(),
-							0.0);
-					flat.saveInBackground(new SaveCallback() {
-						@Override
-						public void done(ParseException e) {
-
-							if (progressDialog != null
-									&& progressDialog.isShowing()) {
-								progressDialog.dismiss();
-							}
-						}
-					});
+							0.0, img);
+					DatabaseHelper.createFlat((MyUser)currentUser, flat, password.getText().toString());
+//					flat.saveInBackground(new SaveCallback() {
+//						@Override
+//						public void done(ParseException e) {
+//
+//							if (progressDialog != null
+//									&& progressDialog.isShowing()) {
+//								progressDialog.dismiss();
+//							}
+//						}
+//					});
 
 				}
 
@@ -176,9 +177,10 @@ public class AddNewFlatActivity extends Activity {
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
 
-			Bitmap b = BitmapFactory.decodeFile(picturePath);
-
-			flatImage.setImageBitmap(rescale(b));
+			bitmap = BitmapFactory.decodeFile(picturePath);
+			bitmap = rescale(bitmap);
+			flatImage.setDrawingCacheEnabled(true);
+			flatImage.setImageBitmap(bitmap);
 			// flatImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 		}
 	}
@@ -245,54 +247,5 @@ public class AddNewFlatActivity extends Activity {
 			return false;
 		}
 	}
-
-	// private void makeMeRequest() {
-	// Request request = Request.newMeRequest(ParseFacebookUtils.getSession(),
-	// new Request.GraphUserCallback() {
-	// @Override
-	// public void onCompleted(GraphUser user, Response response) {
-	// if (user != null) {
-	//
-	// final MyUser myUser = new MyUser(user.getId(), user
-	// .getName(), user.getBirthday());
-	//
-	//
-	// myUser.saveInBackground(new SaveCallback() {
-	//
-	// @Override
-	// public void done(ParseException e) {
-	//
-	// if (progressDialog != null
-	// && progressDialog.isShowing()) {
-	// progressDialog.dismiss();
-	// }
-	//
-	// MyApplication.setOption(MyUser.FACEBOOK_ID,
-	// myUser.getFacebookId());
-	// MyApplication.setOption(MyUser.NAME,
-	// myUser.getName());
-	// MyApplication.setOption(MyUser.BIRTHDAY,
-	// myUser.getBirthday());
-	//
-	// goToMainActivity();
-	// }
-	// });
-	//
-	// } else if (response.getError() != null) {
-	// if ((response.getError().getCategory() ==
-	// FacebookRequestError.Category.AUTHENTICATION_RETRY)
-	// || (response.getError().getCategory() ==
-	// FacebookRequestError.Category.AUTHENTICATION_REOPEN_SESSION)) {
-	// Log.d(TAG,
-	// "The facebook session was invalidated.");
-	// } else {
-	// Log.d(TAG, "Some other error: "
-	// + response.getError().getErrorMessage());
-	// }
-	// }
-	// }
-	// });
-	// request.executeAsync();
-	// }
 
 }
