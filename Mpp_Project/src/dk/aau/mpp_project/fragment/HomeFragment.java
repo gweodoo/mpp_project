@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import android.widget.LinearLayout.LayoutParams;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.activity.MainActivity;
@@ -62,6 +63,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler{
 
 		// adding FLat Title and navigation button
 		TextView title = new TextView(this.getActivity());
+		title.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		title.setTextSize(30);
 		title.setTextColor(Color.WHITE);
 		title.setText(flat.getName());
