@@ -30,8 +30,6 @@ import dk.aau.mpp_project.event.StartEvent;
 public class SettingsFragment extends Fragment implements FragmentEventHandler {
 
 	private ProgressDialog	progressDialog;
-
-    private ProgressDialog progressDialog;
 	private TextView	textViewLogout;
 	private TextView	textViewChangeDetails;
 	private TextView	textViewLeaveFlat;

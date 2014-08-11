@@ -28,7 +28,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import de.greenrobot.event.EventBus;
-import dk.aau.mpp_project.AddNewFlatActivity;
+import dk.aau.mpp_project.activity.AddNewFlatActivity;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
