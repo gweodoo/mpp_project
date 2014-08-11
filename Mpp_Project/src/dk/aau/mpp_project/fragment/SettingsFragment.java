@@ -23,6 +23,7 @@ import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.activity.LogInActivity;
 import dk.aau.mpp_project.activity.MainActivity;
 import dk.aau.mpp_project.activity.NewFlatActivity;
+import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
@@ -145,6 +146,8 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 				// e.getExtras().getParcelableArrayList("data");
 				// If Object only : Flat flat =
 				// e.getExtras().getParcelable("data");
+
+				MyApplication.setOption(MyApplication.CURRENT_FLAT, "-1");
 
 				Intent intent = new Intent(getActivity(), NewFlatActivity.class);
 				getActivity().startActivity(intent);

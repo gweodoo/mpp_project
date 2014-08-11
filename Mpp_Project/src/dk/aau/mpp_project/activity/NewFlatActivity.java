@@ -7,13 +7,11 @@ import java.util.List;
 import com.parse.ParseUser;
 
 import dk.aau.mpp_project.R;
-import dk.aau.mpp_project.cards.ChooseFlatCard;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
