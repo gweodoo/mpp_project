@@ -16,6 +16,7 @@ import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
 import dk.aau.mpp_project.model.Flat;
+import dk.aau.mpp_project.model.MyUser;
 import dk.aau.mpp_project.model.Operation;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
@@ -27,120 +28,162 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * Created by adamj on 04/08/14.
+ * This class, representing a fragment, displays all information about expenses for a specific user, the current one
+ * Each item displayed contains a check box, allowing lender to agree when he have been refunded
  */
 public class LoansFragment extends Fragment implements FragmentEventHandler {
+    /**
+     * Class members
+     */
     private View curView;
-    private Button addButton;
-    private TextView amountField;
-    private TextView titleField;
-    private Spinner idPeople;
     private CardListView tableView;
-    private CardArrayAdapter mCardArrayAdapter;
     private ProgressDialog progressDialog;
     private ArrayList<Operation> tabOperations;
 
-    // TODO: To remove later (after parse integration)
-    private static int i = 0;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        //calling current fragment view
         curView = inflater.inflate(R.layout.fragment_section_loans, container, false);
+
+        //getting the cardListview
         tableView = (CardListView)curView.findViewById(R.id.cardListLoans);
 
         //adding header text
         TextView t = new TextView(this.getActivity());
         t.setTextSize(20);
-        t.setText("Last loans");
+        t.setText("bLast loans :");
         t.setPadding(30, 50, 0, 30);
         tableView.addHeaderView(t);
 
-        // setting CardListView
-       mCardArrayAdapter = new CardArrayAdapter(getActivity(),new ArrayList<Card>());
 
-        if (tableView!=null){
-            tableView.setAdapter(mCardArrayAdapter);
-        }
-
-        refreshItemsList();
-
+        //defining refresh button behavior
+        ((Button)(curView.findViewById(R.id.refreshButton))).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //refresh function calling
+                refreshItemsList();
+            }
+        });
         return curView;
     }
 
+    /**
+     * Function which refresh the listview with up-to-date data.
+     */
     private void refreshItemsList() {
-        Toast.makeText(getActivity().getBaseContext(), "Refresh", Toast.LENGTH_LONG).show();
         ArrayList<Card> cards = new ArrayList<Card>();
-        ArrayList<Operation> tabItems = new ArrayList<Operation>();
 
-        //TODO: Get previous entries with parse
-        //DatabaseHelper.getOperationsByFlat(new Flat());
-        //TODO: Get specific operations
-        tabItems.add(new Operation(new Flat(), "Me", "You", 10.0f, "", "This is the first Loan Test", false));
-        tabItems.add(new Operation(new Flat(), "You", "Me", 255.0f, "", "This is the Second Loan Test", true));
-        tabItems.add(new Operation(new Flat(), "You", "Me", 1000.0f, "", "This is the Third Loan Test", false));
-        tabItems.add(new Operation(new Flat(), "Me", "You", 10500.0f, "", "This is the Fourth Loan Test", true));
+        //getting information about the current environment
+        MyUser user = ((MainActivity)getActivity()).getMyUser();
+        Flat flat = ((MainActivity)getActivity()).getMyFlat();
 
-        Collections.sort(tabItems, new Comparator<Operation>() {
+        // some checks if neither user nor flat have been found (which should be errors)
+        if(user == null){
+            Toast.makeText(getActivity(), "Error : Who are you ?", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(flat == null){
+            Toast.makeText(getActivity(), "Error : No flat found for you !", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        //get all entries as operations for the current flat in the database
+        DatabaseHelper.getOperationsByFlat(flat);
+
+        //if no operations have been found in the database
+        if(tabOperations == null){
+            Toast.makeText(getActivity(), "No transactions found for this flat", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        //sorting operations in order to have most recent first (= on top)
+        Collections.sort(tabOperations, new Comparator<Operation>() {
             @Override
             public int compare(Operation lhs, Operation rhs) {
+                //comparison between operation dates (maybe need to re-check)
                 if (lhs.getDate().compareTo(rhs.getDate()) > 0)
                     return 1;
                 else return -1;
             }
         });
-        for(Operation item : tabItems) {
-            //Generating cards
+
+        //for each item loaded from the database
+        for(Operation item : tabOperations) {
+            // if the current user, is not implied in the current operation, shift it and continue
+            if(! (item.getLender().equals(user.getObjectId()) || item.getTo().equals(user.getObjectId()))){
+                tabOperations.remove(item);
+                continue;
+            }
+
+            //Generating cards content
             CustomCard card = new CustomCard(getActivity(), item);
-            card.init();
+            //adding the card to the list of new loaded cards
             cards.add(card);
         }
-        mCardArrayAdapter = new CardArrayAdapter(getActivity(), cards);
-        tableView.setAdapter(mCardArrayAdapter);
 
+        //if there are no operations found for this user, we stop here
+        if(cards.size() == 0){
+            Toast.makeText(getActivity(), "No transactions where you are implied have been found :)", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        //setting the new adapter to the cardListView
+        tableView.setAdapter(new CardArrayAdapter(getActivity(), cards));
     }
-
 
     @Override
     public void onResumeEvent() {
-
+        //when fragment has focus, register it in event table (used to block user interface when critical interaction with database
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPauseEvent() {
-
+        //release the event tracking when the fragment lost focus
         EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * After the cardslib using, we redefine our own card model, thanks to some layouts
+     */
     public class CustomCard extends Card {
 
         private Operation cur;
+        //create the card and get the operation attached to the current card
         public CustomCard(Context context, Operation item) {
             super(context, R.layout.layout_loan_item);
             cur = item;
         }
 
-        public void init(){
-
-        }
-
         @Override
         public void setupInnerViewElements(ViewGroup parent, View view) {
+            //getting fields in card
             TextView info = (TextView)parent.findViewById(R.id.infoItem);
-            info.setText(cur.getComment());
             TextView amount = (TextView)parent.findViewById(R.id.amountItem);
-            amount.setText((new DecimalFormat("#.00")).format(cur.getAmount())+" €");
             ImageView picUser = (ImageView)parent.findViewById(R.id.picUser);
             ImageView picYou = (ImageView)parent.findViewById(R.id.picYou);
             ImageView picArrow = (ImageView)parent.findViewById(R.id.picArrow);
+            CheckBox paid = (CheckBox)parent.findViewById(R.id.isPaid);
+            LinearLayout layout = (LinearLayout)parent.findViewById(R.id.loan_card_layout);
 
+            //setting comments
+            info.setText(cur.getComment());
+
+            //setting amount (cast with two decimals)
+            amount.setText((new DecimalFormat("#.00")).format(cur.getAmount())+" €");
+
+            //setting users pictures (you and the other one)
             picUser.setImageDrawable(getResources().getDrawable(R.drawable.av1));
             picYou.setImageDrawable(getResources().getDrawable(R.drawable.av1));
 
-            CheckBox paid = (CheckBox)parent.findViewById(R.id.isPaid);
+            //setting paid status
             paid.setChecked(cur.getIsPaid());
-            LinearLayout layout = (LinearLayout)parent.findViewById(R.id.loan_card_layout);
+
+            //differentiation whether current user is the lender or not
             if(cur.getLender().equals(((MainActivity)getActivity()).getMyUser().getObjectId())) {
+                //in this case : green background, checkbox enabled
                 layout.setBackgroundColor(Color.parseColor("#E3FBE9"));
                 picArrow.setImageDrawable(getResources().getDrawable(R.drawable.green_arrow));
                 paid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -152,13 +195,15 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
                 });
             }
             else{
-                layout.setBackgroundColor(Color.parseColor("#FFDFDF"));
+                //otherwise red background and checkbox disabled (but still visible)
+                layout.setBackgroundColor(Color.parseColor("#FFECEC"));
                 picArrow.setImageDrawable(getResources().getDrawable(R.drawable.red_arrow));
                 paid.setClickable(false);
             }
         }
     }
 
+    //function definition when a starting event is triggered by the fragment
     public void onEventMainThread(StartEvent e) {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
@@ -167,10 +212,13 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
             progressDialog.setCancelable(true);
         }
 
+        //display an infinite progressDialog, in order to interrupt user experience
+        //this is used when the application requires critical request to the database
         if (progressDialog != null && !progressDialog.isShowing())
             progressDialog.show();
     }
 
+    //function definition when a FinishedEvent is triggered by the fragment
     public void onEventMainThread(FinishedEvent e) {
 
         if (progressDialog != null && progressDialog.isShowing()) {
@@ -179,6 +227,7 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
 
         // Success retreiving database
         if (e.isSuccess()) {
+            //getting specific data according request type
             if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e.getAction())) {
                 tabOperations = e.getExtras().getParcelableArrayList("data");
             }
