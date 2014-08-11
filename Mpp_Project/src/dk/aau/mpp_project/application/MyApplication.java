@@ -21,9 +21,11 @@ import dk.aau.mpp_project.model.MyUser;
 public class MyApplication extends Application {
 
 	// Parse parameters
-	public static final String			CHANNEL		= "colloc";
-	private static final String			ID_APP		= "S0ckBwXaRNgx9B87f5VE5GZGwUggjOVvj7NNLsAh";
-	private static final String			ID_CLIENT	= "hBicP6lpgj85DPwtgCnwBF8ZWs0xeNFwljqiJNqg";
+	public static final String			CHANNEL			= "colloc";
+	private static final String			ID_APP			= "S0ckBwXaRNgx9B87f5VE5GZGwUggjOVvj7NNLsAh";
+	private static final String			ID_CLIENT		= "hBicP6lpgj85DPwtgCnwBF8ZWs0xeNFwljqiJNqg";
+
+	public static final String			CURRENT_FLAT	= "current_flat";
 
 	private static SharedPreferences	sharedPref;
 

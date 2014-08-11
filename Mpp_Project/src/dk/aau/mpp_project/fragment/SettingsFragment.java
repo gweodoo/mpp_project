@@ -1,14 +1,16 @@
 package dk.aau.mpp_project.fragment;
 
 import android.app.ProgressDialog;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.parse.ParseUser;
 import de.greenrobot.event.EventBus;
 import android.view.ViewGroup;
@@ -20,14 +22,14 @@ import com.parse.ParseUser;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.activity.LogInActivity;
 import dk.aau.mpp_project.activity.MainActivity;
+import dk.aau.mpp_project.activity.NewFlatActivity;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
-import dk.aau.mpp_project.model.Flat;
 
-import java.util.ArrayList;
+public class SettingsFragment extends Fragment implements FragmentEventHandler {
 
-public class SettingsFragment extends Fragment implements FragmentEventHandler{
+	private ProgressDialog	progressDialog;
 
     private ProgressDialog progressDialog;
 	private TextView	textViewLogout;
@@ -63,14 +65,14 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler{
 		textViewLeaveFlat.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				onLeaveButtonClicked();
+				onLeaveFlatButtonClicked();
 			}
 		});
 
 		return rootView;
 	}
 
-	protected void onLeaveButtonClicked() {
+	protected void onLeaveFlatButtonClicked() {
 		DatabaseHelper.leaveFlat(((MainActivity) getActivity()).getMyUser(),
 				((MainActivity) getActivity()).getMyFlat());
 	}
@@ -105,69 +107,58 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler{
 		getActivity().finish();
 	}
 
-    @Override
-    public void onResumeEvent() {
+	@Override
+	public void onResumeEvent() {
 
-        EventBus.getDefault().register(this);
-    }
+		EventBus.getDefault().register(this);
+	}
 
-    @Override
-    public void onPauseEvent() {
+	@Override
+	public void onPauseEvent() {
 
-        EventBus.getDefault().unregister(this);
-    }
-    public void onEventMainThread(StartEvent e) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Loading...");
-            progressDialog.setCancelable(true);
-        }
+		EventBus.getDefault().unregister(this);
+	}
 
-        if (progressDialog != null && !progressDialog.isShowing())
-            progressDialog.show();
-    }
+	public void onEventMainThread(StartEvent e) {
+		if (progressDialog == null) {
+			progressDialog = new ProgressDialog(getActivity());
+			progressDialog.setIndeterminate(true);
+			progressDialog.setMessage("Loading...");
+			progressDialog.setCancelable(true);
+		}
 
-    public void onEventMainThread(FinishedEvent e) {
+		if (progressDialog != null && !progressDialog.isShowing())
+			progressDialog.show();
+	}
 
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
+	public void onEventMainThread(FinishedEvent e) {
 
-        // Success retreiving database
-        if (e.isSuccess()) {
+		if (progressDialog != null && progressDialog.isShowing()) {
+			progressDialog.dismiss();
+		}
 
-            // Check for what you wanted to retrieve
-            if (DatabaseHelper.ACTION_GET_USER_FLATS.equals(e.getAction())) {
-                // You know what you need (List or simple object)
-                // If List: ArrayList<Flat> flatsList =
-                // e.getExtras().getParcelableArrayList("data");
-                // If Object only : Flat flat =
-                // e.getExtras().getParcelable("data");
+		// Success retreiving database
+		if (e.isSuccess()) {
 
-                ArrayList<Flat> flatsList = e.getExtras()
-                        .getParcelableArrayList("data");
+			// Check for what you wanted to retrieve
+			if (DatabaseHelper.ACTION_LEAVE_FLAT.equals(e.getAction())) {
+				// You know what you need (List or simple object)
+				// If List: ArrayList<Flat> flatsList =
+				// e.getExtras().getParcelableArrayList("data");
+				// If Object only : Flat flat =
+				// e.getExtras().getParcelable("data");
 
-                // if (flatsList.size() == 0) {
-                // goToNewFlatActivity();
-                // } else if (flatsList.size() == 1) {
-                // goToMainActivity(flatsList.get(0));
-                // } else if (flatsList.size() > 1) {
-                // goToNewFlatActivity(flatsList);
-                // }
-
-                // for (Flat f : flatsList)
-                // Log.v(TAG,
-                // "# Flat : " + f.getName() + " : "
-                // + f.getRentAmount() + "$");
-
-            } else if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e
-                    .getAction())) {
-
-            } else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
-                    .getAction())) {
-
-            }
-        }
-    }
+				Intent intent = new Intent(getActivity(), NewFlatActivity.class);
+				getActivity().startActivity(intent);
+				getActivity().finish();
+			}
+		} else {
+			if (DatabaseHelper.ACTION_LEAVE_FLAT.equals(e.getAction())) {
+				Toast.makeText(
+						getActivity(),
+						"An error occured while trying to leave the flat. Please try again.",
+						Toast.LENGTH_LONG).show();
+			}
+		}
+	}
 }
