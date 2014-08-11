@@ -3,21 +3,18 @@ package dk.aau.mpp_project.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.xmlpull.v1.XmlPullParser;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.AttributeSet;
-import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -89,25 +86,25 @@ public class HomeFragment extends Fragment implements FragmentEventHandler {
 		LinearLayout bottom = (LinearLayout) rlMain.findViewById(R.id.bottom);
 
 		// Adding roommate avatars
-		CircularImageView a1 = new CircularImageView(rootView.getContext());
+		ImageView a1 = new ImageView(rootView.getContext());
 		a1.setImageDrawable(getResources().getDrawable(R.drawable.av1));
 		a1.setAdjustViewBounds(true);
 		a1.setMaxHeight(200);
 		a1.setMaxWidth(200);
 
-		CircularImageView a2 = new CircularImageView(rootView.getContext());
+		ImageView a2 = new ImageView(rootView.getContext());
 		a2.setImageDrawable(getResources().getDrawable(R.drawable.av2));
 		a2.setAdjustViewBounds(true);
 		a2.setMaxHeight(200);
 		a2.setMaxWidth(200);
 
-		CircularImageView a3 = new CircularImageView(rootView.getContext());
+		ImageView a3 = new ImageView(rootView.getContext());
 		a3.setImageDrawable(getResources().getDrawable(R.drawable.av3));
 		a3.setAdjustViewBounds(true);
 		a3.setMaxHeight(200);
 		a3.setMaxWidth(200);
 
-		CircularImageView a4 = new CircularImageView(rootView.getContext());
+		ImageView a4 = new ImageView(rootView.getContext());
 		a4.setImageDrawable(getResources().getDrawable(R.drawable.av4));
 		a4.setAdjustViewBounds(true);
 		a4.setMaxHeight(200);

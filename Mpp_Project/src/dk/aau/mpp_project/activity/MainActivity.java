@@ -259,10 +259,15 @@ public class MainActivity extends FragmentActivity implements
 			if (requestCode == REQUEST_CODE_NEW_FLAT_ACTIVITY) {
 
 				String flatId = data.getStringExtra("data");
+				
+				Log.v(TAG, "# " + myFlat.getObjectId() + " = " + flatId);
 
-				EventBus.getDefault().register(this);
+				if (myFlat.getObjectId() != flatId) {
 
-				DatabaseHelper.getFlatById(flatId);
+					EventBus.getDefault().register(this);
+
+					DatabaseHelper.getFlatById(flatId);
+				}
 			}
 		}
 

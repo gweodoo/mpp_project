@@ -88,6 +88,11 @@
             android:label="@string/title_activity_new_flat"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="dk.aau.mpp_project.activity.ChangeDetailsActivity"
+            android:label="@string/title_activity_change_details"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

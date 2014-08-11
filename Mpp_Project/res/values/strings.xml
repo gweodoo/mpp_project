@@ -15,5 +15,6 @@
 	<string name="flat_settings">FLAT SETTINGS</string>
 	<string name="user_settings">USER SETTINGS</string>
 	<string name="last_activities">Last activities</string>
+	<string name="title_activity_change_details">Change flat details</string>
 
 </resources>
