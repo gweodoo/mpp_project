@@ -79,8 +79,9 @@
         </receiver>
 
         <activity
-            android:name="dk.aau.mpp_project.AddNewFlatActivity"
-            android:label="@string/title_activity_add_new_flat" >
+            android:name="dk.aau.mpp_project.activity.AddNewFlatActivity"
+            android:label="@string/title_activity_add_new_flat"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="dk.aau.mpp_project.activity.NewFlatActivity"

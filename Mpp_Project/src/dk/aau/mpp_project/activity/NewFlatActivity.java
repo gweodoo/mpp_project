@@ -7,7 +7,6 @@ import it.gmariotti.cardslib.library.view.CardListView;
 
 import java.util.ArrayList;
 
-import dk.aau.mpp_project.AddNewFlatActivity;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.cards.ChooseFlatCard;
 import android.os.Bundle;
