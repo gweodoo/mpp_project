@@ -31,7 +31,7 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 	private TextView		textViewLogout;
 	private TextView		textViewChangeDetails;
 	private TextView		textViewLeaveFlat;
-	private TextView		flatId;
+	private TextView		textViewFlatId;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,6 +44,10 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 				.findViewById(R.id.textViewChangeDetails);
 		textViewLeaveFlat = (TextView) rootView
 				.findViewById(R.id.textViewLeaveFlat);
+		textViewFlatId = (TextView) rootView.findViewById(R.id.textViewFlatId);
+
+		textViewFlatId.setText("Flat ID : "
+				+ ((MainActivity) getActivity()).getMyFlat().getObjectId());
 
 		textViewLogout.setOnClickListener(new View.OnClickListener() {
 			@Override

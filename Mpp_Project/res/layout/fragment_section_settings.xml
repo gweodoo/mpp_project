@@ -1,11 +1,13 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical" >
 
 	<TextView
+		android:id="@+id/a"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
 		android:layout_marginBottom="3dp"
 		android:layout_marginLeft="20dp"
 		android:layout_marginTop="10dp"
@@ -15,8 +17,10 @@
 		android:textStyle="bold" />
 
 	<View
+		android:id="@+id/b"
 		android:layout_width="match_parent"
 		android:layout_height="1dp"
+		android:layout_below="@+id/a"
 		android:layout_marginLeft="10dp"
 		android:layout_marginRight="10dp"
 		android:background="#5e5e5e" />
@@ -25,6 +29,7 @@
 		android:id="@+id/textViewChangeDetails"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_below="@+id/b"
 		android:layout_marginTop="5dp"
 		android:background="@drawable/selector_background_item_settings"
 		android:clickable="true"
@@ -38,6 +43,7 @@
 		android:id="@+id/textViewLeaveFlat"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_below="@+id/textViewChangeDetails"
 		android:background="@drawable/selector_background_item_settings"
 		android:clickable="true"
 		android:paddingBottom="10dp"
@@ -47,8 +53,21 @@
 		android:textAppearance="?android:attr/textAppearanceMedium" />
 
 	<TextView
+		android:id="@+id/textViewFlatId"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_marginTop="5dp"
+		android:paddingBottom="10dp"
+		android:paddingLeft="30dp"
+		android:paddingTop="10dp"
+		android:textAppearance="?android:attr/textAppearanceMedium" />
+
+	<TextView
+		android:id="@+id/c"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_below="@+id/textViewLeaveFlat"
 		android:layout_marginBottom="3dp"
 		android:layout_marginLeft="20dp"
 		android:layout_marginTop="10dp"
@@ -58,8 +77,10 @@
 		android:textStyle="bold" />
 
 	<View
+		android:id="@+id/d"
 		android:layout_width="match_parent"
 		android:layout_height="1dp"
+		android:layout_below="@+id/c"
 		android:layout_marginLeft="10dp"
 		android:layout_marginRight="10dp"
 		android:background="#5e5e5e" />
@@ -68,6 +89,7 @@
 		android:id="@+id/textViewLogout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:layout_below="@+id/d"
 		android:layout_marginTop="5dp"
 		android:background="@drawable/selector_background_item_settings"
 		android:clickable="true"
@@ -77,14 +99,4 @@
 		android:text="@string/logout"
 		android:textAppearance="?android:attr/textAppearanceMedium" />
 
-	<TextView
-		android:id="@+id/flatId"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="5dp"
-		android:paddingBottom="10dp"
-		android:paddingLeft="30dp"
-		android:paddingTop="10dp"
-		android:textAppearance="?android:attr/textAppearanceMedium" />
-
-</LinearLayout>
+</RelativeLayout>

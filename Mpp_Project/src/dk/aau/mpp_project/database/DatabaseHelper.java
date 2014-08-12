@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import com.parse.*;
+
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
@@ -11,6 +12,9 @@ import dk.aau.mpp_project.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class DatabaseHelper {
 
@@ -398,4 +402,20 @@ public class DatabaseHelper {
 			}
 		});
 	}
+    
+//    public static void parseSendPush(String channel, String userId)
+//			throws JSONException {
+//
+//		ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
+//		pushQuery.whereEqualTo("channels", channel);
+//		pushQuery.whereEqualTo(USERNAME, target);
+//
+//		JSONObject data = new JSONObject(
+//				"{\"action\":\"colloc.action.push\",\"msg\": \"You owe 200$ to Pierre\" }");
+//
+//		ParsePush push = new ParsePush();
+//		push.setQuery(pushQuery);
+//		push.setData(data);
+//		push.sendInBackground();
+//	}
 }
