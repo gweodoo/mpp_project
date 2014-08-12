@@ -38,6 +38,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class AddNewFlatActivity extends Activity {
 
@@ -172,9 +173,10 @@ public class AddNewFlatActivity extends Activity {
 		// Success retreiving database
 		if (e.isSuccess()) {
 			if(DatabaseHelper.ACTION_JOIN_FLAT.equals(e.getAction())){
-				if (MyApplication.getSharedPref().contains(MyApplication.CURRENT_FLAT)) {
-						MyApplication.setOption(MyApplication.CURRENT_FLAT, "-1");
-				}
+				flat = e.getExtras().getParcelable("data");
+				MyApplication.setOption(MyApplication.CURRENT_FLAT,
+						flat.getObjectId());
+				Toast.makeText(getApplicationContext(), "New Flat ID: "+flat.getObjectId(), 3000);
 				setResult(RESULT_OK);
 				finish();
 			}
