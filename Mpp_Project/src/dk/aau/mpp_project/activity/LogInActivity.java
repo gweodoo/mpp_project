@@ -82,7 +82,7 @@ public class LogInActivity extends Activity {
 		List<String> permissions = Arrays.asList("basic_info", "user_about_me",
 				"user_birthday");
 
-		ParseFacebookUtils.logIn(this, new LogInCallback() {
+		ParseFacebookUtils.logIn(permissions, this, new LogInCallback() {
 			@Override
 			public void done(ParseUser user, ParseException err) {
 
