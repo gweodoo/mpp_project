@@ -1,19 +1,15 @@
 package dk.aau.mpp_project.adapter;
 
-import java.util.ArrayList;
-
-
-
-import dk.aau.mpp_project.R;
-import dk.aau.mpp_project.model.Operation;
-import android.content.ClipData.Item;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.model.Operation;
+
+import java.util.ArrayList;
 
 public class OperationAdapter extends ArrayAdapter<Operation> {
 	private ArrayList<Operation> objects;
@@ -55,7 +51,7 @@ public class OperationAdapter extends ArrayAdapter<Operation> {
 			}
 			if (dateText != null){
 				//dtd.setText(i.getDate());
-				dateText.setText(i.getLender());
+				dateText.setText(i.getDate());
 			}
 
 		}

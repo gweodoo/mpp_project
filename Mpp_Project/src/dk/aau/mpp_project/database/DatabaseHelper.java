@@ -3,15 +3,7 @@ package dk.aau.mpp_project.database;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
-
-import com.parse.DeleteCallback;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.SaveCallback;
-
+import com.parse.*;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;

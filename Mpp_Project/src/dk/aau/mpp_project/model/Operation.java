@@ -21,17 +21,17 @@ public class Operation extends ParseObject implements Parcelable {
 	public static final String	DATE	= "date";
 
 	private Flat				flat;
-	private String				lender;
-	private String				to;
+	private MyUser				lender;
+	private MyUser				to;
 	private String				comment;
-	private Boolean				isPaid;
+	private boolean				isPaid;
 	private double				amount;
 	private String				date;
 
 	public Operation() {
 	}
 
-	public Operation(Flat flat, String lender, String to, double amount, String date, String comment, boolean isPaid) {
+	public Operation(Flat flat, MyUser lender, MyUser to, double amount, String date, String comment, boolean isPaid) {
 
 		this.flat = flat;
 		this.lender = lender;
@@ -41,7 +41,7 @@ public class Operation extends ParseObject implements Parcelable {
 		this.comment = comment;
         this.date = date;
         if(this.date.equals(""))
-		    this.date = (new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
+		    this.date = (new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
 
 		setComment(comment);
 		setDate(date);
@@ -52,11 +52,11 @@ public class Operation extends ParseObject implements Parcelable {
 		setAmount(amount);
 	}
 
-	public String getLender() {
-		return getString(LENDER);
+	public MyUser getLender() {
+		return (MyUser) get(LENDER);
 	}
 
-	public void setLender(String lender) {
+	public void setLender(MyUser lender) {
 		this.lender = lender;
 		put(LENDER, lender);
 	}
@@ -71,6 +71,7 @@ public class Operation extends ParseObject implements Parcelable {
 	}
 
 	public Flat getFlat() {
+
 		return (Flat) get(FLAT);
 	}
 
@@ -79,11 +80,11 @@ public class Operation extends ParseObject implements Parcelable {
 		put(FLAT, flat);
 	}
 
-	public String getTo() {
-		return getString(TO);
+	public MyUser getTo() {
+		return (MyUser)get(TO);
 	}
 
-	public void setTo(String to) {
+	public void setTo(MyUser to) {
 		this.to = to;
 		put(TO, to);
 	}
@@ -117,8 +118,8 @@ public class Operation extends ParseObject implements Parcelable {
 
 	public Operation(Parcel in) {
 		this.flat = in.readParcelable(Flat.class.getClassLoader());
-		this.lender = in.readString();
-		this.to = in.readString();
+		this.lender = in.readParcelable(MyUser.class.getClassLoader());
+		this.to = in.readParcelable(MyUser.class.getClassLoader());
 		this.amount = in.readDouble();
 		this.isPaid = in.readByte() != 0;
 		this.comment = in.readString();
@@ -128,8 +129,8 @@ public class Operation extends ParseObject implements Parcelable {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeParcelable(flat, flags);
-		dest.writeString(lender);
-		dest.writeString(to);
+		dest.writeParcelable(lender, flags);
+		dest.writeParcelable(to, flags);
 		dest.writeDouble(amount);
 		dest.writeByte((byte) (isPaid ? 1 : 0));
 		dest.writeString(comment);

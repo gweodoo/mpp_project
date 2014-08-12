@@ -24,8 +24,6 @@ import it.gmariotti.cardslib.library.view.CardListView;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * This class, representing a fragment, displays all information about expenses for a specific user, the current one
@@ -52,7 +50,7 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
         //adding header text
         TextView t = new TextView(this.getActivity());
         t.setTextSize(20);
-        t.setText("bLast loans :");
+        t.setText("Last loans :");
         t.setPadding(30, 50, 0, 30);
         tableView.addHeaderView(t);
 
@@ -72,8 +70,6 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
      * Function which refresh the listview with up-to-date data.
      */
     private void refreshItemsList() {
-        ArrayList<Card> cards = new ArrayList<Card>();
-
         //getting information about the current environment
         MyUser user = ((MainActivity)getActivity()).getMyUser();
         Flat flat = ((MainActivity)getActivity()).getMyFlat();
@@ -91,46 +87,6 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
 
         //get all entries as operations for the current flat in the database
         DatabaseHelper.getOperationsByFlat(flat);
-
-        //if no operations have been found in the database
-        if(tabOperations == null){
-            Toast.makeText(getActivity(), "No transactions found for this flat", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        //sorting operations in order to have most recent first (= on top)
-        Collections.sort(tabOperations, new Comparator<Operation>() {
-            @Override
-            public int compare(Operation lhs, Operation rhs) {
-                //comparison between operation dates (maybe need to re-check)
-                if (lhs.getDate().compareTo(rhs.getDate()) > 0)
-                    return 1;
-                else return -1;
-            }
-        });
-
-        //for each item loaded from the database
-        for(Operation item : tabOperations) {
-            // if the current user, is not implied in the current operation, shift it and continue
-            if(! (item.getLender().equals(user.getObjectId()) || item.getTo().equals(user.getObjectId()))){
-                tabOperations.remove(item);
-                continue;
-            }
-
-            //Generating cards content
-            CustomCard card = new CustomCard(getActivity(), item);
-            //adding the card to the list of new loaded cards
-            cards.add(card);
-        }
-
-        //if there are no operations found for this user, we stop here
-        if(cards.size() == 0){
-            Toast.makeText(getActivity(), "No transactions where you are implied have been found :)", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        //setting the new adapter to the cardListView
-        tableView.setAdapter(new CardArrayAdapter(getActivity(), cards));
     }
 
     @Override
@@ -176,13 +132,13 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
 
             //setting users pictures (you and the other one)
             picUser.setImageDrawable(getResources().getDrawable(R.drawable.av1));
-            picYou.setImageDrawable(getResources().getDrawable(R.drawable.av1));
+            picYou.setImageDrawable(getResources().getDrawable(R.drawable.av2));
 
             //setting paid status
             paid.setChecked(cur.getIsPaid());
 
             //differentiation whether current user is the lender or not
-            if(cur.getLender().equals(((MainActivity)getActivity()).getMyUser().getObjectId())) {
+			if(cur.getLender().equals(((MainActivity)getActivity()).getMyUser())) {
                 //in this case : green background, checkbox enabled
                 layout.setBackgroundColor(Color.parseColor("#E3FBE9"));
                 picArrow.setImageDrawable(getResources().getDrawable(R.drawable.green_arrow));
@@ -190,6 +146,8 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         //TODO: mark items as paid in parse
+						cur.setIsPaid(isChecked);
+						cur.saveInBackground();
                         Toast.makeText(getActivity(), "Transaction registered", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -230,7 +188,53 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
             //getting specific data according request type
             if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e.getAction())) {
                 tabOperations = e.getExtras().getParcelableArrayList("data");
+                fillListView();
             }
         }
+    }
+
+    public void fillListView(){
+
+        MyUser user = ((MainActivity)getActivity()).getMyUser();
+        ArrayList<Card> cards = new ArrayList<Card>();
+
+        //if no operations have been found in the database
+        if(tabOperations == null){
+            Toast.makeText(getActivity(), "No transactions found for this flat", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        //sorting operations in order to have most recent first (= on top)
+//        Collections.sort(tabOperations, new Comparator<Operation>() {
+//            @Override
+//            public int compare(Operation lhs, Operation rhs) {
+//                //comparison between operation dates (maybe need to re-check)
+//                if (lhs.getDate().compareTo(rhs.getDate()) > 0)
+//                    return 1;
+//                else return -1;
+//            }
+//        });
+
+        //for each item loaded from the database
+        for(Operation item : tabOperations) {
+            // if the current user, is not implied in the current operation, shift it and continue
+            if(! (item.getLender().equals(user) || item.getTo().equals(user))){
+                continue;
+            }
+
+            //Generating cards content
+            CustomCard card = new CustomCard(getActivity(), item);
+            //adding the card to the list of new loaded cards
+            cards.add(card);
+        }
+
+        //if there are no operations found for this user, we stop here
+        if(cards.size() == 0){
+            Toast.makeText(getActivity(), "No transactions where you are implied have been found :)", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        //setting the new adapter to the cardListView
+        tableView.setAdapter(new CardArrayAdapter(getActivity(), cards));
     }
 }

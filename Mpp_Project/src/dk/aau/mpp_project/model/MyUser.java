@@ -13,8 +13,9 @@ public class MyUser extends ParseUser implements Parcelable {
 	public final static String	FACEBOOK_ID	= "facebookId";
 	public final static String	BIRTHDAY	= "birthday";
 	public final static String	NAME		= "name";
+    public final static String  FLAT        = "flat";
 
-	private String				facebookId;
+    private String				facebookId;
 	private String				birthday;
 	private String				name;
 
@@ -98,5 +99,16 @@ public class MyUser extends ParseUser implements Parcelable {
 	@Override
 	public int describeContents() {
 		return 0;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+
+		MyUser myUser = (MyUser) o;
+
+		if (getObjectId() != null ? !getObjectId().equals(myUser.getObjectId()) : myUser.getObjectId() != null) return false;
+
+		return true;
 	}
 }

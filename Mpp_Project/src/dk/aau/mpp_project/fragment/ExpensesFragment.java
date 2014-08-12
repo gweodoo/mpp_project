@@ -7,15 +7,8 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.activity.MainActivity;
@@ -123,7 +116,7 @@ public class ExpensesFragment extends ListFragment implements FragmentEventHandl
         Operation temp;
 		for(int i=0;i<20;i++)
 		{
-			temp=new Operation(new Flat(), "test", "test", 10.2,"hello", "hello", false);
+			temp=new Operation(new Flat(), ((MainActivity)getActivity()).getMyUser(), ((MainActivity)getActivity()).getMyUser(), 10.2,"hello", "hello", false);
 			
 			myArray.add(temp);
 			
@@ -147,7 +140,7 @@ public class ExpensesFragment extends ListFragment implements FragmentEventHandl
             	DatabaseHelper.getUsersByFlat(flatId);
             	 
             	//We fill it
-            	temp=new Operation(flatId,user.getName(),shareMate,Double.valueOf(amountText.getText().toString()),"",commentText.getText().toString(),false);
+		temp=new Operation(flatId,user,user,Double.valueOf(amountText.getText().toString()),"",commentText.getText().toString(),false);
             
             }
 		});
