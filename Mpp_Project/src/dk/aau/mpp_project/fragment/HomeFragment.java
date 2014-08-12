@@ -1,33 +1,24 @@
 package dk.aau.mpp_project.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.parse.ParseException;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.graphics.Bitmap.Config;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
+import com.parse.ParseException;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.activity.MainActivity;
@@ -40,7 +31,10 @@ import dk.aau.mpp_project.model.MyUser;
 import dk.aau.mpp_project.model.News;
 import dk.aau.mpp_project.widget.CircularImageView;
 
-public class HomeFragment extends Fragment implements FragmentEventHandler {
+import java.util.ArrayList;
+import java.util.List;
+
+public class HomeFragment extends Fragment implements FragmentEventHandler,SwipeRefreshLayout.OnRefreshListener {
 
 	public String			name	= "Home";
 	private ProgressDialog	progressDialog;
@@ -48,13 +42,16 @@ public class HomeFragment extends Fragment implements FragmentEventHandler {
 
 	private ListView		listView;
 	private NewsAdapter		adapter;
+	private SwipeRefreshLayout swipeRefresh;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		LinearLayout rootView = (LinearLayout) inflater.inflate(
 				R.layout.fragment_section_home, container, false);
-
+		swipeRefresh = (SwipeRefreshLayout)rootView.findViewById(R.id.swipe_container);
+		swipeRefresh.setOnRefreshListener(this);
+		swipeRefresh.setColorScheme(android.R.color.holo_blue_bright, android.R.color.holo_green_light,  android.R.color.holo_orange_light, android.R.color.holo_red_light);
 		newsList = new ArrayList<News>();
 
 		// getting information about the current environment
@@ -113,7 +110,6 @@ public class HomeFragment extends Fragment implements FragmentEventHandler {
 				}
 			}
 		});
-
 		LinearLayout bottom = (LinearLayout) rlMain.findViewById(R.id.bottom);
 
 		// Adding roommate avatars
@@ -204,12 +200,23 @@ public class HomeFragment extends Fragment implements FragmentEventHandler {
 		}
 	}
 
+	@Override
+	public void onRefresh() {
+		new Handler().postDelayed(new Runnable() {
+			@Override public void run() {
+				swipeRefresh.setRefreshing(false);
+			}
+		}, 2000);
+		DatabaseHelper.getNewsByFlat(((MainActivity)getActivity()).getMyFlat());
+	}
+
 	public class NewsAdapter extends ArrayAdapter<News> {
 
 		public class ViewHolder {
 			public CircularImageView	photo;
 			public TextView				comment;
 			public TextView				date;
+			public TextView             sender;
 		}
 
 		private Context	context;
@@ -244,13 +251,14 @@ public class HomeFragment extends Fragment implements FragmentEventHandler {
 			} else {
 				viewHolder = (ViewHolder) convertView.getTag();
 			}
-
 			News news = this.getItem(position);
 
-			viewHolder.comment.setText(news.getComment());
+//			Log.i("PARSE", "" + news);
+//			Log.i("PARSE", ""+news.getUser());
+//			Log.i("PARSE", ""+news.getUser().getName());
+//			viewHolder.sender.setText("From "+news.getUser().getName());
+			viewHolder.comment.setText("\""+news.getComment()+"\"");
 			viewHolder.date.setText(news.getDate());
-			
-			convertView.setTag(viewHolder);
 
 			return convertView;
 		}

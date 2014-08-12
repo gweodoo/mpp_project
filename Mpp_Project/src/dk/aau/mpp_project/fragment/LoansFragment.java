@@ -1,5 +1,6 @@
 package dk.aau.mpp_project.fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -34,11 +35,18 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
      * Class members
      */
     private View curView;
+	private Activity mActivity;
     private CardListView tableView;
     private ProgressDialog progressDialog;
     private ArrayList<Operation> tabOperations;
 
-    @Override
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		mActivity = activity;
+	}
+
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         //calling current fragment view
@@ -48,7 +56,7 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
         tableView = (CardListView)curView.findViewById(R.id.cardListLoans);
 
         //adding header text
-        TextView t = new TextView(this.getActivity());
+        TextView t = new TextView(mActivity);
         t.setTextSize(20);
         t.setText("Last loans :");
         t.setPadding(30, 50, 0, 30);
@@ -71,17 +79,17 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
      */
     private void refreshItemsList() {
         //getting information about the current environment
-        MyUser user = ((MainActivity)getActivity()).getMyUser();
-        Flat flat = ((MainActivity)getActivity()).getMyFlat();
+        MyUser user = ((MainActivity)mActivity).getMyUser();
+        Flat flat = ((MainActivity)mActivity).getMyFlat();
 
         // some checks if neither user nor flat have been found (which should be errors)
         if(user == null){
-            Toast.makeText(getActivity(), "Error : Who are you ?", Toast.LENGTH_LONG).show();
+            Toast.makeText(mActivity, "Error : Who are you ?", Toast.LENGTH_LONG).show();
             return;
         }
 
         if(flat == null){
-            Toast.makeText(getActivity(), "Error : No flat found for you !", Toast.LENGTH_LONG).show();
+            Toast.makeText(mActivity, "Error : No flat found for you !", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -138,7 +146,7 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
             paid.setChecked(cur.getIsPaid());
 
             //differentiation whether current user is the lender or not
-			if(cur.getLender().equals(((MainActivity)getActivity()).getMyUser())) {
+			if(cur.getLender().equals(((MainActivity)mActivity).getMyUser())) {
                 //in this case : green background, checkbox enabled
                 layout.setBackgroundColor(Color.parseColor("#E3FBE9"));
                 picArrow.setImageDrawable(getResources().getDrawable(R.drawable.green_arrow));
@@ -148,7 +156,7 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
                         //TODO: mark items as paid in parse
 						cur.setIsPaid(isChecked);
 						cur.saveInBackground();
-                        Toast.makeText(getActivity(), "Transaction registered", Toast.LENGTH_LONG).show();
+                        Toast.makeText(mActivity, "Transaction registered", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -164,7 +172,7 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
     //function definition when a starting event is triggered by the fragment
     public void onEventMainThread(StartEvent e) {
         if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getActivity());
+            progressDialog = new ProgressDialog(mActivity);
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage("Loading...");
             progressDialog.setCancelable(true);
@@ -195,12 +203,12 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
 
     public void fillListView(){
 
-        MyUser user = ((MainActivity)getActivity()).getMyUser();
+        MyUser user = ((MainActivity)mActivity).getMyUser();
         ArrayList<Card> cards = new ArrayList<Card>();
 
         //if no operations have been found in the database
         if(tabOperations == null){
-            Toast.makeText(getActivity(), "No transactions found for this flat", Toast.LENGTH_LONG).show();
+            Toast.makeText(mActivity, "No transactions found for this flat", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -223,18 +231,18 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
             }
 
             //Generating cards content
-            CustomCard card = new CustomCard(getActivity(), item);
+            CustomCard card = new CustomCard(mActivity, item);
             //adding the card to the list of new loaded cards
             cards.add(card);
         }
 
         //if there are no operations found for this user, we stop here
         if(cards.size() == 0){
-            Toast.makeText(getActivity(), "No transactions where you are implied have been found :)", Toast.LENGTH_LONG).show();
+            Toast.makeText(mActivity, "No transactions where you are implied have been found :)", Toast.LENGTH_LONG).show();
             return;
         }
 
         //setting the new adapter to the cardListView
-        tableView.setAdapter(new CardArrayAdapter(getActivity(), cards));
+        tableView.setAdapter(new CardArrayAdapter(mActivity, cards));
     }
 }

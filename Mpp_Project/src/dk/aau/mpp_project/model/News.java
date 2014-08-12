@@ -1,14 +1,13 @@
 package dk.aau.mpp_project.model;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import com.parse.ParseClassName;
-import com.parse.ParseObject;
-
 import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.parse.ParseClassName;
+import com.parse.ParseObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @ParseClassName("News")
 public class News extends ParseObject implements Parcelable {
@@ -17,7 +16,7 @@ public class News extends ParseObject implements Parcelable {
 	public static final String	USER	= "user";
 	public static final String	FLAT	= "flat";
 	public static final String	COMMENT	= "comment";
-	private static final String	DATE	= "date";
+	private static final String	DATE	= "createdAt";
 
 	private Flat				flat;
 	private MyUser				user;
@@ -43,7 +42,8 @@ public class News extends ParseObject implements Parcelable {
 	}
 
 	public String getDate() {
-		return getString(DATE);
+		Date date = getCreatedAt();
+		return date.toString();
 	}
 
 	public void setDate(String date) {
@@ -69,7 +69,8 @@ public class News extends ParseObject implements Parcelable {
 	}
 
 	public String getComment() {
-		return getString(COMMENT);
+		String data = getString(COMMENT);
+		return data;
 	}
 
 	public void setComment(String comment) {
