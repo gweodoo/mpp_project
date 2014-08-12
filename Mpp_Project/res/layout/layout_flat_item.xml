@@ -5,12 +5,13 @@
 	android:orientation="vertical" >
 
 	<ImageView
-		android:id="@+id/flatImage"
-		android:layout_width="match_parent"
-		android:layout_height="100dp"
-		android:contentDescription="@null"
-		android:scaleType="fitXY"
-		android:src="@drawable/flat1small" />
+	    android:id="@+id/flatImage"
+	    android:layout_width="match_parent"
+	    android:layout_height="100dp"
+	    android:adjustViewBounds="false"
+	    android:contentDescription="@null"
+	    android:scaleType="matrix"
+	    android:src="@drawable/flat1small" />
 
 	<TextView
 		android:id="@+id/flatTitle"

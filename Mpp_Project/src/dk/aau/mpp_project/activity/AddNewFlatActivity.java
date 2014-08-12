@@ -1,6 +1,7 @@
 package dk.aau.mpp_project.activity;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 
@@ -15,6 +16,7 @@ import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -24,7 +26,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.graphics.Bitmap.Config;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -83,6 +88,8 @@ public class AddNewFlatActivity extends Activity {
 			public void onClick(View v) {
 				Intent cameraIntent = new Intent(
 						android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+//                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
 				startActivityForResult(cameraIntent, CAMERA_REQUEST);
 			}
 		});
@@ -107,16 +114,14 @@ public class AddNewFlatActivity extends Activity {
 				// save flat data
 				ParseUser currentUser = ParseUser.getCurrentUser();
 				if (currentUser != null) {
-					flatImage.buildDrawingCache();
-					Bitmap b = flatImage.getDrawingCache();
-					flatImage.setDrawingCacheEnabled(false);
+					Bitmap b = Filter.rescale(bitmap, 300, true);//flatImage.getDrawingCache();
 
 					ByteArrayOutputStream stream = new ByteArrayOutputStream();
-					b.compress(Bitmap.CompressFormat.PNG, 100, stream);
+					b.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 					byte[] byteArray = stream.toByteArray();
 					
 					
-					ParseFile img = new ParseFile("flat.png", byteArray);
+					ParseFile img = new ParseFile("flat.jpg", byteArray);
 //					img.saveInBackground();
 					Flat flat = new Flat(flatName.getText().toString(), address
 							.getText().toString(), currentUser.getObjectId(),
@@ -168,8 +173,43 @@ public class AddNewFlatActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		flatImage = (ImageView) findViewById(R.id.new_flat_image);
 		if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-			Bitmap b = (Bitmap) data.getExtras().get("data");
-			flatImage.setImageBitmap(rescale(b, 300, false));
+			bitmap = (Bitmap) data.getExtras().get("data");
+			
+	        /*File f = new File(Environment.getExternalStorageDirectory().toString());
+
+//            for (File temp : f.listFiles()) {
+//
+//                if (temp.getName().equals("temp.jpg")) {
+
+//                    f = temp;
+	        
+                    File photo = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
+                    
+
+					BitmapFactory.Options options = new BitmapFactory.Options();
+					options.inPreferredConfig = Config.RGB_565;
+					options.inSampleSize = 2;
+                    
+                    
+                    bitmap = BitmapFactory.decodeFile(photo.getAbsolutePath(), options);
+                    photo.delete();
+                    if(bitmap==null)
+                    	System.out.println("NULL");
+                   //pic = photo;
+                    
+//                    break;
+//                }
+//
+//            }*/
+					Display display = getWindowManager().getDefaultDisplay();
+					Point size = new Point();
+					display.getSize(size);
+					int width = size.x;
+			
+			
+			flatImage.setImageBitmap(Filter.rescale(bitmap, width, false));
+//            b = Filter.rescale(b, 1000, filter)
+//			flatImage.setImageBitmap(b);
 		} else if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
 			Uri selectedImage = data.getData();
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
@@ -179,31 +219,19 @@ public class AddNewFlatActivity extends Activity {
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
+			
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inPreferredConfig = Config.RGB_565;
+			options.inSampleSize = 2;
 
-			bitmap = BitmapFactory.decodeFile(picturePath);
-			bitmap = rescale(bitmap, 300, false);
-			flatImage.setDrawingCacheEnabled(true);
+			bitmap = BitmapFactory.decodeFile(picturePath, options);
+			bitmap = Filter.rescale(bitmap, 300, false);
+//			flatImage.setDrawingCacheEnabled(true);
 			flatImage.setImageBitmap(bitmap);
 			// flatImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 		}
 	}
 
-	public Bitmap rescale(Bitmap b, int width, boolean filter) {
-		final int maxSize = width;
-		int outWidth;
-		int outHeight;
-		int inWidth = b.getWidth();
-		int inHeight = b.getHeight();
-		if (inWidth > inHeight) {
-			outWidth = maxSize;
-			outHeight = (inHeight * maxSize) / inWidth;
-		} else {
-			outHeight = maxSize;
-			outWidth = (inWidth * maxSize) / inHeight;
-		}
-		b = Bitmap.createScaledBitmap(b, outWidth, outHeight, filter);
-		return b; //Filter.fastblur(b, 10);
-	}
 
 	private boolean validateData() {
 		Boolean valid = true;
@@ -241,7 +269,7 @@ public class AddNewFlatActivity extends Activity {
 					filename, Context.MODE_PRIVATE);
 
 			// Writing the bitmap to the output stream
-			image.compress(Bitmap.CompressFormat.PNG, 100, fos);
+			image.compress(Bitmap.CompressFormat.JPEG, 100, fos);
 			fos.close();
 
 			return true;

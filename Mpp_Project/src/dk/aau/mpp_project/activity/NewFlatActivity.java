@@ -4,8 +4,15 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -13,6 +20,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.parse.ParseException;
 import com.parse.ParseUser;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
@@ -20,6 +29,8 @@ import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
+import dk.aau.mpp_project.filter.CropImageView;
+import dk.aau.mpp_project.filter.Filter;
 import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
 
@@ -242,7 +253,26 @@ public class NewFlatActivity extends Activity {
 			}
 
 			Flat flat = this.getItem(position);
-
+			if(flat.getPhoto()!=null){
+				try {
+					BitmapFactory.Options options = new BitmapFactory.Options();
+					options.inPreferredConfig = Config.RGB_565;
+					options.inSampleSize = 2;
+					
+					Bitmap b = BitmapFactory.decodeByteArray(flat.getPhoto().getData() , 0, flat.getPhoto().getData().length, options);
+					
+					Display display = getWindowManager().getDefaultDisplay();
+					Point size = new Point();
+					display.getSize(size);
+					int width = size.x;
+					b = Filter.rescale(b, width, false);
+					viewHolder.flatImage.setImageBitmap(Filter.fastblur(b, 20));
+	//				viewHolder.flatImage.setBackgroundDrawable(new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(b, 1000, 100, true)));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			viewHolder.flatTitle.setText(flat.getName());
 
 			return convertView;

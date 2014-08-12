@@ -34,7 +34,7 @@ public class Filter {
         //
         // Stack Blur Algorithm by Mario Klingemann <mario@quasimondo.com>
 
-        Bitmap bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
+        Bitmap bitmap = sentBitmap;//.copy(sentBitmap.getConfig(), true);
 
         if (radius < 1) {
             return (null);
@@ -233,5 +233,39 @@ public class Filter {
 
         return (bitmap);
     }
+	
+	public static  Bitmap rescale(Bitmap b, int width, boolean filter) {
+		final int maxSize = width;
+		int outWidth;
+		int outHeight;
+		int inWidth = b.getWidth();
+		int inHeight = b.getHeight();
+		if (inWidth > inHeight) {
+			outWidth = maxSize;
+			outHeight = (inHeight * maxSize) / inWidth;
+		} else {
+			outHeight = maxSize;
+			outWidth = (inWidth * maxSize) / inHeight;
+		}
+		b = Bitmap.createScaledBitmap(b, outWidth, outHeight, filter);
+		return b; //Filter.fastblur(b, 10);
+	}
+	
+	public static Bitmap crop(Bitmap b, int width){
+		final int maxSize = width;
+		int outWidth;
+		int outHeight;
+		int inWidth = b.getWidth();
+		int inHeight = b.getHeight();
+		if (inWidth > inHeight) {
+			outWidth = maxSize;
+			outHeight = (inHeight * maxSize) / inWidth;
+		} else {
+			outHeight = maxSize;
+			outWidth = (inWidth * maxSize) / inHeight;
+		}
+		Bitmap croppedBitmap = Bitmap.createBitmap(b, 0, width, b.getWidth() - outWidth, b.getHeight() - outHeight);
+		return croppedBitmap;
+	}
 
 }
