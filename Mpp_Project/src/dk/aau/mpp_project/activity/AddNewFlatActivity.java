@@ -275,7 +275,7 @@ public class AddNewFlatActivity extends Activity {
 			valid = false;
 		}
 		if(bitmap == null){
-			Toast.makeText(getApplicationContext(), "Please add a photo!", 3000).show();
+			Toast.makeText(getApplicationContext(), "Please add a photo!", Toast.LENGTH_LONG).show();
 			valid = false;
 		}
 
