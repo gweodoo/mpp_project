@@ -51,6 +51,7 @@ public class MainActivity extends FragmentActivity implements
 	private static final String		TAG										= "MainActivity";
 	private static final int		REQUEST_CODE_NEW_FLAT_ACTIVITY			= 1;
 	public static final int			REQUEST_CODE_CHANGE_DETAILS_ACTIIVTY	= 2;
+	public static final int			REQUEST_CODE_CHANGE_PASSWORD_ACTIIVTY	= 3;
 
 	private ViewPager				mViewPager;
 	private AppSectionsPagerAdapter	mAppSectionsPagerAdapter;
@@ -61,9 +62,9 @@ public class MainActivity extends FragmentActivity implements
 	private ProgressDialog			progressDialog;
 
 	private ActionBar				actionBar;
-	
-	private ShareActionProvider mShareActionProvider;
-	private Menu menu;
+
+	private ShareActionProvider		mShareActionProvider;
+	private Menu					menu;
 
 	public ProgressDialog getProgressDialog() {
 		return progressDialog;
@@ -218,19 +219,20 @@ public class MainActivity extends FragmentActivity implements
 
 		}
 	}
-	
-	public void initMenu(){
+
+	public void initMenu() {
 		MenuItem item = menu.findItem(R.id.menu_item_share);
 		mShareActionProvider = (ShareActionProvider) item.getActionProvider();
 		mShareActionProvider.setOnShareTargetSelectedListener(this);
 		mShareActionProvider.setShareIntent(getDefaultShareIntent());
 	}
-	
+
 	@Override
-	public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
-	    // start activity ourself to prevent search history
-	    startActivity(intent);
-	    return true;
+	public boolean onShareTargetSelected(ShareActionProvider source,
+			Intent intent) {
+		// start activity ourself to prevent search history
+		startActivity(intent);
+		return true;
 	}
 
 	@Override
@@ -239,14 +241,14 @@ public class MainActivity extends FragmentActivity implements
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
-    private Intent getDefaultShareIntent(){
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Flat Code");
-        intent.putExtra(Intent.EXTRA_TEXT, myFlat.getObjectId().toString());
-        return intent;
-    }
+
+	private Intent getDefaultShareIntent() {
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_SUBJECT, "Flat Code");
+		intent.putExtra(Intent.EXTRA_TEXT, myFlat.getObjectId().toString());
+		return intent;
+	}
 
 	public Flat getMyFlat() {
 		return myFlat;
@@ -298,11 +300,15 @@ public class MainActivity extends FragmentActivity implements
 					DatabaseHelper.getFlatById(flatId);
 				}
 			} else if (requestCode == REQUEST_CODE_CHANGE_DETAILS_ACTIIVTY) {
-				 EventBus.getDefault().register(this);
-				
-				 DatabaseHelper.getFlatById(myFlat.getObjectId());
+				EventBus.getDefault().register(this);
+
+				DatabaseHelper.getFlatById(myFlat.getObjectId());
 
 				Log.v(TAG, "# REQUEST_CODE_CHANGE_DETAILS_ACTIIVTY");
+			} else if (requestCode == REQUEST_CODE_CHANGE_PASSWORD_ACTIIVTY) {
+				EventBus.getDefault().register(this);
+
+				DatabaseHelper.getFlatById(myFlat.getObjectId());
 			}
 		}
 
@@ -359,11 +365,11 @@ public class MainActivity extends FragmentActivity implements
 			}
 		}
 	}
-	
+
 	private void setShareIntent(Intent shareIntent) {
-	    if (mShareActionProvider != null) {
-	        mShareActionProvider.setShareIntent(shareIntent);
-	    }
+		if (mShareActionProvider != null) {
+			mShareActionProvider.setShareIntent(shareIntent);
+		}
 
 	}
 

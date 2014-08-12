@@ -18,6 +18,7 @@
     <string name="last_activities">Last activities</string>
     <string name="title_activity_change_details">Change flat details</string>
     <string name="title_activity_flat_login">Join an existing flat</string>
+    <string name="change_password">Change password</string>
 
 	 <!-- ilyas added those lignes below -->
 	 <drawable name="Blue">#b0e0e6</drawable>

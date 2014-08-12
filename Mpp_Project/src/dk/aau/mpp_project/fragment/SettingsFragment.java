@@ -4,9 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +16,7 @@ import com.parse.ParseUser;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.activity.ChangeDetailsActivity;
+import dk.aau.mpp_project.activity.ChangePasswordActivity;
 import dk.aau.mpp_project.activity.LogInActivity;
 import dk.aau.mpp_project.activity.MainActivity;
 import dk.aau.mpp_project.activity.NewFlatActivity;
@@ -30,6 +31,7 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 	private ProgressDialog	progressDialog;
 	private TextView		textViewLogout;
 	private TextView		textViewChangeDetails;
+	private TextView		textViewChangePassword;
 	private TextView		textViewLeaveFlat;
 	private TextView		textViewFlatId;
 
@@ -45,6 +47,8 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 		textViewLeaveFlat = (TextView) rootView
 				.findViewById(R.id.textViewLeaveFlat);
 		textViewFlatId = (TextView) rootView.findViewById(R.id.textViewFlatId);
+		textViewChangePassword = (TextView) rootView
+				.findViewById(R.id.textViewChangePassword);
 
 		textViewFlatId.setText("Flat ID : "
 				+ ((MainActivity) getActivity()).getMyFlat().getObjectId());
@@ -70,7 +74,24 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 			}
 		});
 
+		textViewChangePassword.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				onChangePasswordClicked();
+			}
+		});
+
 		return rootView;
+	}
+
+	protected void onChangePasswordClicked() {
+		Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+
+		Flat flat = ((MainActivity) getActivity()).getMyFlat();
+		intent.putExtra("objectId", flat.getObjectId());
+		getActivity().startActivityForResult(intent,
+				MainActivity.REQUEST_CODE_CHANGE_PASSWORD_ACTIIVTY);
 	}
 
 	protected void onChangeDetailsFlatClicked() {

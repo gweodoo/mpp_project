@@ -40,10 +40,24 @@
 		android:textAppearance="?android:attr/textAppearanceMedium" />
 
 	<TextView
-		android:id="@+id/textViewLeaveFlat"
+		android:id="@+id/textViewChangePassword"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_below="@+id/textViewChangeDetails"
+		android:layout_marginTop="5dp"
+		android:background="@drawable/selector_background_item_settings"
+		android:clickable="true"
+		android:paddingBottom="10dp"
+		android:paddingLeft="30dp"
+		android:paddingTop="10dp"
+		android:text="@string/change_password"
+		android:textAppearance="?android:attr/textAppearanceMedium" />
+
+	<TextView
+		android:id="@+id/textViewLeaveFlat"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/textViewChangePassword"
 		android:background="@drawable/selector_background_item_settings"
 		android:clickable="true"
 		android:paddingBottom="10dp"
@@ -58,8 +72,8 @@
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
 		android:layout_marginTop="5dp"
+		android:gravity="center"
 		android:paddingBottom="10dp"
-		android:paddingLeft="30dp"
 		android:paddingTop="10dp"
 		android:textAppearance="?android:attr/textAppearanceMedium" />
 
