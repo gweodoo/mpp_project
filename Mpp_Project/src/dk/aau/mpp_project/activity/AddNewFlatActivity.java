@@ -177,7 +177,7 @@ public class AddNewFlatActivity extends Activity {
 			if (DatabaseHelper.ACTION_JOIN_FLAT.equals(e.getAction())) {
 				flat = e.getExtras().getParcelable("data");
 				MyApplication.setOption(MyApplication.CURRENT_FLAT,
-						flat.getObjectId());
+						flat.getObjectId().toString());
 				Toast.makeText(getApplicationContext(),
 						"New Flat ID: " + flat.getObjectId(), Toast.LENGTH_LONG).show();
 				
