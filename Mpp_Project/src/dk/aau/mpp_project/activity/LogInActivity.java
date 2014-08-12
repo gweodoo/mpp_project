@@ -106,7 +106,8 @@ public class LogInActivity extends Activity {
 					@Override
 					public void onCompleted(GraphUser user, Response response) {
 						if (user != null) {
-
+							System.out.println(user.getUsername());
+							System.out.println(user.getId());
 							final MyUser myUser = new MyUser(user.getId(), user
 									.getName(), user.getBirthday());
 
