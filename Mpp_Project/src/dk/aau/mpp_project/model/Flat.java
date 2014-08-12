@@ -10,25 +10,25 @@ import com.parse.ParseObject;
 @ParseClassName("Flat")
 public class Flat extends ParseObject implements Parcelable {
 
-	public static final String ID = "flatId";
-	public static final String NAME = "name";
-	public static final String ADDRESS = "address";
-	public static final String ADMIN_ID = "adminID";
-	public static final String RENT_AMOUNT = "rentAmount";
-	public static final String PASSWORD = "password";
-	public static final String PHOTO = "photo";
+	public static final String	ID			= "flatId";
+	public static final String	NAME		= "name";
+	public static final String	ADDRESS		= "address";
+	public static final String	ADMIN_ID	= "adminID";
+	public static final String	RENT_AMOUNT	= "rentAmount";
+	public static final String	PASSWORD	= "password";
+	public static final String	PHOTO		= "photo";
 
-	private String name;
-	private String address;
-	private String adminId;
-	private double rentAmount;
-	private String photoName;
-	private ParseFile photo;
+	private String				name;
+	private String				address;
+	private String				adminId;
+	private Double				rentAmount;
+	private String				photoName;
+	private ParseFile			photo;
 
 	public Flat() {
 	}
 
-	public Flat(String name, String address, String adminId, double rent,
+	public Flat(String name, String address, String adminId, Double rent,
 			ParseFile photo) {
 		super();
 		this.name = name;
@@ -37,9 +37,9 @@ public class Flat extends ParseObject implements Parcelable {
 		this.rentAmount = rent;
 		this.photo = photo;
 
+		setName(name);
 		setAddress(address);
 		setAdminId(adminId);
-		setName(name);
 		setRentAmount(rentAmount);
 		setPhoto(photo);
 	}
@@ -57,7 +57,7 @@ public class Flat extends ParseObject implements Parcelable {
 	}
 
 	public void setName(String name) {
-		// this.name = name;
+		this.name = name;
 		put(NAME, name);
 	}
 
@@ -66,7 +66,7 @@ public class Flat extends ParseObject implements Parcelable {
 	}
 
 	public void setAddress(String address) {
-		// this.address = address;
+		this.address = address;
 		put(ADDRESS, address);
 	}
 
@@ -75,19 +75,19 @@ public class Flat extends ParseObject implements Parcelable {
 	}
 
 	public void setAdminId(String adminId) {
-		// this.adminId = adminId;
+		this.adminId = adminId;
 		put(ADMIN_ID, adminId);
 	}
 
-	public double getRentAmount() {
+	public Double getRentAmount() {
 		return getDouble(RENT_AMOUNT);
 	}
 
-	public void setRentAmount(double rentAmount) {
-		// this.rentAmount = rentAmount;
+	public void setRentAmount(Double rentAmount) {
+		this.rentAmount = rentAmount;
 		put(RENT_AMOUNT, rentAmount);
 	}
-	
+
 	public ParseFile getPhoto() {
 		return getParseFile(PHOTO);
 	}
@@ -108,18 +108,22 @@ public class Flat extends ParseObject implements Parcelable {
 		dest.writeString(this.name);
 		dest.writeString(this.address);
 		dest.writeString(this.adminId);
-		dest.writeDouble(this.rentAmount);
+		if (rentAmount != null)
+			dest.writeDouble(this.rentAmount);
 	}
 
-	public static final Parcelable.Creator<Flat> CREATOR = new Parcelable.Creator<Flat>() {
-		public Flat createFromParcel(Parcel in) {
-			return new Flat(in);
-		}
+	public static final Parcelable.Creator<Flat>	CREATOR	= new Parcelable.Creator<Flat>() {
+																public Flat createFromParcel(
+																		Parcel in) {
+																	return new Flat(
+																			in);
+																}
 
-		public Flat[] newArray(int size) {
-			return new Flat[size];
-		}
-	};
+																public Flat[] newArray(
+																		int size) {
+																	return new Flat[size];
+																}
+															};
 
 	@Override
 	public int describeContents() {

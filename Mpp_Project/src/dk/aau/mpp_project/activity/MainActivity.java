@@ -46,15 +46,16 @@ import dk.aau.mpp_project.model.MyUser;
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
 
-	private static final String		TAG								= "MainActivity";
-	private static final int		REQUEST_CODE_NEW_FLAT_ACTIVITY	= 1;
+	private static final String		TAG										= "MainActivity";
+	private static final int		REQUEST_CODE_NEW_FLAT_ACTIVITY			= 1;
+	public static final int			REQUEST_CODE_CHANGE_DETAILS_ACTIIVTY	= 2;
 
 	private ViewPager				mViewPager;
 	private AppSectionsPagerAdapter	mAppSectionsPagerAdapter;
 	private ArrayList<Fragment>		listFragments;
 	private MyUser					myUser;
 	private Flat					myFlat;
-	private int						curFragment						= -1;
+	private int						curFragment								= -1;
 	private ProgressDialog			progressDialog;
 
 	private ActionBar				actionBar;
@@ -259,7 +260,7 @@ public class MainActivity extends FragmentActivity implements
 			if (requestCode == REQUEST_CODE_NEW_FLAT_ACTIVITY) {
 
 				String flatId = data.getStringExtra("data");
-				
+
 				Log.v(TAG, "# " + myFlat.getObjectId() + " = " + flatId);
 
 				if (myFlat.getObjectId() != flatId) {
@@ -268,6 +269,12 @@ public class MainActivity extends FragmentActivity implements
 
 					DatabaseHelper.getFlatById(flatId);
 				}
+			} else if (requestCode == REQUEST_CODE_CHANGE_DETAILS_ACTIIVTY) {
+				 EventBus.getDefault().register(this);
+				
+				 DatabaseHelper.getFlatById(myFlat.getObjectId());
+
+				Log.v(TAG, "# REQUEST_CODE_CHANGE_DETAILS_ACTIIVTY");
 			}
 		}
 

@@ -1,10 +1,10 @@
 package dk.aau.mpp_project.fragment;
 
 import android.app.ProgressDialog;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseUser;
+
 import de.greenrobot.event.EventBus;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-
-import com.parse.ParseUser;
-
 import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.activity.ChangeDetailsActivity;
 import dk.aau.mpp_project.activity.LogInActivity;
 import dk.aau.mpp_project.activity.MainActivity;
 import dk.aau.mpp_project.activity.NewFlatActivity;
@@ -27,6 +23,7 @@ import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
+import dk.aau.mpp_project.model.Flat;
 
 public class SettingsFragment extends Fragment implements FragmentEventHandler {
 
@@ -57,7 +54,7 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 		textViewChangeDetails.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
+				onChangeDetailsFlatClicked();
 			}
 		});
 
@@ -69,6 +66,17 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 		});
 
 		return rootView;
+	}
+
+	protected void onChangeDetailsFlatClicked() {
+		Intent intent = new Intent(getActivity(), ChangeDetailsActivity.class);
+		
+		Flat flat = ((MainActivity) getActivity()).getMyFlat();
+		intent.putExtra("objectId", flat.getObjectId());
+		intent.putExtra("name", flat.getName());
+		intent.putExtra("address", flat.getAddress());
+		intent.putExtra("rent", flat.getRentAmount());
+		getActivity().startActivityForResult(intent, MainActivity.REQUEST_CODE_CHANGE_DETAILS_ACTIIVTY);	
 	}
 
 	protected void onLeaveFlatButtonClicked() {
@@ -119,7 +127,7 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 	}
 
 	public void onEventMainThread(StartEvent e) {
-		if (progressDialog == null) {
+		if (progressDialog == null && getActivity() != null) {
 			progressDialog = new ProgressDialog(getActivity());
 			progressDialog.setIndeterminate(true);
 			progressDialog.setMessage("Loading...");

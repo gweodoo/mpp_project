@@ -249,6 +249,8 @@ public class HomeFragment extends Fragment implements FragmentEventHandler {
 
 			viewHolder.comment.setText(news.getComment());
 			viewHolder.date.setText(news.getDate());
+			
+			convertView.setTag(viewHolder);
 
 			return convertView;
 		}

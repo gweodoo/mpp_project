@@ -81,6 +81,8 @@ public class DatabaseHelper {
 		if (password != null) {
 			flat.put(Flat.PASSWORD, password);
 		}
+		
+		Log.v(TAG, "# Update Flat ID : " + flat.getObjectId());
 
 		flat.saveInBackground(new SaveCallback() {
 
