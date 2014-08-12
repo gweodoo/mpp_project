@@ -32,6 +32,7 @@ import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 
 public class NewFlatActivity extends Activity {
@@ -41,6 +42,7 @@ public class NewFlatActivity extends Activity {
 	private ArrayList<Flat>		flatsList;
 	private FlatAdapter			adapter;
 	private ProgressDialog		progressDialog;
+	private final int ADD_FLAT_REQUEST = 4567;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +83,7 @@ public class NewFlatActivity extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(getApplicationContext(),
 						AddNewFlatActivity.class);
-				startActivity(intent);
+				startActivityForResult(intent, ADD_FLAT_REQUEST);
 			}
 		});
 
@@ -94,6 +96,33 @@ public class NewFlatActivity extends Activity {
 				startActivity(intent);
 			}
 		});
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if(resultCode==RESULT_OK && requestCode == ADD_FLAT_REQUEST){
+			ParseUser currentUser = ParseUser.getCurrentUser();
+			if (currentUser != null) {
+				MyUser myUser = (MyUser) currentUser;
+
+				String facebookId = MyApplication
+						.getOption(MyUser.FACEBOOK_ID, "0");
+				String name = MyApplication.getOption(MyUser.NAME, "0");
+				String birthday = MyApplication.getOption(MyUser.BIRTHDAY, "0");
+
+				myUser.setBirthday(birthday);
+				myUser.setFacebookId(facebookId);
+				myUser.setName(name);
+
+				DatabaseHelper.getUserFlats(myUser);
+
+			} else {
+				// If the user is not logged in, go to the
+				// activity showing the login view.
+				startLoginActivity();
+			}
+		}
 	}
 
 	private void checkForCurrentFlat() {

@@ -9,7 +9,9 @@ import com.parse.ParseUser;
 
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
+import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
 import dk.aau.mpp_project.filter.Filter;
 import dk.aau.mpp_project.model.Flat;
@@ -51,6 +53,7 @@ public class AddNewFlatActivity extends Activity {
 	private static Bitmap bitmap;
 
 	protected String errorMessage;
+	private Flat flat;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +117,7 @@ public class AddNewFlatActivity extends Activity {
 
 				// save flat data
 				ParseUser currentUser = ParseUser.getCurrentUser();
-				Flat flat = null;
+				flat = null;
 				if (currentUser != null) {
 					Bitmap b = Filter.rescale(bitmap, 300, true);//flatImage.getDrawingCache();
 
@@ -131,12 +134,6 @@ public class AddNewFlatActivity extends Activity {
 
 				}
 
-				if(flat != null){
-					Intent data = new Intent(getApplicationContext(), MainActivity.class);
-					data.putExtra("data", flat.getObjectId().toString());
-					setResult(RESULT_OK, data);
-					finish();
-				}
 
 			} else {
 				
@@ -163,6 +160,25 @@ public class AddNewFlatActivity extends Activity {
 
 		if (progressDialog != null && !progressDialog.isShowing())
 			progressDialog.show();
+		
+	}
+	
+	public void onEventMainThread(FinishedEvent e) {
+		
+		if (progressDialog != null && progressDialog.isShowing()) {
+			progressDialog.dismiss();
+		}
+
+		// Success retreiving database
+		if (e.isSuccess()) {
+			if(DatabaseHelper.ACTION_JOIN_FLAT.equals(e.getAction())){
+				if (MyApplication.getSharedPref().contains(MyApplication.CURRENT_FLAT)) {
+						MyApplication.setOption(MyApplication.CURRENT_FLAT, "-1");
+				}
+				setResult(RESULT_OK);
+				finish();
+			}
+		}
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

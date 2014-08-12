@@ -129,6 +129,7 @@ public class FlatLoginActivity extends Activity {
 				Intent data = new Intent(getApplicationContext(), MainActivity.class);
 				data.putExtra("data", flat.getObjectId().toString());
 				setResult(RESULT_OK, data);
+				startActivity(data);
 				finish();
 			}
 		}
