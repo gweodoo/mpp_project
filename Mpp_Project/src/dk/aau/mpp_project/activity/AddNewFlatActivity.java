@@ -126,7 +126,7 @@ public class AddNewFlatActivity extends Activity {
 					ParseFile img = new ParseFile("flat.jpg", byteArray);
 					flat = new Flat(flatName.getText().toString(), address
 							.getText().toString(), currentUser.getObjectId(),
-							Float.parseFloat(flatRent.getText().toString()), img);
+							Double.parseDouble(flatRent.getText().toString()), img);
 					DatabaseHelper.createFlat((MyUser)currentUser, flat, password.getText().toString());
 
 				}
@@ -248,7 +248,7 @@ public class AddNewFlatActivity extends Activity {
 			valid = false;
 		}
 		try{
-			float val = Float.parseFloat(flatRent.getText().toString());
+			double val = Double.parseDouble(flatRent.getText().toString());
 		}catch(NumberFormatException ex){
 			flatRent.setError("Rent must be a number.");
 		}
