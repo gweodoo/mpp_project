@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,7 +70,7 @@ public class SpinnerAdapter extends ArrayAdapter<String>{
         tempValues = (SpinnerModel) data.get(position);
          
         TextView SpinnerUser  = (TextView)row.findViewById(R.id.spinnerUser);
-        TextView sub          = (TextView)row.findViewById(R.id.sub);
+        CheckedTextView sub          = (CheckedTextView)row.findViewById(R.id.sub);
         ImageView companyLogo = (ImageView)row.findViewById(R.id.image);
          
         if(position==0){
@@ -77,6 +78,7 @@ public class SpinnerAdapter extends ArrayAdapter<String>{
             // Default selected Spinner item 
             SpinnerUser.setText("Please select a shareMate");
             sub.setText("");
+            sub.setSelected(true);
         }
         else
         {
@@ -86,9 +88,7 @@ public class SpinnerAdapter extends ArrayAdapter<String>{
             companyLogo.setImageResource(res.getIdentifier
                                          ("dk.aau.mpp_project:drawable/"
                                           + tempValues.getImage(),null,null));
-            
-            Toast.makeText(getContext(), tempValues.getImage(), Toast.LENGTH_SHORT).show();
-             
+                         
         }   
  
         return row;

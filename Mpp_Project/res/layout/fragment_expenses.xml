@@ -31,6 +31,8 @@
             android:id="@+id/peopleSpinner"
             android:layout_width="98dp"
             android:layout_height="match_parent"
+            android:choiceMode="multipleChoice"
+ 
             android:layout_weight="1" />
 
         <ImageButton

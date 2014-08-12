@@ -1,9 +1,12 @@
 package dk.aau.mpp_project.fragment;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,181 +27,198 @@ import dk.aau.mpp_project.model.SpinnerModel;
 
 import java.util.ArrayList;
 
-public class ExpensesFragment extends ListFragment implements FragmentEventHandler{
-	
-	private ArrayList<Operation> myArray= new ArrayList<Operation>();
+public class ExpensesFragment extends ListFragment implements
+		FragmentEventHandler, OnMultiChoiceClickListener {
+
+	private ArrayList<Operation> myArray = new ArrayList<Operation>();
 	private OperationAdapter mAdapter;
 	private Spinner idPeople;
-    private ProgressDialog progressDialog;
-    private EditText commentText,amountText;
-    private String shareMate;
-    private	ArrayList<MyUser> usersList;
-    
-    //spinner photo
-    public  ArrayList<SpinnerModel> CustomListViewValuesArr = new ArrayList<SpinnerModel>();
-    TextView output = null;
-    SpinnerAdapter adapter;
-    MainActivity activity = null;
+	private ProgressDialog progressDialog;
+	private EditText commentText, amountText;
+	private ArrayList<String> shareMate = new ArrayList<String>();
+	private ArrayList<MyUser> usersList;
+	private boolean[] selected;
+	private Flat flat;
+
+	// spinner photo
+	public ArrayList<SpinnerModel> CustomListViewValuesArr = new ArrayList<SpinnerModel>();
+	TextView output = null;
+	SpinnerAdapter adapter;
+	MainActivity activity = null;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater,
-			ViewGroup container, Bundle savedInstanceState) {
-		View expensesView = inflater.inflate(R.layout.fragment_expenses, container, false);
-		
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View expensesView = inflater.inflate(R.layout.fragment_expenses,
+				container, false);
+
 		idPeople = (Spinner) expensesView.findViewById(R.id.peopleSpinner);
-		commentText=(EditText)expensesView.findViewById(R.id.commentText);
-		amountText=(EditText)expensesView.findViewById(R.id.amountText);
-		
-		DatabaseHelper.getUsersByFlat(((MainActivity)getActivity()).getMyFlat());
-		
-		/*
-		ArrayList<String> array = new ArrayList<String>();
-		//we get all the names
-		for(MyUser item: usersList)
-		{
-			array.add(item.getName());
-		}
-		
-		//We fill the spinner with some infos useless...
-       // ArrayList<String> array = new ArrayList<String>();
-        array.add("hi");
-        array.add("ho");
-        array.add("ha");
-        
-        */
-        /*
-        ArrayAdapter<String> spinnerContent = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, array);
-        spinnerContent.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        idPeople.setAdapter(spinnerContent);
-        
-        */
-		
-		mAdapter=new OperationAdapter(getActivity(),R.layout.layout_expensesitem,myArray);
-		
-		//Spinner PHOTO
-		activity=(MainActivity) getActivity();
-		
-		// Set data in arraylist
-        setListData();
-        
-        Resources res=getResources();
-     // Create custom adapter object ( see below CustomAdapter.java )
-        adapter = new SpinnerAdapter(activity, R.layout.spinner_rows, CustomListViewValuesArr,res);
-     // Set adapter to spinner
-        idPeople.setAdapter(adapter);
-        // Listener called when spinner item selected
-        idPeople.setOnItemSelectedListener(new OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View v, int position, long id) {
-                // your code here
-                 
-                // Get selected row data to show on screen
-                String SpinnerUser    = ((TextView) v.findViewById(R.id.spinnerUser)).getText().toString();
-                String CompanyUrl = ((TextView) v.findViewById(R.id.sub)).getText().toString();
-                 
-                 
-                Toast.makeText(
-                        getActivity(),"sisi la famille", Toast.LENGTH_LONG).show();
-            }
- 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
- 
-        });
-        //FIN Spinner PHOTO
-		
-        mAdapter=new OperationAdapter(getActivity(),R.layout.layout_expensesitem,myArray);
+		commentText = (EditText) expensesView.findViewById(R.id.commentText);
+		amountText = (EditText) expensesView.findViewById(R.id.amountText);
+		ImageButton bt = (ImageButton) expensesView.findViewById(R.id.okButton);
+
+		// DatabaseHelper.getUsersByFlat(((MainActivity)getActivity()).getMyFlat());
+		flat = ((MainActivity) getActivity()).getMyFlat();
+
+		mAdapter = new OperationAdapter(getActivity(),
+				R.layout.layout_expensesitem, myArray);
+
+		// Spinner PHOTO
+		activity = (MainActivity) getActivity();
+
+		if (!EventBus.getDefault().isRegistered(this))
+			EventBus.getDefault().register(this);
+
+		DatabaseHelper.getOperationsByFlat(flat);
+		DatabaseHelper.getUsersByFlat(flat);
+
+		Resources res = getResources();
+		// Create custom adapter object ( see below CustomAdapter.java )
+		adapter = new SpinnerAdapter(activity, R.layout.spinner_rows,
+				CustomListViewValuesArr, res);
+
+		// Set adapter to spinner
+		idPeople.setAdapter(adapter);
+
+		// Listener called when spinner item selected
+		idPeople.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parentView, View v,
+					int position, long id) {
+				// your code here
+
+				// Get selected row data to show on screen
+				String SpinnerUser = ((TextView) v
+						.findViewById(R.id.spinnerUser)).getText().toString();
+				String sub = ((TextView) v.findViewById(R.id.sub)).getText()
+						.toString();
+
+				shareMate.clear();
+				Toast.makeText(getActivity(), "the User : " + SpinnerUser,
+						Toast.LENGTH_SHORT).show();
+				shareMate.add(SpinnerUser);
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parentView) {
+				// your code here
+			}
+
+		});
+
+		// FIN Spinner PHOTO
+
+		mAdapter = new OperationAdapter(getActivity(),
+				R.layout.layout_expensesitem, myArray);
 		setListAdapter(mAdapter);
-		
-		//We fill the array with 20 entries useless
-        Operation temp;
-		for(int i=0;i<20;i++)
-		{
-			temp=new Operation(new Flat(), ((MainActivity)getActivity()).getMyUser(), ((MainActivity)getActivity()).getMyUser(), 10.2,"hello", "hello", false);
-			
-			myArray.add(temp);
-			
-		}
-        
+
 		mAdapter.notifyDataSetChanged();
 		// TODO Auto-generated method stub
-		
-		//We add a listener on the add button
-		ImageButton bt=(ImageButton)expensesView.findViewById(R.id.okButton);
-		bt.setOnClickListener(new View.OnClickListener(){
-           @Override
-           public void onClick(View v) {
-            	
-            	MyUser user=((MainActivity)getActivity()).getMyUser();
-            	Flat flatId=((MainActivity)getActivity()).getMyFlat();
-            	
-            	//We create an operation object
-           	Operation temp;
-            	//We get the users of flats
-            	DatabaseHelper.getUsersByFlat(flatId);
-            	 
-            	//We fill it
-		temp=new Operation(flatId,user,user,Double.valueOf(amountText.getText().toString()),"",commentText.getText().toString(),false);
-            
-            }
+
+		// We add a listener on the add button
+		bt.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				MyUser user = ((MainActivity) getActivity()).getMyUser();
+				Flat flatId = ((MainActivity) getActivity()).getMyFlat();
+
+				// shareMate.add("0");
+
+				// We create an operation object
+				Operation temp;
+				// We get the users of flats
+				DatabaseHelper.getUsersByFlat(flatId);
+
+				for (MyUser item : usersList) {
+					if (shareMate.get(0).equals("ALL")) {
+						temp = new Operation(flatId, user, item, Double
+								.valueOf(amountText.getText().toString()), "",
+								commentText.getText().toString(), false);
+						DatabaseHelper.createOperation(flatId, temp);
+					} else {
+						if (item.getName().equals(shareMate.get(0))) {
+							temp = new Operation(flatId, user, item, Double
+									.valueOf(amountText.getText().toString()),
+									"", commentText.getText().toString(), false);
+							DatabaseHelper.createOperation(flatId, temp);
+						}
+					}
+				}
+				// We fill it
+				Log.i("ExpensesFragment",
+						"FlatId = "
+								+ flatId
+								+ " - User = "
+								+ user
+								+ " - Amount = "
+								+ Double.valueOf(amountText.getText()
+										.toString()));
+				commentText.setText("");
+				amountText.setText("");
+			}
 		});
-		
+
 		return expensesView;
 	}
 
-    @Override
-    public void onResumeEvent() {
+	@Override
+	public void onResumeEvent() {
+		if (!EventBus.getDefault().isRegistered(this))
+			EventBus.getDefault().register(this);
+	}
 
-    	if(!EventBus.getDefault().isRegistered(true))
-        EventBus.getDefault().register(this);
-    }
+	@Override
+	public void onPauseEvent() {
 
-    @Override
-    public void onPauseEvent() {
+		EventBus.getDefault().unregister(this);
+	}
 
-        EventBus.getDefault().unregister(this);
-    }
+	public void onEventMainThread(StartEvent e) {
+		Log.i("ExpensesFragment", "onEventMainThread Start");
 
-    public void onEventMainThread(StartEvent e) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Loading...");
-            progressDialog.setCancelable(true);
-        }
+		if (progressDialog == null) {
+			progressDialog = new ProgressDialog(getActivity());
+			progressDialog.setIndeterminate(true);
+			progressDialog.setMessage("Loading...");
+			progressDialog.setCancelable(true);
+		}
 
-        if (progressDialog != null && !progressDialog.isShowing())
-            progressDialog.show();
-    }
+		if (progressDialog != null && !progressDialog.isShowing())
+			progressDialog.show();
+	}
 
-    public void onEventMainThread(FinishedEvent e) {
+	public void onEventMainThread(FinishedEvent e) {
 
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
+		if (progressDialog != null && progressDialog.isShowing()) {
+			progressDialog.dismiss();
+		}
 
-        // Success retreiving database
-        if (e.isSuccess()) {
+		// Success retreiving database
+		if (e.isSuccess()) {
+			// Check for what you wanted to retrieve
+			if (DatabaseHelper.ACTION_GET_USERS_IN_FLAT.equals(e.getAction())) {
+				// You know what you need (List or simple object)
+				// If List: ArrayList<Flat> flatsList =
+				// e.getExtras().getParcelableArrayList("data");
+				// If Object only : Flat flat =
+				// e.getExtras().getParcelable("data");
 
-            // Check for what you wanted to retrieve
-            if (DatabaseHelper.ACTION_GET_USERS_IN_FLAT.equals(e.getAction())) {
-                // You know what you need (List or simple object)
-                // If List: ArrayList<Flat> flatsList =
-                // e.getExtras().getParcelableArrayList("data");
-                // If Object only : Flat flat =
-                // e.getExtras().getParcelable("data");
+				usersList = e.getExtras().getParcelableArrayList("data");
 
-                usersList = e.getExtras()
-                        .getParcelableArrayList("data");
+				// Set data in arraylist
+				setListData(usersList);
 
-                // if (flatsList.size() == 0) {
-                // goToNewFlatActivity();
-                // } else if (flatsList.size() == 1) {
-                // goToMainActivity(flatsList.get(0));
-                // } else if (flatsList.size() > 1) {
-                // goToNewFlatActivity(flatsList);
+				for (MyUser item : usersList)
+					Log.i("ExpensesFragment", "User :" + item.getName());
+
+				// if (flatsList.size() == 0) {
+				// goToNewFlatActivity();
+				// } else if (flatsList.size() == 1) {
+				// goToMainActivity(flatsList.get(0));
+				// } else if (flatsList.size() > 1) {
+				// goToNewFlatActivity(flatsList);
 				// }
 
 				// for (Flat f : flatsList)
@@ -211,28 +231,53 @@ public class ExpensesFragment extends ListFragment implements FragmentEventHandl
 
 			} else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
 					.getAction())) {
+				// We have got all operations
+				ArrayList<Operation> arri = e.getExtras()
+						.getParcelableArrayList("data");
+
+				myArray.addAll(arri);
+				mAdapter.notifyDataSetChanged();
+
+				Log.i("ExpensesFragment", "Operation :" + myArray.size());
+				Toast.makeText(getActivity(), "Operation :" + myArray.size(),
+						Toast.LENGTH_SHORT).show();
 
 			}
 		}
 	}
 
-	public void setListData() {
+	public void setListData(ArrayList<MyUser> list) {
 
 		// Now i have taken static values by loop.
 		// For further inhancement we can take data by webservice / json / xml;
 
-		for (int i = 0; i < 11; i++) {
+		for (MyUser item : list) {
 
 			final SpinnerModel sched = new SpinnerModel();
 
-			/******* Firstly take data in model object ******/
-			sched.setUser("User " + i);
+			// Firstly take data in model object
+			if (!item.getName().equals(null))
+				sched.setUser(item.getName());
 			sched.setImage("image_user");
-			sched.setUrl("http:\\www." + i + ".com");
 
-			/******** Take Model Object in ArrayList **********/
+			// Take Model Object in ArrayList
 			CustomListViewValuesArr.add(sched);
-		}
 
+		}
+		Toast.makeText(getActivity(),
+				"nombre elements: " + CustomListViewValuesArr.size(),
+				Toast.LENGTH_SHORT).show();
+		Log.i("ExpensesFragment", "nombre elements dans la list de Users: "
+				+ CustomListViewValuesArr.size());
+		adapter.notifyDataSetChanged();
+
+	}
+
+	@Override
+	public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+		if (isChecked)
+			selected[which] = true;
+		else
+			selected[which] = false;
 	}
 }
