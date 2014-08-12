@@ -183,6 +183,7 @@ public class AddNewFlatActivity extends Activity {
 				
 				Intent data = new Intent();
 				data.putExtra("data", flat.getObjectId());
+				data.putExtra("should_check", true);
 				setResult(RESULT_OK);
 				finish();
 			}
