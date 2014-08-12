@@ -10,18 +10,21 @@
 		android:orientation="horizontal" >
 
 		<Button
-			android:id="@+id/newFlatButton"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="Create a Flat" />
+		    android:id="@+id/newFlatButton"
+		    style="@color/blue"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:text="Create a Flat" />
 
 		<Button
-			android:id="@+id/joinFlatButton"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:text="Join a Flat" />
+		    android:id="@+id/joinFlatButton"
+		    style="@color/blue"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:text="Join a Flat" />
+
 	</LinearLayout>
 
 	<ListView
