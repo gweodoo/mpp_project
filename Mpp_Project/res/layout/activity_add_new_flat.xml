@@ -47,6 +47,14 @@
             android:hint="Address"
             android:inputType="textPostalAddress" />
 
+        <EditText
+            android:id="@+id/newFlatRent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Monthly rent"
+            android:inputType="number" />
+
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"

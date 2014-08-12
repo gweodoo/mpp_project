@@ -43,6 +43,7 @@ public class AddNewFlatActivity extends Activity {
 	protected EditText password;
 	protected EditText passwordRepeat;
 	protected EditText address;
+	protected EditText flatRent;
 	protected ImageView flatImage;
 	private ProgressDialog progressDialog;
 	protected final int GALLERY_REQUEST = 1777;
@@ -64,6 +65,7 @@ public class AddNewFlatActivity extends Activity {
 		passwordRepeat = (EditText) findViewById(R.id.new_flat_password_repeat);
 		address = (EditText) findViewById(R.id.new_flat_address);
 		flatImage = (ImageView) findViewById(R.id.new_flat_image);
+		flatRent = (EditText) findViewById(R.id.newFlatRent);
 
 		ImageButton addFromGallery = (ImageButton) findViewById(R.id.add_pic_gallery);
 		ImageButton addFromCamera = (ImageButton) findViewById(R.id.add_pic_camera);
@@ -124,7 +126,7 @@ public class AddNewFlatActivity extends Activity {
 					ParseFile img = new ParseFile("flat.jpg", byteArray);
 					flat = new Flat(flatName.getText().toString(), address
 							.getText().toString(), currentUser.getObjectId(),
-							0.0, img);
+							Float.parseFloat(flatRent.getText().toString()), img);
 					DatabaseHelper.createFlat((MyUser)currentUser, flat, password.getText().toString());
 
 				}
@@ -240,12 +242,24 @@ public class AddNewFlatActivity extends Activity {
 			address.setError("Please enter an address.\n");
 			valid = false;
 		}
+		
+		if (flatRent.getText().toString().equals("")) {
+			flatRent.setError("Please enter a rent.\n");
+			valid = false;
+		}
+		try{
+			float val = Float.parseFloat(flatRent.getText().toString());
+		}catch(NumberFormatException ex){
+			flatRent.setError("Rent must be a number.");
+		}
 
 		if (!password.getText().toString()
 				.equals(passwordRepeat.getText().toString())) {
 			passwordRepeat.setError("Please enter same password again.\n");
 			valid = false;
 		}
+		
+		
 		return valid;
 	}
 
