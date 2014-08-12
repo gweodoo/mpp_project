@@ -163,7 +163,7 @@ public class DatabaseHelper {
 
 	public static void joinFlat(MyUser user, Flat flat, final String password) {
 		EventBus.getDefault().post(new StartEvent(ACTION_JOIN_FLAT));
-		
+		System.out.println("joining flat....");
 		final String pwdCrypted = SHA1(password);
 
 		final ParseObject object = new ParseObject(FILLING_TABLE);

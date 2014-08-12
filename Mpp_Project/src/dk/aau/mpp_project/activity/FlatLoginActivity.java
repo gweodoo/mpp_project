@@ -10,6 +10,7 @@ import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.R.layout;
 import dk.aau.mpp_project.R.menu;
+import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
@@ -121,17 +122,25 @@ public class FlatLoginActivity extends Activity {
                 DatabaseHelper.joinFlat((MyUser)currentUser, flat, flatPassword.getText().toString());
 			}
 			if (DatabaseHelper.ACTION_JOIN_FLAT.equals(e.getAction())) {
-				Toast t = Toast.makeText(getApplicationContext(), "logged in flat", 2000);
-				t.show();
+//				Toast.makeText(getApplicationContext(), "logged in flat", Toast.LENGTH_LONG).show();
 				Intent intent = new Intent(this, MainActivity.class);
 				startActivity(intent);
 			}
 			else{
-				Intent data = new Intent(getApplicationContext(), MainActivity.class);
-				data.putExtra("data", flat.getObjectId().toString());
-				setResult(RESULT_OK, data);
-				startActivity(data);
+//				Toast.makeText(getApplicationContext(), "Joining flat...", Toast.LENGTH_LONG).show();
+//				flat = e.getExtras().getParcelable("data");
+				MyApplication.setOption(MyApplication.CURRENT_FLAT,
+						flat.getObjectId());
+				Intent data = new Intent();
+				data.putExtra("data", flat.getObjectId());
+				data.putExtra("should_check", true);
+				setResult(RESULT_OK);
 				finish();
+//				Intent data = new Intent(getApplicationContext(), MainActivity.class);
+//				data.putExtra("data", flat.getObjectId().toString());
+//				setResult(RESULT_OK, data);
+//				startActivity(data);
+//				finish();
 			}
 		}
 		// Error occured
