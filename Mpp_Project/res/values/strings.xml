@@ -10,7 +10,6 @@
     <string name="dummy_section_text">Section %1d is just a dummy section.</string>
     <string name="title_activity_new_flat">Add new flat</string>
     <string name="title_activity_add_new_flat">Create new flat</string>
-<<<<<<< HEAD
     <string name="logout">Logout</string>
     <string name="leave_flat">Leave flat</string>
     <string name="change_details">Change details</string>
@@ -19,15 +18,7 @@
     <string name="last_activities">Last activities</string>
     <string name="title_activity_change_details">Change flat details</string>
     <string name="title_activity_flat_login">Join an existing flat</string>
-=======
-	<string name="logout">Logout</string>
-	<string name="leave_flat">Leave flat</string>
-	<string name="change_details">Change details</string>
-	<string name="flat_settings">FLAT SETTINGS</string>
-	<string name="user_settings">USER SETTINGS</string>
-	<string name="last_activities">Last activities</string>
-	<string name="title_activity_change_details">Change flat details</string>
-	
+
 	 <!-- ilyas added those lignes below -->
 	 <drawable name="Blue">#b0e0e6</drawable>
      <drawable name="white">#ffffff</drawable>
@@ -42,6 +33,5 @@
      <drawable name="brown">#2F1700</drawable>
      <string name="select_Category">Select Company</string>
      <drawable name="darkgrey">#606060</drawable>
->>>>>>> FETCH_HEAD
 
 </resources>
