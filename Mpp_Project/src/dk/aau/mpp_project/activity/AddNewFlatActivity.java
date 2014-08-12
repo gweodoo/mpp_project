@@ -269,6 +269,11 @@ public class AddNewFlatActivity extends Activity {
 			double val = Double.parseDouble(flatRent.getText().toString());
 		}catch(NumberFormatException ex){
 			flatRent.setError("Rent must be a number.");
+			valid = false;
+		}
+		if(bitmap == null){
+			Toast.makeText(getApplicationContext(), "Please add a photo!", 3000);
+			valid = false;
 		}
 
 		if (!password.getText().toString()

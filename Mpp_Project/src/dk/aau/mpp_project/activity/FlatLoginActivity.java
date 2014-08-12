@@ -80,12 +80,13 @@ public class FlatLoginActivity extends Activity {
 	}
 	
 	public boolean validate(){
-		System.out.println("VALIDATE");
+		boolean valid = true;
+		
 		if(flatId.getText().toString().equals(""))
-			{flatId.setError("Please enter a flat name!"); return false;}
+			{flatId.setError("Please enter a flat name!"); valid = false;}
 		if(flatPassword.getText().toString().equals(""))
-			{flatPassword.setError("Please enter a password!"); return false;}
-		return true;
+			{flatPassword.setError("Please enter a password!"); valid = false;}
+		return valid;
 	}
 	
 	
