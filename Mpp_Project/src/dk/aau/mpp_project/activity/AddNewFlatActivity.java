@@ -3,11 +3,11 @@ package dk.aau.mpp_project.activity;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.ByteBuffer;
 
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
+import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.StartEvent;
@@ -16,7 +16,6 @@ import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -122,21 +121,10 @@ public class AddNewFlatActivity extends Activity {
 					
 					
 					ParseFile img = new ParseFile("flat.jpg", byteArray);
-//					img.saveInBackground();
 					Flat flat = new Flat(flatName.getText().toString(), address
 							.getText().toString(), currentUser.getObjectId(),
 							0.0, img);
 					DatabaseHelper.createFlat((MyUser)currentUser, flat, password.getText().toString());
-//					flat.saveInBackground(new SaveCallback() {
-//						@Override
-//						public void done(ParseException e) {
-//
-//							if (progressDialog != null
-//									&& progressDialog.isShowing()) {
-//								progressDialog.dismiss();
-//							}
-//						}
-//					});
 
 				}
 
@@ -208,8 +196,6 @@ public class AddNewFlatActivity extends Activity {
 			
 			
 			flatImage.setImageBitmap(Filter.rescale(bitmap, width, false));
-//            b = Filter.rescale(b, 1000, filter)
-//			flatImage.setImageBitmap(b);
 		} else if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
 			Uri selectedImage = data.getData();
 			String[] filePathColumn = { MediaStore.Images.Media.DATA };
@@ -226,9 +212,7 @@ public class AddNewFlatActivity extends Activity {
 
 			bitmap = BitmapFactory.decodeFile(picturePath, options);
 			bitmap = Filter.rescale(bitmap, 300, false);
-//			flatImage.setDrawingCacheEnabled(true);
 			flatImage.setImageBitmap(bitmap);
-			// flatImage.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 		}
 	}
 
@@ -277,6 +261,18 @@ public class AddNewFlatActivity extends Activity {
 			Log.e("saveToInternalStorage()", e.getMessage());
 			return false;
 		}
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		EventBus.getDefault().register(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		EventBus.getDefault().unregister(this);
 	}
 
 }

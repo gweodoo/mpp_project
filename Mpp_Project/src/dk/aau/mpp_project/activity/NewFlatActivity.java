@@ -8,8 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -29,7 +27,6 @@ import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
-import dk.aau.mpp_project.filter.CropImageView;
 import dk.aau.mpp_project.filter.Filter;
 import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
@@ -92,8 +89,9 @@ public class NewFlatActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
+				Intent intent = new Intent(getApplicationContext(),
+						FlatLoginActivity.class);
+				startActivity(intent);
 			}
 		});
 	}
