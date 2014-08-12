@@ -1,20 +1,32 @@
 package dk.aau.mpp_project.database;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Base64;
 import android.util.Log;
-import com.parse.*;
+
+import com.parse.DeleteCallback;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
-import dk.aau.mpp_project.model.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import dk.aau.mpp_project.model.FillingTable;
+import dk.aau.mpp_project.model.Flat;
+import dk.aau.mpp_project.model.MyUser;
+import dk.aau.mpp_project.model.News;
+import dk.aau.mpp_project.model.Operation;
 
 public class DatabaseHelper {
 
@@ -34,7 +46,7 @@ public class DatabaseHelper {
 	public static final String	ACTION_GET_FLAT_BY_ID		= "ACTION_GET_FLAT_BY_ID";
 	public static final String	ACTION_GET_NEWS_FLATS		= "ACTION_GET_NEWS_FLATS";
 	public static final String	ACTION_GET_OPERATIONS_FLATS	= "ACTION_GET_OPERATIONS_FLATS";
-    public static final String	ACTION_GET_USERS_IN_FLAT	= "ACTION_GET_USERS_IN_FLAT";
+	public static final String	ACTION_GET_USERS_IN_FLAT	= "ACTION_GET_USERS_IN_FLAT";
 	public static final String	ACTION_LEAVE_FLAT			= "ACTION_LEAVE_FLAT";
 
 	public static void createOperation(Flat flat, Operation operation) {
@@ -55,16 +67,34 @@ public class DatabaseHelper {
 			final String password) {
 		EventBus.getDefault().post(new StartEvent(ACTION_CREATE_FLAT));
 
-		flat.put(Flat.PASSWORD, password);
-		
+		final String pwdCrypted = SHA1(password);
+
+		flat.put(Flat.PASSWORD, pwdCrypted);
+
 		flat.saveInBackground(new SaveCallback() {
 
 			@Override
 			public void done(ParseException e) {
-				
+
 				joinFlat(user, flat, password);
 			}
 		});
+	}
+
+	public static String SHA1(String text) {
+		MessageDigest md;
+		byte[] sha1hash = null;
+		try {
+			md = MessageDigest.getInstance("SHA-1");
+
+			md.update(text.getBytes("iso-8859-1"), 0, text.length());
+			sha1hash = md.digest();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return Base64.encodeToString(sha1hash, Base64.DEFAULT);
 	}
 
 	/**
@@ -78,9 +108,11 @@ public class DatabaseHelper {
 		EventBus.getDefault().post(new StartEvent(ACTION_UPDATE_FLAT));
 
 		if (password != null) {
-			flat.put(Flat.PASSWORD, password);
+			final String pwdCrypted = SHA1(password);
+
+			flat.put(Flat.PASSWORD, pwdCrypted);
 		}
-		
+
 		Log.v(TAG, "# Update Flat ID : " + flat.getObjectId());
 
 		flat.saveInBackground(new SaveCallback() {
@@ -131,6 +163,8 @@ public class DatabaseHelper {
 
 	public static void joinFlat(MyUser user, Flat flat, final String password) {
 		EventBus.getDefault().post(new StartEvent(ACTION_JOIN_FLAT));
+		
+		final String pwdCrypted = SHA1(password);
 
 		final ParseObject object = new ParseObject(FILLING_TABLE);
 
@@ -144,7 +178,7 @@ public class DatabaseHelper {
 		query.getFirstInBackground(new GetCallback<Flat>() {
 			public void done(final Flat flat, ParseException e) {
 				if (e == null) {
-					if (flat.getString(Flat.PASSWORD).equals(password)) {
+					if (flat.getString(Flat.PASSWORD).equals(pwdCrypted)) {
 
 						object.saveInBackground(new SaveCallback() {
 
@@ -153,7 +187,7 @@ public class DatabaseHelper {
 								if (e == null) {
 									Bundle data = new Bundle();
 									data.putParcelable("data", flat);
-									
+
 									EventBus.getDefault().post(
 											new FinishedEvent(true,
 													ACTION_JOIN_FLAT, data));
@@ -312,66 +346,67 @@ public class DatabaseHelper {
 		});
 	}
 
-    public static void getUsersByFlat(Flat flat) {
-        EventBus.getDefault().post(new StartEvent(ACTION_GET_USERS_IN_FLAT));
+	public static void getUsersByFlat(Flat flat) {
+		EventBus.getDefault().post(new StartEvent(ACTION_GET_USERS_IN_FLAT));
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery(FILLING_TABLE);
+		ParseQuery<ParseObject> query = ParseQuery.getQuery(FILLING_TABLE);
 
-        query.whereEqualTo(FillingTable.FLAT, flat);
+		query.whereEqualTo(FillingTable.FLAT, flat);
 
-        ArrayList<String> selectedKeys = new ArrayList<String>();
-        selectedKeys.add(FillingTable.USER);
-        query.selectKeys(selectedKeys);
+		ArrayList<String> selectedKeys = new ArrayList<String>();
+		selectedKeys.add(FillingTable.USER);
+		query.selectKeys(selectedKeys);
 
-        query.findInBackground(new FindCallback<ParseObject>() {
-            public void done(List<ParseObject> objectList, ParseException e) {
-                if (e == null) {
-                    Log.d(TAG, "# Retrieved " + objectList.size()
-                            + " user for this flat");
+		query.findInBackground(new FindCallback<ParseObject>() {
+			public void done(List<ParseObject> objectList, ParseException e) {
+				if (e == null) {
+					Log.d(TAG, "# Retrieved " + objectList.size()
+							+ " user for this flat");
 
-                    List<String> userIds = new ArrayList<String>();
+					List<String> userIds = new ArrayList<String>();
 
-                    for (ParseObject o : objectList) {
-                        MyUser f = (MyUser) o.get(FillingTable.USER);
+					for (ParseObject o : objectList) {
+						MyUser f = (MyUser) o.get(FillingTable.USER);
 
-                        userIds.add(f.getObjectId());
-                        Log.v(TAG, "# My User ID : " + f.getObjectId());
-                    }
+						userIds.add(f.getObjectId());
+						Log.v(TAG, "# My User ID : " + f.getObjectId());
+					}
 
-                    ParseQuery<MyUser> query2 = ParseQuery.getQuery(MyUser.class);
-                    query2.whereContainedIn("objectId", userIds);
+					ParseQuery<MyUser> query2 = ParseQuery
+							.getQuery(MyUser.class);
+					query2.whereContainedIn("objectId", userIds);
 
-                    query2.findInBackground(new FindCallback<MyUser>() {
-                        public void done(List<MyUser> objectList, ParseException e) {
-                            if (e == null) {
-                                Log.d(TAG, "# Retrieved " + objectList.size()
-                                        + " users");
+					query2.findInBackground(new FindCallback<MyUser>() {
+						public void done(List<MyUser> objectList,
+								ParseException e) {
+							if (e == null) {
+								Log.d(TAG, "# Retrieved " + objectList.size()
+										+ " users");
 
-                                Bundle extras = new Bundle();
-                                extras.putParcelableArrayList(
-                                        "data",
-                                        (ArrayList<? extends Parcelable>) objectList);
+								Bundle extras = new Bundle();
+								extras.putParcelableArrayList(
+										"data",
+										(ArrayList<? extends Parcelable>) objectList);
 
-                                EventBus.getDefault().post(
-                                        new FinishedEvent(true,
-                                                ACTION_GET_USERS_IN_FLAT, extras)
-                                );
+								EventBus.getDefault().post(
+										new FinishedEvent(true,
+												ACTION_GET_USERS_IN_FLAT,
+												extras));
 
-                            } else {
-                                Log.d(TAG, "Error: " + e.getMessage());
-                                EventBus.getDefault().post(
-                                        new FinishedEvent(false,
-                                                ACTION_GET_USERS_IN_FLAT, null)
-                                );
-                            }
-                        }
-                    });
-                }
-            }
-        });
-    }
+							} else {
+								Log.d(TAG, "Error: " + e.getMessage());
+								EventBus.getDefault()
+										.post(new FinishedEvent(false,
+												ACTION_GET_USERS_IN_FLAT, null));
+							}
+						}
+					});
+				}
+			}
+		});
+	}
 
-    public static void getOperationsByFlat(Flat flat) {
+	public static void getOperationsByFlat(Flat flat) {
 		EventBus.getDefault().post(new StartEvent(ACTION_GET_OPERATIONS_FLATS));
 
 		ParseQuery<Operation> query = ParseQuery.getQuery(Operation.class);
@@ -402,20 +437,20 @@ public class DatabaseHelper {
 			}
 		});
 	}
-    
-//    public static void parseSendPush(String channel, String userId)
-//			throws JSONException {
-//
-//		ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
-//		pushQuery.whereEqualTo("channels", channel);
-//		pushQuery.whereEqualTo(USERNAME, target);
-//
-//		JSONObject data = new JSONObject(
-//				"{\"action\":\"colloc.action.push\",\"msg\": \"You owe 200$ to Pierre\" }");
-//
-//		ParsePush push = new ParsePush();
-//		push.setQuery(pushQuery);
-//		push.setData(data);
-//		push.sendInBackground();
-//	}
+
+	// public static void parseSendPush(String channel, String userId)
+	// throws JSONException {
+	//
+	// ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
+	// pushQuery.whereEqualTo("channels", channel);
+	// pushQuery.whereEqualTo(USERNAME, target);
+	//
+	// JSONObject data = new JSONObject(
+	// "{\"action\":\"colloc.action.push\",\"msg\": \"You owe 200$ to Pierre\" }");
+	//
+	// ParsePush push = new ParsePush();
+	// push.setQuery(pushQuery);
+	// push.setData(data);
+	// push.sendInBackground();
+	// }
 }

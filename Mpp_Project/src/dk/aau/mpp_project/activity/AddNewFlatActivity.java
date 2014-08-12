@@ -42,19 +42,19 @@ import android.widget.Toast;
 
 public class AddNewFlatActivity extends Activity {
 
-	protected EditText flatName;
-	protected EditText password;
-	protected EditText passwordRepeat;
-	protected EditText address;
-	protected EditText flatRent;
-	protected ImageView flatImage;
-	private ProgressDialog progressDialog;
-	protected final int GALLERY_REQUEST = 1777;
-	private static final int CAMERA_REQUEST = 1888;
-	private static Bitmap bitmap;
+	protected EditText			flatName;
+	protected EditText			password;
+	protected EditText			passwordRepeat;
+	protected EditText			address;
+	protected EditText			flatRent;
+	protected ImageView			flatImage;
+	private ProgressDialog		progressDialog;
+	protected final int			GALLERY_REQUEST	= 1777;
+	private static final int	CAMERA_REQUEST	= 1888;
+	private static Bitmap		bitmap;
 
-	protected String errorMessage;
-	private Flat flat;
+	protected String			errorMessage;
+	private Flat				flat;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +93,10 @@ public class AddNewFlatActivity extends Activity {
 			public void onClick(View v) {
 				Intent cameraIntent = new Intent(
 						android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                File f = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
-//                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+				File f = new File(android.os.Environment
+						.getExternalStorageDirectory(), "temp.jpg");
+				// cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+				// Uri.fromFile(f));
 				startActivityForResult(cameraIntent, CAMERA_REQUEST);
 			}
 		});
@@ -120,24 +122,24 @@ public class AddNewFlatActivity extends Activity {
 				ParseUser currentUser = ParseUser.getCurrentUser();
 				flat = null;
 				if (currentUser != null) {
-					Bitmap b = Filter.rescale(bitmap, 300, true);//flatImage.getDrawingCache();
+					Bitmap b = Filter.rescale(bitmap, 300, true);// flatImage.getDrawingCache();
 
 					ByteArrayOutputStream stream = new ByteArrayOutputStream();
 					b.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 					byte[] byteArray = stream.toByteArray();
-					
-					
+
 					ParseFile img = new ParseFile("flat.jpg", byteArray);
 					flat = new Flat(flatName.getText().toString(), address
 							.getText().toString(), currentUser.getObjectId(),
-							Double.parseDouble(flatRent.getText().toString()), img);
-					DatabaseHelper.createFlat((MyUser)currentUser, flat, password.getText().toString());
+							Double.parseDouble(flatRent.getText().toString()),
+							img);
+					DatabaseHelper.createFlat((MyUser) currentUser, flat,
+							password.getText().toString());
 
 				}
 
-
 			} else {
-				
+
 			}
 			break;
 		case android.R.id.home:
@@ -161,22 +163,26 @@ public class AddNewFlatActivity extends Activity {
 
 		if (progressDialog != null && !progressDialog.isShowing())
 			progressDialog.show();
-		
+
 	}
-	
+
 	public void onEventMainThread(FinishedEvent e) {
-		
+
 		if (progressDialog != null && progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}
 
 		// Success retreiving database
 		if (e.isSuccess()) {
-			if(DatabaseHelper.ACTION_JOIN_FLAT.equals(e.getAction())){
+			if (DatabaseHelper.ACTION_JOIN_FLAT.equals(e.getAction())) {
 				flat = e.getExtras().getParcelable("data");
 				MyApplication.setOption(MyApplication.CURRENT_FLAT,
 						flat.getObjectId());
-				Toast.makeText(getApplicationContext(), "New Flat ID: "+flat.getObjectId(), 3000);
+				Toast.makeText(getApplicationContext(),
+						"New Flat ID: " + flat.getObjectId(), Toast.LENGTH_LONG).show();
+				
+				Intent data = new Intent();
+				data.putExtra("data", flat.getObjectId());
 				setResult(RESULT_OK);
 				finish();
 			}
@@ -187,39 +193,36 @@ public class AddNewFlatActivity extends Activity {
 		flatImage = (ImageView) findViewById(R.id.new_flat_image);
 		if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
 			bitmap = (Bitmap) data.getExtras().get("data");
-			
-	        /*File f = new File(Environment.getExternalStorageDirectory().toString());
 
-//            for (File temp : f.listFiles()) {
-//
-//                if (temp.getName().equals("temp.jpg")) {
+			/*
+			 * File f = new
+			 * File(Environment.getExternalStorageDirectory().toString());
+			 * 
+			 * // for (File temp : f.listFiles()) { // // if
+			 * (temp.getName().equals("temp.jpg")) {
+			 * 
+			 * // f = temp;
+			 * 
+			 * File photo = new File(Environment.getExternalStorageDirectory(),
+			 * "temp.jpg");
+			 * 
+			 * 
+			 * BitmapFactory.Options options = new BitmapFactory.Options();
+			 * options.inPreferredConfig = Config.RGB_565; options.inSampleSize
+			 * = 2;
+			 * 
+			 * 
+			 * bitmap = BitmapFactory.decodeFile(photo.getAbsolutePath(),
+			 * options); photo.delete(); if(bitmap==null)
+			 * System.out.println("NULL"); //pic = photo;
+			 * 
+			 * // break; // } // // }
+			 */
+			Display display = getWindowManager().getDefaultDisplay();
+			Point size = new Point();
+			display.getSize(size);
+			int width = size.x;
 
-//                    f = temp;
-	        
-                    File photo = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
-                    
-
-					BitmapFactory.Options options = new BitmapFactory.Options();
-					options.inPreferredConfig = Config.RGB_565;
-					options.inSampleSize = 2;
-                    
-                    
-                    bitmap = BitmapFactory.decodeFile(photo.getAbsolutePath(), options);
-                    photo.delete();
-                    if(bitmap==null)
-                    	System.out.println("NULL");
-                   //pic = photo;
-                    
-//                    break;
-//                }
-//
-//            }*/
-					Display display = getWindowManager().getDefaultDisplay();
-					Point size = new Point();
-					display.getSize(size);
-					int width = size.x;
-			
-			
 			flatImage.setImageBitmap(Filter.rescale(bitmap, width, false));
 		} else if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
 			Uri selectedImage = data.getData();
@@ -230,7 +233,7 @@ public class AddNewFlatActivity extends Activity {
 			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 			String picturePath = cursor.getString(columnIndex);
 			cursor.close();
-			
+
 			BitmapFactory.Options options = new BitmapFactory.Options();
 			options.inPreferredConfig = Config.RGB_565;
 			options.inSampleSize = 2;
@@ -240,7 +243,6 @@ public class AddNewFlatActivity extends Activity {
 			flatImage.setImageBitmap(bitmap);
 		}
 	}
-
 
 	private boolean validateData() {
 		Boolean valid = true;
@@ -260,14 +262,14 @@ public class AddNewFlatActivity extends Activity {
 			address.setError("Please enter an address.\n");
 			valid = false;
 		}
-		
+
 		if (flatRent.getText().toString().equals("")) {
 			flatRent.setError("Please enter a rent.\n");
 			valid = false;
 		}
-		try{
+		try {
 			double val = Double.parseDouble(flatRent.getText().toString());
-		}catch(NumberFormatException ex){
+		} catch (NumberFormatException ex) {
 			flatRent.setError("Rent must be a number.");
 			valid = false;
 		}
@@ -281,8 +283,7 @@ public class AddNewFlatActivity extends Activity {
 			passwordRepeat.setError("Please enter same password again.\n");
 			valid = false;
 		}
-		
-		
+
 		return valid;
 	}
 
@@ -304,13 +305,13 @@ public class AddNewFlatActivity extends Activity {
 			return false;
 		}
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		EventBus.getDefault().register(this);
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
