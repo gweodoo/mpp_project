@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
+import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.R.layout;
 import dk.aau.mpp_project.R.menu;
@@ -64,6 +65,7 @@ public class FlatLoginActivity extends Activity {
 			if(validate()){
 				ParseUser currentUser = ParseUser.getCurrentUser();
 				if (currentUser != null) {
+					System.out.println("GET FLAT");
 					DatabaseHelper.getFlatById(flatId.getText().toString());
 				}
 			}
@@ -78,6 +80,7 @@ public class FlatLoginActivity extends Activity {
 	}
 	
 	public boolean validate(){
+		System.out.println("VALIDATE");
 		if(flatId.getText().toString().equals(""))
 			{flatId.setError("Please enter a flat name!"); return false;}
 		if(flatPassword.getText().toString().equals(""))
@@ -113,6 +116,7 @@ public class FlatLoginActivity extends Activity {
 			if (DatabaseHelper.ACTION_GET_FLAT_BY_ID.equals(e.getAction())) {
                 flat = e.getExtras().getParcelable("data");
                 ParseUser currentUser = ParseUser.getCurrentUser();
+                System.out.println("JOIN FLAT");
                 DatabaseHelper.joinFlat((MyUser)currentUser, flat, flatPassword.getText().toString());
 			}
 			if (DatabaseHelper.ACTION_JOIN_FLAT.equals(e.getAction())) {
@@ -122,15 +126,30 @@ public class FlatLoginActivity extends Activity {
 				startActivity(intent);
 			}
 			else{
-				Toast t = Toast.makeText(getApplicationContext(), "Something went wrong. Please check ID and password!", 2000);
-				t.show();
+				Intent data = new Intent(getApplicationContext(), MainActivity.class);
+				data.putExtra("data", flat.getObjectId().toString());
+				setResult(RESULT_OK, data);
+				finish();
 			}
 		}
 		// Error occured
 		else {
-
+			Toast t = Toast.makeText(getApplicationContext(), "Something went wrong. Please check ID and password!", 2000);
+			t.show();
 		}
 
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		EventBus.getDefault().register(this);
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		EventBus.getDefault().unregister(this);
 	}
 
 }

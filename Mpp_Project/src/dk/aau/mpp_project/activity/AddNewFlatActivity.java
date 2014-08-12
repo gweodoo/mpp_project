@@ -112,6 +112,7 @@ public class AddNewFlatActivity extends Activity {
 
 				// save flat data
 				ParseUser currentUser = ParseUser.getCurrentUser();
+				Flat flat = null;
 				if (currentUser != null) {
 					Bitmap b = Filter.rescale(bitmap, 300, true);//flatImage.getDrawingCache();
 
@@ -121,18 +122,22 @@ public class AddNewFlatActivity extends Activity {
 					
 					
 					ParseFile img = new ParseFile("flat.jpg", byteArray);
-					Flat flat = new Flat(flatName.getText().toString(), address
+					flat = new Flat(flatName.getText().toString(), address
 							.getText().toString(), currentUser.getObjectId(),
 							0.0, img);
 					DatabaseHelper.createFlat((MyUser)currentUser, flat, password.getText().toString());
 
 				}
 
-				Intent intent = new Intent(this, MainActivity.class);
-				startActivity(intent);
+				if(flat != null){
+					Intent data = new Intent(getApplicationContext(), MainActivity.class);
+					data.putExtra("data", flat.getObjectId().toString());
+					setResult(RESULT_OK, data);
+					finish();
+				}
 
 			} else {
-
+				
 			}
 			break;
 		case android.R.id.home:
