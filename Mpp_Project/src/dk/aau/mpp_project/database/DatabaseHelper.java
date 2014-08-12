@@ -53,16 +53,11 @@ public class DatabaseHelper {
 
 		flat.put(Flat.PASSWORD, password);
 		
-		if(flat==null)
-			System.out.println("NULL!!!!!");
-
 		flat.saveInBackground(new SaveCallback() {
 
 			@Override
 			public void done(ParseException e) {
 				
-				if(flat==null)
-					System.out.println("2222NULL!!!!!");
 				joinFlat(user, flat, password);
 			}
 		});
@@ -143,7 +138,7 @@ public class DatabaseHelper {
 		query.whereEqualTo("objectId", flat.getObjectId());
 
 		query.getFirstInBackground(new GetCallback<Flat>() {
-			public void done(Flat flat, ParseException e) {
+			public void done(final Flat flat, ParseException e) {
 				if (e == null) {
 					if (flat.getString(Flat.PASSWORD).equals(password)) {
 
@@ -152,9 +147,12 @@ public class DatabaseHelper {
 							@Override
 							public void done(ParseException e) {
 								if (e == null) {
+									Bundle data = new Bundle();
+									data.putParcelable("data", flat);
+									
 									EventBus.getDefault().post(
 											new FinishedEvent(true,
-													ACTION_JOIN_FLAT, null));
+													ACTION_JOIN_FLAT, data));
 								} else {
 									EventBus.getDefault().post(
 											new FinishedEvent(false,

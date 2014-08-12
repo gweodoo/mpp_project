@@ -28,9 +28,10 @@ import dk.aau.mpp_project.model.Flat;
 public class SettingsFragment extends Fragment implements FragmentEventHandler {
 
 	private ProgressDialog	progressDialog;
-	private TextView	textViewLogout;
-	private TextView	textViewChangeDetails;
-	private TextView	textViewLeaveFlat;
+	private TextView		textViewLogout;
+	private TextView		textViewChangeDetails;
+	private TextView		textViewLeaveFlat;
+	private TextView		flatId;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,13 +71,14 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 
 	protected void onChangeDetailsFlatClicked() {
 		Intent intent = new Intent(getActivity(), ChangeDetailsActivity.class);
-		
+
 		Flat flat = ((MainActivity) getActivity()).getMyFlat();
 		intent.putExtra("objectId", flat.getObjectId());
 		intent.putExtra("name", flat.getName());
 		intent.putExtra("address", flat.getAddress());
 		intent.putExtra("rent", flat.getRentAmount());
-		getActivity().startActivityForResult(intent, MainActivity.REQUEST_CODE_CHANGE_DETAILS_ACTIIVTY);	
+		getActivity().startActivityForResult(intent,
+				MainActivity.REQUEST_CODE_CHANGE_DETAILS_ACTIIVTY);
 	}
 
 	protected void onLeaveFlatButtonClicked() {
