@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical" >
+
+	<RelativeLayout
+		android:id="@+id/main"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:orientation="vertical" >
+
+		<RelativeLayout
+			android:id="@+id/top"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content" >
+
+			<TextView
+				android:id="@+id/titleFlat"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentLeft="true"
+				android:layout_centerVertical="true"
+				android:layout_marginLeft="10dp"
+				android:text=""
+				android:textAppearance="?android:attr/textAppearanceLarge" />
+
+			<ImageButton
+				android:id="@+id/buttonLocation"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentRight="true"
+				android:layout_alignParentTop="true"
+				android:layout_margin="10dp"
+				android:background="@android:color/transparent"
+				android:contentDescription="@null"
+				android:src="@drawable/ic_action_loc" />
+		</RelativeLayout>
+
+		<LinearLayout
+			android:id="@+id/bottom"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:orientation="horizontal"
+			android:padding="5dp" >
+		</LinearLayout>
+	</RelativeLayout>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/main"
+		android:layout_marginLeft="20dp"
+		android:padding="5dp"
+		android:text="@string/last_activities"
+		android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</RelativeLayout>
