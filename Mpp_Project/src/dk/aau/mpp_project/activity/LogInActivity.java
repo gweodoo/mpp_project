@@ -113,6 +113,10 @@ public class LogInActivity extends Activity {
 
 							Log.v(TAG,
 									"# FACEBOOK ID : " + myUser.getFacebookId());
+							
+							ParseInstallation parseInstallation = ParseInstallation.getCurrentInstallation();
+							parseInstallation.put("facebookId", myUser.getFacebookId());
+							parseInstallation.saveInBackground();
 
 							myUser.saveInBackground(new SaveCallback() {
 

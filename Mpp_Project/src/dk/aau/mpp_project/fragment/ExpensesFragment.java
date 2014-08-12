@@ -151,6 +151,7 @@ public class ExpensesFragment extends ListFragment implements FragmentEventHandl
     @Override
     public void onResumeEvent() {
 
+    	if(!EventBus.getDefault().isRegistered(true))
         EventBus.getDefault().register(this);
     }
 
@@ -198,41 +199,40 @@ public class ExpensesFragment extends ListFragment implements FragmentEventHandl
                 // goToMainActivity(flatsList.get(0));
                 // } else if (flatsList.size() > 1) {
                 // goToNewFlatActivity(flatsList);
-                // }
+				// }
 
-                // for (Flat f : flatsList)
-                // Log.v(TAG,
-                // "# Flat : " + f.getName() + " : "
-                // + f.getRentAmount() + "$");
+				// for (Flat f : flatsList)
+				// Log.v(TAG,
+				// "# Flat : " + f.getName() + " : "
+				// + f.getRentAmount() + "$");
 
-            } else if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e
-                    .getAction())) {
+			} else if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e
+					.getAction())) {
 
-            } else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
-                    .getAction())) {
+			} else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
+					.getAction())) {
 
-            }
-        }
-    }
-    
-    public void setListData()
-    {
-         
-        // Now i have taken static values by loop.
-        // For further inhancement we can take data by webservice / json / xml;
-         
-        for (int i = 0; i < 11; i++) {
-             
-            final SpinnerModel sched = new SpinnerModel();
-                 
-              /******* Firstly take data in model object ******/
-               sched.setUser("User "+i);
-               sched.setImage("image_user");
-               sched.setUrl("http:\\www."+i+".com");
-                
-            /******** Take Model Object in ArrayList **********/
-            CustomListViewValuesArr.add(sched);
-        }
-         
-    }
+			}
+		}
+	}
+
+	public void setListData() {
+
+		// Now i have taken static values by loop.
+		// For further inhancement we can take data by webservice / json / xml;
+
+		for (int i = 0; i < 11; i++) {
+
+			final SpinnerModel sched = new SpinnerModel();
+
+			/******* Firstly take data in model object ******/
+			sched.setUser("User " + i);
+			sched.setImage("image_user");
+			sched.setUrl("http:\\www." + i + ".com");
+
+			/******** Take Model Object in ArrayList **********/
+			CustomListViewValuesArr.add(sched);
+		}
+
+	}
 }

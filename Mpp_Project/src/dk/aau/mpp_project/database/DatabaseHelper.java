@@ -6,6 +6,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Base64;
@@ -15,8 +18,11 @@ import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import de.greenrobot.event.EventBus;
@@ -438,19 +444,19 @@ public class DatabaseHelper {
 		});
 	}
 
-	// public static void parseSendPush(String channel, String userId)
-	// throws JSONException {
-	//
-	// ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
-	// pushQuery.whereEqualTo("channels", channel);
-	// pushQuery.whereEqualTo(USERNAME, target);
-	//
-	// JSONObject data = new JSONObject(
-	// "{\"action\":\"colloc.action.push\",\"msg\": \"You owe 200$ to Pierre\" }");
-	//
-	// ParsePush push = new ParsePush();
-	// push.setQuery(pushQuery);
-	// push.setData(data);
-	// push.sendInBackground();
-	// }
+	public static void parseSendPush(String channel, String facebookId,
+			String msg) throws JSONException {
+
+		ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
+		pushQuery.whereEqualTo("channels", channel);
+		pushQuery.whereEqualTo("facebookId", facebookId);
+
+		JSONObject data = new JSONObject(
+				"{\"action\":\"colloc.action.push\",\"msg\": \"" + msg + "\" }");
+
+		ParsePush push = new ParsePush();
+		push.setQuery(pushQuery);
+		push.setData(data);
+		push.sendInBackground();
+	}
 }

@@ -144,7 +144,7 @@ public class MainActivity extends FragmentActivity implements
 		mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(
 				getSupportFragmentManager());
 		mViewPager.setAdapter(mAppSectionsPagerAdapter);
-
+		
 		mViewPager
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
