@@ -102,34 +102,36 @@ public class NewFlatActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		if(resultCode==RESULT_OK && requestCode == ADD_FLAT_REQUEST){
-			ParseUser currentUser = ParseUser.getCurrentUser();
-			if (currentUser != null) {
-				MyUser myUser = (MyUser) currentUser;
+			checkForCurrentFlat();
+//			ParseUser currentUser = ParseUser.getCurrentUser();
+//			if (currentUser != null) {
+//				MyUser myUser = (MyUser) currentUser;
+//
+//				String facebookId = MyApplication
+//						.getOption(MyUser.FACEBOOK_ID, "0");
+//				String name = MyApplication.getOption(MyUser.NAME, "0");
+//				String birthday = MyApplication.getOption(MyUser.BIRTHDAY, "0");
+//
+//				myUser.setBirthday(birthday);
+//				myUser.setFacebookId(facebookId);
+//				myUser.setName(name);
+//
+//				DatabaseHelper.getUserFlats(myUser);
 
-				String facebookId = MyApplication
-						.getOption(MyUser.FACEBOOK_ID, "0");
-				String name = MyApplication.getOption(MyUser.NAME, "0");
-				String birthday = MyApplication.getOption(MyUser.BIRTHDAY, "0");
-
-				myUser.setBirthday(birthday);
-				myUser.setFacebookId(facebookId);
-				myUser.setName(name);
-
-				DatabaseHelper.getUserFlats(myUser);
-
-			} else {
-				// If the user is not logged in, go to the
-				// activity showing the login view.
-				startLoginActivity();
-			}
+//			} else {
+//				// If the user is not logged in, go to the
+//				// activity showing the login view.
+//				startLoginActivity();
+//			}
 		}
 	}
 
 	private void checkForCurrentFlat() {
+		System.out.println("CHECK");
 		if (MyApplication.getSharedPref().contains(MyApplication.CURRENT_FLAT)) {
 			String flatId = MyApplication.getOption(MyApplication.CURRENT_FLAT,
 					"-1");
-
+			System.out.println("FLATID: "+flatId);
 			if (flatId != "-1") {
 				if (getIntent().getBooleanExtra("should_check", true)) {
 					Intent intent = new Intent(getApplicationContext(),
