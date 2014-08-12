@@ -1,7 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:context="dk.aau.mpp_project.MainActivity" >
-
+	
+      <item
+          android:id="@+id/menu_item_share"
+          android:showAsAction="ifRoom"
+          android:title="Share Flat Code"
+          android:actionProviderClass="android.widget.ShareActionProvider" />
+        
 	<item
 		android:id="@+id/action_new_flat"
 		android:showAsAction="ifRoom"

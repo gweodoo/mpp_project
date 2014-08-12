@@ -16,6 +16,8 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ShareActionProvider;
+import android.widget.ShareActionProvider.OnShareTargetSelectedListener;
 
 import com.facebook.Session;
 import com.parse.ParseFacebookUtils;
@@ -44,7 +46,7 @@ import dk.aau.mpp_project.model.MyUser;
  */
 
 public class MainActivity extends FragmentActivity implements
-		ActionBar.TabListener {
+		ActionBar.TabListener, OnShareTargetSelectedListener {
 
 	private static final String		TAG										= "MainActivity";
 	private static final int		REQUEST_CODE_NEW_FLAT_ACTIVITY			= 1;
@@ -59,6 +61,9 @@ public class MainActivity extends FragmentActivity implements
 	private ProgressDialog			progressDialog;
 
 	private ActionBar				actionBar;
+	
+	private ShareActionProvider mShareActionProvider;
+	private Menu menu;
 
 	public ProgressDialog getProgressDialog() {
 		return progressDialog;
@@ -204,6 +209,7 @@ public class MainActivity extends FragmentActivity implements
 
 				myFlat = e.getExtras().getParcelable("data");
 
+				initMenu();
 				initTabsPlease();
 			}
 		}
@@ -212,12 +218,35 @@ public class MainActivity extends FragmentActivity implements
 
 		}
 	}
+	
+	public void initMenu(){
+		MenuItem item = menu.findItem(R.id.menu_item_share);
+		mShareActionProvider = (ShareActionProvider) item.getActionProvider();
+		mShareActionProvider.setOnShareTargetSelectedListener(this);
+		mShareActionProvider.setShareIntent(getDefaultShareIntent());
+	}
+	
+	@Override
+	public boolean onShareTargetSelected(ShareActionProvider source, Intent intent) {
+	    // start activity ourself to prevent search history
+	    startActivity(intent);
+	    return true;
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		this.menu = menu;
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
+    private Intent getDefaultShareIntent(){
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Flat Code");
+        intent.putExtra(Intent.EXTRA_TEXT, myFlat.getObjectId().toString());
+        return intent;
+    }
 
 	public Flat getMyFlat() {
 		return myFlat;
@@ -234,7 +263,6 @@ public class MainActivity extends FragmentActivity implements
 			intent.putExtra("should_check", false);
 			startActivityForResult(intent, REQUEST_CODE_NEW_FLAT_ACTIVITY);
 			break;
-
 		default:
 			break;
 		}
@@ -330,6 +358,13 @@ public class MainActivity extends FragmentActivity implements
 				return R.drawable.ic_action_home;
 			}
 		}
+	}
+	
+	private void setShareIntent(Intent shareIntent) {
+	    if (mShareActionProvider != null) {
+	        mShareActionProvider.setShareIntent(shareIntent);
+	    }
+
 	}
 
 	@Override
