@@ -47,7 +47,7 @@ public class OperationAdapter extends ArrayAdapter<Operation> {
 			}
 			if (priceText != null){
 				//ttd.setText(i.getValue());
-				priceText.setText(Double.toString(i.getAmount()));
+				priceText.setText(Double.toString(i.getAmount()) + " Kr");
 			}
 			if (dateText != null){
 				//dtd.setText(i.getDate());

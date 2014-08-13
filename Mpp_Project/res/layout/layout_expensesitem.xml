@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:orientation="horizontal"
@@ -9,24 +9,27 @@
 		android:id="@+id/datetext"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginLeft="5dp"
-		android:layout_marginTop="14dp"
+		android:layout_alignLeft="@+id/commenttext"
+		android:layout_below="@+id/commenttext"
 		android:text="date" />
-
-	<TextView
-		android:id="@+id/commenttext"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginLeft="10dp"
-		android:layout_marginTop="14dp"
-		android:text="comment" />
 
 	<TextView
 		android:id="@+id/pricetext"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginLeft="10dp"
-		android:layout_marginTop="14dp"
+		android:layout_alignParentRight="true"
+		android:layout_below="@+id/commenttext"
+		android:layout_marginLeft="5dp"
+		android:layout_marginRight="10dp"
 		android:text="price" />
 
-</LinearLayout>
+	<TextView
+		android:id="@+id/commenttext"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_marginLeft="5dp"
+		android:text="comment"
+		android:textStyle="bold" />
+
+</RelativeLayout>

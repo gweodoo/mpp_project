@@ -18,7 +18,7 @@ public class Operation extends ParseObject implements Parcelable {
 	public static final String	COMMENT	= "comment";
 	public static final String	IS_PAID	= "isPaid";
 	public static final String	AMOUNT	= "amount";
-	public static final String	DATE	= "date";
+	public static final String	DATE	= "createdAt";
 
 	private Flat				flat;
 	private MyUser				lender;
@@ -46,7 +46,7 @@ public class Operation extends ParseObject implements Parcelable {
 					.format(new Date()));
 
 		setComment(comment);
-		setDate(date);
+		//setDate(date);
 		setFlat(flat);
 		setIsPaid(isPaid);
 		setLender(lender);

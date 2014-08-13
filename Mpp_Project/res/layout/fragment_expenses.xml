@@ -23,7 +23,7 @@
 			android:id="@+id/amountText"
 			android:layout_width="100dp"
 			android:layout_height="match_parent"
-			android:hint="$"
+			android:hint="Kr"
 			android:inputType="numberDecimal" />
 
 		<Spinner
@@ -50,15 +50,21 @@
 		android:id="@+id/photo_label"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="14dp"
 		android:layout_marginLeft="10dp"
+		android:layout_marginTop="14dp"
 		android:text="Last expenses :"
 		android:textAppearance="?android:attr/textAppearanceLarge" />
 
-	<ListView
-		android:id="@android:id/list"
-		android:layout_width="wrap_content"
+	<android.support.v4.widget.SwipeRefreshLayout
+		android:id="@+id/swipe_container"
+		android:layout_width="match_parent"
 		android:layout_height="match_parent" >
-	</ListView>
+
+		<ListView
+			android:id="@android:id/list"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent" >
+		</ListView>
+	</android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

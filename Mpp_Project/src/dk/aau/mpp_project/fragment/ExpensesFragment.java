@@ -7,7 +7,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +36,7 @@ import dk.aau.mpp_project.model.MyUser;
 import dk.aau.mpp_project.model.Operation;
 
 public class ExpensesFragment extends ListFragment implements
-		FragmentEventHandler {
+		FragmentEventHandler, SwipeRefreshLayout.OnRefreshListener {
 
 	private Flat					flat;
 
@@ -43,6 +45,9 @@ public class ExpensesFragment extends ListFragment implements
 
 	private ProgressDialog			progressDialog;
 	private EditText				commentText, amountText;
+
+	private SwipeRefreshLayout		swipeRefresh;
+	private boolean					showProgress	= true;
 
 	// spinner photo
 	private Spinner					spinnerPeople;
@@ -55,6 +60,14 @@ public class ExpensesFragment extends ListFragment implements
 			Bundle savedInstanceState) {
 		View expensesView = inflater.inflate(R.layout.fragment_expenses,
 				container, false);
+
+		swipeRefresh = (SwipeRefreshLayout) expensesView
+				.findViewById(R.id.swipe_container);
+		swipeRefresh.setOnRefreshListener(this);
+		swipeRefresh.setColorScheme(android.R.color.holo_blue_bright,
+				android.R.color.holo_green_light,
+				android.R.color.holo_orange_light,
+				android.R.color.holo_red_light);
 
 		commentText = (EditText) expensesView.findViewById(R.id.commentText);
 		amountText = (EditText) expensesView.findViewById(R.id.amountText);
@@ -69,8 +82,6 @@ public class ExpensesFragment extends ListFragment implements
 		// Spinner PHOTO
 		if (!EventBus.getDefault().isRegistered(this))
 			EventBus.getDefault().register(this);
-
-		DatabaseHelper.getOperationsByFlat(flat);
 
 		Resources res = getResources();
 		// Create custom spinnerAdapter object ( see below
@@ -157,8 +168,23 @@ public class ExpensesFragment extends ListFragment implements
 				}
 			}
 		});
+		
+		onRefresh();
 
 		return expensesView;
+	}
+
+	@Override
+	public void onRefresh() {
+		new Handler().postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				showProgress = false;
+				swipeRefresh.setRefreshing(false);
+			}
+		}, 2000);
+		DatabaseHelper.getOperationsByFlat(flat);
 	}
 
 	@Override
@@ -183,7 +209,8 @@ public class ExpensesFragment extends ListFragment implements
 			progressDialog.setCancelable(true);
 		}
 
-		if (progressDialog != null && !progressDialog.isShowing())
+		if (progressDialog != null && !progressDialog.isShowing()
+				&& showProgress)
 			progressDialog.show();
 	}
 
