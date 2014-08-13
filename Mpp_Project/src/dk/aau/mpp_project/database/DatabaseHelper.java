@@ -330,24 +330,31 @@ public class DatabaseHelper {
 			public void done(List<News> objectList, ParseException e) {
 				if (e == null) {
 					Log.d(TAG, "# Retrieved " + objectList.size() + " news");
-					
-					for(final News n : objectList) {
-						n.getUser().fetchIfNeededInBackground(new GetCallback<MyUser>() {
 
-							@Override
-							public void done(MyUser u, ParseException arg1) {
-								n.setUser(u);
-							}
-						});
+					for (int i = 0; i < objectList.size(); i++) {
+						final News n = objectList.get(i);
+
+						n.getUser().fetchIfNeededInBackground(
+								new GetCallback<MyUser>() {
+
+									@Override
+									public void done(MyUser u,
+											ParseException arg1) {
+										n.setUser(u);
+									}
+								});
+
+						if (i == objectList.size() - 1) {
+							Bundle extras = new Bundle();
+							extras.putParcelableArrayList(
+									"data",
+									(ArrayList<? extends Parcelable>) objectList);
+
+							EventBus.getDefault().post(
+									new FinishedEvent(true,
+											ACTION_GET_NEWS_FLATS, extras));
+						}
 					}
-					
-					Bundle extras = new Bundle();
-					extras.putParcelableArrayList("data",
-							(ArrayList<? extends Parcelable>) objectList);
-
-					EventBus.getDefault().post(
-							new FinishedEvent(true, ACTION_GET_NEWS_FLATS,
-									extras));
 
 				} else {
 					Log.d(TAG, "Error: " + e.getMessage());
