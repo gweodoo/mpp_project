@@ -42,10 +42,6 @@ public class LogInActivity extends Activity {
 		initView();
 		initListener();
 		
-//		ImageView logo = (ImageView) findViewById(R.id.icon);
-//		Drawable icon = new ScaleDrawable(getResources().getDrawable(R.drawable.icon_big), 0, 500, 500);
-//		logo.setImageDrawable(icon);
-		
 		// Check if there is a currently logged in user
 		// and they are linked to a Facebook account.
 		ParseUser currentUser = ParseUser.getCurrentUser();
