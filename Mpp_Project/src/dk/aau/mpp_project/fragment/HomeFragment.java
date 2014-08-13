@@ -18,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parse.ParseException;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
@@ -260,6 +262,9 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			viewHolder.comment.setText("\""+news.getComment()+"\"");
 			viewHolder.date.setText(news.getDate());
 //			viewHolder.photo.setImageDrawable(drawable)
+			
+			UrlImageViewHelper.setUrlDrawable(viewHolder.photo, "http://graph.facebook.com/"+news.getUser().getFacebookId()+"/picture?type=large");
+
 
 			return convertView;
 		}
