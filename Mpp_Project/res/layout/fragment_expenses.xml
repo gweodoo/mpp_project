@@ -23,7 +23,8 @@
 
         <EditText
             android:id="@+id/amountText"
-            android:layout_width="50dp"
+            android:layout_width="100dp"
+            android:inputType="numberDecimal"
             android:layout_height="match_parent"
             android:hint="$" />
 

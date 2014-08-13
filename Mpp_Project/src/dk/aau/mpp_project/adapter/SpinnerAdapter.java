@@ -31,7 +31,7 @@ public class SpinnerAdapter extends ArrayAdapter<String>{
      
     /*************  CustomAdapter Constructor *****************/
     public SpinnerAdapter(
-                          MainActivity activitySpinner, //ilyas: j'ai des doutes sur cette ligne
+                          MainActivity activitySpinner,
                           int textViewResourceId,   
                           ArrayList objects,
                           Resources resLocal
@@ -70,21 +70,19 @@ public class SpinnerAdapter extends ArrayAdapter<String>{
         tempValues = (SpinnerModel) data.get(position);
          
         TextView SpinnerUser  = (TextView)row.findViewById(R.id.spinnerUser);
-        CheckedTextView sub          = (CheckedTextView)row.findViewById(R.id.sub);
+        TextView sub  			 = (TextView)row.findViewById(R.id.sub);
         ImageView companyLogo = (ImageView)row.findViewById(R.id.image);
          
         if(position==0){
              
             // Default selected Spinner item 
-            SpinnerUser.setText("Please select a shareMate");
+            SpinnerUser.setText("All");
             sub.setText("");
-            sub.setSelected(true);
         }
         else
         {
             // Set values for spinner each row 
             SpinnerUser.setText(tempValues.getUserName());
-            sub.setText(tempValues.getUrl());
             companyLogo.setImageResource(res.getIdentifier
                                          ("dk.aau.mpp_project:drawable/"
                                           + tempValues.getImage(),null,null));

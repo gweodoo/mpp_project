@@ -22,7 +22,7 @@
         android:textColor="@drawable/red"
         android:textStyle="bold" />
 
-     <CheckedTextView
+     <TextView
          android:layout_toRightOf="@+id/image"
          android:padding="2dip"
          android:textColor="@drawable/darkgrey"
