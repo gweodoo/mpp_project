@@ -70,21 +70,8 @@ public class AddNewFlatActivity extends Activity {
 		flatImage = (ImageView) findViewById(R.id.new_flat_image);
 		flatRent = (EditText) findViewById(R.id.newFlatRent);
 
-		ImageButton addFromGallery = (ImageButton) findViewById(R.id.add_pic_gallery);
 		ImageButton addFromCamera = (ImageButton) findViewById(R.id.add_pic_camera);
 
-		addFromGallery.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent();
-				intent.setType("image/*");
-				intent.setAction(Intent.ACTION_GET_CONTENT);
-				startActivityForResult(
-						Intent.createChooser(intent, "Select Picture"),
-						GALLERY_REQUEST);
-			}
-		});
 
 		addFromCamera.setOnClickListener(new OnClickListener() {
 
@@ -225,24 +212,25 @@ public class AddNewFlatActivity extends Activity {
 			int width = size.x;
 
 			flatImage.setImageBitmap(Filter.rescale(bitmap, width, false));
-		} else if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
-			Uri selectedImage = data.getData();
-			String[] filePathColumn = { MediaStore.Images.Media.DATA };
-			Cursor cursor = getContentResolver().query(selectedImage,
-					filePathColumn, null, null, null);
-			cursor.moveToFirst();
-			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-			String picturePath = cursor.getString(columnIndex);
-			cursor.close();
-
-			BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inPreferredConfig = Config.RGB_565;
-			options.inSampleSize = 2;
-
-			bitmap = BitmapFactory.decodeFile(picturePath, options);
-			bitmap = Filter.rescale(bitmap, 300, false);
-			flatImage.setImageBitmap(bitmap);
-		}
+		} 
+//		else if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
+//			Uri selectedImage = data.getData();
+//			String[] filePathColumn = { MediaStore.Images.Media.DATA };
+//			Cursor cursor = getContentResolver().query(selectedImage,
+//					filePathColumn, null, null, null);
+//			cursor.moveToFirst();
+//			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//			String picturePath = cursor.getString(columnIndex);
+//			cursor.close();
+//
+//			BitmapFactory.Options options = new BitmapFactory.Options();
+//			options.inPreferredConfig = Config.RGB_565;
+//			options.inSampleSize = 2;
+//
+//			bitmap = BitmapFactory.decodeFile(picturePath, options);
+//			bitmap = Filter.rescale(bitmap, 300, false);
+//			flatImage.setImageBitmap(bitmap);
+//		}
 	}
 
 	private boolean validateData() {

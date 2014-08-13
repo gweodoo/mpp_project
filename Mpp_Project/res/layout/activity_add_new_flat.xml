@@ -90,7 +90,7 @@
             android:layout_width="287dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.82"
-            android:src="@drawable/grey" />
+            android:src="@color/grey_light" />
     </LinearLayout>
 
 </ScrollView>
