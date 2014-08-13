@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.json.JSONException;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Resources;
@@ -29,6 +31,7 @@ import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.activity.MainActivity;
 import dk.aau.mpp_project.adapter.OperationAdapter;
 import dk.aau.mpp_project.adapter.SpinnerAdapter;
+import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
@@ -163,6 +166,18 @@ public class ExpensesFragment extends ListFragment implements
 											.toString()));
 					commentText.setText("");
 					amountText.setText("");
+					
+					try {
+						DatabaseHelper.parseSendPush(MyApplication.CHANNEL, selectedUser.getFacebookId(), "You owe "+lender.getName()+" "+Double.valueOf(amountText.getText().toString()
+										.trim()));
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 				} else {
 					Toast.makeText(getActivity(), "Fields missing",
 							Toast.LENGTH_SHORT).show();
