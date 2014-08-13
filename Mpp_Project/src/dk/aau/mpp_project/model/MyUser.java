@@ -2,6 +2,8 @@ package dk.aau.mpp_project.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.ImageView;
+
 import com.parse.ParseClassName;
 import com.parse.ParseUser;
 
@@ -14,8 +16,17 @@ public class MyUser extends ParseUser implements Parcelable {
 	public final static String	NAME		= "name";
     public final static String  FLAT        = "flat";
 	public final static String  PHOTO       = "picture";
+	
+	private ImageView			photoView;
+    public ImageView getPhotoView() {
+		return photoView;
+	}
 
-    private String				facebookId;
+	public void setPhotoView(ImageView photoView) {
+		this.photoView = photoView;
+	}
+
+	private String				facebookId;
 	private String				birthday;
 	private String				name;
 

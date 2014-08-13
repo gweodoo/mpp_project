@@ -162,7 +162,9 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,
 			userImage.setBorderWidth(3);
 			userImage.setBorderColor(Color.WHITE);
 			userImage.setPadding(10, 10, 10, 10);
-
+			
+			MainActivity.getUserDetails(u).setPhotoView(userImage);
+			
 			userImage.setOnClickListener(new OnClickListener() {
 
 				@Override

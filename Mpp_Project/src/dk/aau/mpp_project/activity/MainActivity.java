@@ -70,6 +70,14 @@ public class MainActivity extends FragmentActivity implements
 	public ProgressDialog getProgressDialog() {
 		return progressDialog;
 	}
+	
+	public static MyUser getUserDetails(MyUser user){
+		for(MyUser u : DatabaseHelper.users){
+			if(user.getObjectId().equals(u.getObjectId()))
+				return u;
+		}
+		return null;
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
