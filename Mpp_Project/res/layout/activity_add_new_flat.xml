@@ -70,15 +70,6 @@
             android:showDividers="middle"
             android:weightSum="3" >
 
-            <ImageButton
-                android:id="@+id/add_pic_gallery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/blue"
-                android:padding="10dp"
-                android:src="@drawable/ic_action_gallery" />
-
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -99,7 +90,7 @@
             android:layout_width="287dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.82"
-            android:src="@drawable/flat1small" />
+            android:src="@drawable/grey" />
     </LinearLayout>
 
 </ScrollView>
