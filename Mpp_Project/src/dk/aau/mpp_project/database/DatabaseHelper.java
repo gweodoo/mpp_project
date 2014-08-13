@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.util.Base64;
 import android.util.Log;
 import com.parse.*;
+
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
@@ -20,28 +21,29 @@ import java.util.List;
 
 public class DatabaseHelper {
 
-	private static final String	TAG							= "DatabaseHelper";
+	private static final String TAG = "DatabaseHelper";
 
-	public static final String	FLAT						= "Flat";
-	public static final String	OPERATION					= "Operation";
-	public static final String	NEWS						= "News";
-	public static final String	USER						= "MyUser";
-	public static final String	FILLING_TABLE				= "FillingTable";
+	public static final String FLAT = "Flat";
+	public static final String OPERATION = "Operation";
+	public static final String NEWS = "News";
+	public static final String USER = "MyUser";
+	public static final String FILLING_TABLE = "FillingTable";
 
-	public static final String	ACTION_LOGIN				= "ACTION_LOGIN";
-	public static final String	ACTION_CREATE_FLAT			= "ACTION_CREATE_FLAT";
-	public static final String	ACTION_JOIN_FLAT			= "ACTION_JOIN_FLAT";
-	public static final String	ACTION_UPDATE_FLAT			= "ACTION_UPDATE_FLAT";
-	public static final String	ACTION_GET_USER_FLATS		= "ACTION_GET_USER_FLATS";
-	public static final String	ACTION_GET_FLAT_BY_ID		= "ACTION_GET_FLAT_BY_ID";
-	public static final String	ACTION_GET_NEWS_FLATS		= "ACTION_GET_NEWS_FLATS";
-	public static final String	ACTION_GET_OPERATIONS_FLATS	= "ACTION_GET_OPERATIONS_FLATS";
-	public static final String	ACTION_GET_USERS_IN_FLAT	= "ACTION_GET_USERS_IN_FLAT";
-	public static final String	ACTION_LEAVE_FLAT			= "ACTION_LEAVE_FLAT";
-	
+	public static final String ACTION_LOGIN = "ACTION_LOGIN";
+	public static final String ACTION_CREATE_OPERATION = "ACTION_CREATE_OPERATION";
+	public static final String ACTION_CREATE_FLAT = "ACTION_CREATE_FLAT";
+	public static final String ACTION_JOIN_FLAT = "ACTION_JOIN_FLAT";
+	public static final String ACTION_UPDATE_FLAT = "ACTION_UPDATE_FLAT";
+	public static final String ACTION_GET_USER_FLATS = "ACTION_GET_USER_FLATS";
+	public static final String ACTION_GET_FLAT_BY_ID = "ACTION_GET_FLAT_BY_ID";
+	public static final String ACTION_GET_NEWS_FLATS = "ACTION_GET_NEWS_FLATS";
+	public static final String ACTION_GET_OPERATIONS_FLATS = "ACTION_GET_OPERATIONS_FLATS";
+	public static final String ACTION_GET_USERS_IN_FLAT = "ACTION_GET_USERS_IN_FLAT";
+	public static final String ACTION_LEAVE_FLAT = "ACTION_LEAVE_FLAT";
+
 	public static ArrayList<MyUser> users;
 
-	public static void createOperation(Operation operation) {
+	public static void createOperation(final Operation operation) {
 		// ParseObject operationObject = new ParseObject(OPERATION);
 		// operationObject.put(Operation.LENDER, operation.getLender());
 		// operationObject.put(Operation.TO, operation.getTo());
@@ -50,9 +52,17 @@ public class DatabaseHelper {
 		// operationObject.put(Operation.IS_PAID, operation.getIsPaid());
 		// operationObject.put(Operation.FLAT, flat);
 
-		//operation.put(Operation.FLAT, flat);
+		// operation.put(Operation.FLAT, flat);
 
-		operation.saveInBackground();
+		operation.saveInBackground(new SaveCallback() {
+			
+			@Override
+			public void done(ParseException arg0) {
+				Bundle data = new Bundle();
+				data.putParcelable("data", operation);
+				EventBus.getDefault().post(new FinishedEvent(true, ACTION_CREATE_OPERATION, data));
+			}
+		});
 	}
 
 	public static void createFlat(final MyUser user, final Flat flat,
@@ -320,7 +330,7 @@ public class DatabaseHelper {
 
 					for (int i = 0; i < objectList.size(); i++) {
 						final News n = objectList.get(i);
-						
+
 						final int j = i;
 						n.getUser().fetchIfNeededInBackground(
 								new GetCallback<MyUser>() {
@@ -334,10 +344,12 @@ public class DatabaseHelper {
 											extras.putParcelableArrayList(
 													"data",
 													(ArrayList<? extends Parcelable>) objectList);
-											
-											EventBus.getDefault().post(
-													new FinishedEvent(true,
-															ACTION_GET_NEWS_FLATS, extras));
+
+											EventBus.getDefault()
+													.post(new FinishedEvent(
+															true,
+															ACTION_GET_NEWS_FLATS,
+															extras));
 										}
 									}
 								});
@@ -373,20 +385,21 @@ public class DatabaseHelper {
 							+ " user for this flat");
 
 					List<String> userIds = new ArrayList<String>();
-//					final ArrayList<MyUser> userList = new ArrayList<MyUser>();
-					for(ParseObject o : objectList) {
+					// final ArrayList<MyUser> userList = new
+					// ArrayList<MyUser>();
+					for (ParseObject o : objectList) {
 						MyUser u = (MyUser) o.get(FillingTable.USER);
-						
+
 						userIds.add(u.getObjectId());
 					}
-					
-					
 
-					ParseQuery<MyUser> query2 = ParseQuery.getQuery(MyUser.class);
+					ParseQuery<MyUser> query2 = ParseQuery
+							.getQuery(MyUser.class);
 					query2.whereContainedIn("objectId", userIds);
 
 					query2.findInBackground(new FindCallback<MyUser>() {
-						public void done(List<MyUser> objectList, ParseException e) {
+						public void done(List<MyUser> objectList,
+								ParseException e) {
 							if (e == null) {
 								Log.d(TAG, "# Retrieved " + objectList.size()
 										+ " users");
@@ -398,12 +411,13 @@ public class DatabaseHelper {
 
 								EventBus.getDefault().post(
 										new FinishedEvent(true,
-												ACTION_GET_USERS_IN_FLAT, extras));
+												ACTION_GET_USERS_IN_FLAT,
+												extras));
 
 							} else {
 								Log.d(TAG, "Error: " + e.getMessage());
-								EventBus.getDefault().post(
-										new FinishedEvent(false,
+								EventBus.getDefault()
+										.post(new FinishedEvent(false,
 												ACTION_GET_USERS_IN_FLAT, null));
 							}
 						}
@@ -413,45 +427,44 @@ public class DatabaseHelper {
 		});
 	}
 
+	// Log.v(TAG, "# My User ID : " + f.getObjectId());
+	// }
+	// }
+	// });
 
-//						Log.v(TAG, "# My User ID : " + f.getObjectId());
-//				}
-//			}
-//		});
+	// ParseQuery<MyUser> query2 = ParseQuery
+	// .getQuery(MyUser.class);
+	// query2.whereContainedIn("objectId", userIds);
 
-//					ParseQuery<MyUser> query2 = ParseQuery
-//							.getQuery(MyUser.class);
-//					query2.whereContainedIn("objectId", userIds);
-
-//					query2.findInBackground(new FindCallback<MyUser>() {
-//						public void done(List<MyUser> objectList,
-//								ParseException e) {
-//							if (e == null) {
-//								Log.d(TAG, "# Retrieved " + objectList.size()
-//										+ " users");
-//
-//								Bundle extras = new Bundle();
-//								extras.putParcelableArrayList(
-//										"data",
-//										(ArrayList<? extends Parcelable>) objectList);
-//
-//								EventBus.getDefault().post(
-//										new FinishedEvent(true,
-//												ACTION_GET_USERS_IN_FLAT,
-//												extras));
-//
-//							} else {
-//								Log.d(TAG, "Error: " + e.getMessage());
-//								EventBus.getDefault()
-//										.post(new FinishedEvent(false,
-//												ACTION_GET_USERS_IN_FLAT, null));
-//							}
-//						}
-//					});
-////				}
-////			}
-////		});
-//	}
+	// query2.findInBackground(new FindCallback<MyUser>() {
+	// public void done(List<MyUser> objectList,
+	// ParseException e) {
+	// if (e == null) {
+	// Log.d(TAG, "# Retrieved " + objectList.size()
+	// + " users");
+	//
+	// Bundle extras = new Bundle();
+	// extras.putParcelableArrayList(
+	// "data",
+	// (ArrayList<? extends Parcelable>) objectList);
+	//
+	// EventBus.getDefault().post(
+	// new FinishedEvent(true,
+	// ACTION_GET_USERS_IN_FLAT,
+	// extras));
+	//
+	// } else {
+	// Log.d(TAG, "Error: " + e.getMessage());
+	// EventBus.getDefault()
+	// .post(new FinishedEvent(false,
+	// ACTION_GET_USERS_IN_FLAT, null));
+	// }
+	// }
+	// });
+	// // }
+	// // }
+	// // });
+	// }
 
 	public static void getOperationsByFlat(Flat flat) {
 		EventBus.getDefault().post(new StartEvent(ACTION_GET_OPERATIONS_FLATS));
@@ -500,23 +513,25 @@ public class DatabaseHelper {
 		push.setData(data);
 		push.sendInBackground();
 	}
-	
-	public static void parseSendPushToAll(String channel,
-			String msg) throws JSONException {
+
+	public static void parseSendPushToAll(String channel, String msg)
+			throws JSONException {
 		MyUser currentUser = (MyUser) ParseUser.getCurrentUser();
 
-		for(MyUser u : users){
-			
-			if(u.getObjectId().equals(currentUser.getObjectId()))
+		for (MyUser u : users) {
+
+			if (u.getObjectId().equals(currentUser.getObjectId()))
 				continue;
-			
-			ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
+
+			ParseQuery<ParseInstallation> pushQuery = ParseInstallation
+					.getQuery();
 			pushQuery.whereEqualTo("channels", channel);
 			pushQuery.whereEqualTo("facebookId", u.getFacebookId());
-	
+
 			JSONObject data = new JSONObject(
-					"{\"action\":\"colloc.action.push\",\"msg\": \"" + msg + "\" }");
-	
+					"{\"action\":\"colloc.action.push\",\"msg\": \"" + msg
+							+ "\" }");
+
 			ParsePush push = new ParsePush();
 			push.setQuery(pushQuery);
 			push.setData(data);

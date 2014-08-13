@@ -144,7 +144,7 @@ public class LoansFragment extends Fragment implements FragmentEventHandler,Swip
             info.setText(cur.getComment());
 
             //setting amount (cast with two decimals)
-            amount.setText((new DecimalFormat("#.00")).format(cur.getAmount())+" €");
+            amount.setText((new DecimalFormat("#.00")).format(cur.getAmount())+" Kr");
 
             //setting users pictures (you and the other one)
 			Resources r = getResources();

@@ -15,7 +15,7 @@
 			android:text="Last Loans :"
 			android:id="@+id/titleLoan"
 			android:layout_margin="10dp"
-			android:textStyle="bold"/>
+			/>
 
 	<android.support.v4.widget.SwipeRefreshLayout
 			android:id="@+id/swipe_container"

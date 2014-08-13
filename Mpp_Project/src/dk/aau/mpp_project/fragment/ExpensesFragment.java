@@ -7,6 +7,7 @@ import org.json.JSONException;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.res.Resources;
@@ -164,16 +165,6 @@ public class ExpensesFragment extends ListFragment implements
 					commentText.setText("");
 					amountText.setText("");
 					
-					try {
-						DatabaseHelper.parseSendPush(MyApplication.CHANNEL, selectedUser.getFacebookId(), "You owe "+lender.getName()+" "+Double.valueOf(amountText.getText().toString()
-										.trim()));
-					} catch (NumberFormatException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 					
 				} else {
 					Toast.makeText(getActivity(), "Fields missing",
@@ -184,6 +175,8 @@ public class ExpensesFragment extends ListFragment implements
 		
 		return expensesView;
 	}
+	
+	
 
 	@Override
 	public void onRefresh() {
@@ -261,6 +254,21 @@ public class ExpensesFragment extends ListFragment implements
 				operationAdapter.notifyDataSetChanged();
 
 				Log.i("ExpensesFragment", "Operation :" + operationsList.size());
+			}
+			
+			else if(DatabaseHelper.ACTION_CREATE_OPERATION.equals(e.getAction())) {
+				Operation o = (Operation) e.getExtras().getParcelable("data");
+				MyUser to = MainActivity.getUserDetails(o.getTo());
+				MyUser lender = MainActivity.getUserDetails(o.getLender());
+				try {
+					DatabaseHelper.parseSendPush(MyApplication.CHANNEL, to.getFacebookId(), "You owe "+lender.getName()+" "+o.getAmount() + " Kr");
+				} catch (NumberFormatException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				} catch (JSONException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
