@@ -1,6 +1,7 @@
 package dk.aau.mpp_project.fragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.app.ProgressDialog;
@@ -226,6 +227,8 @@ public class ExpensesFragment extends ListFragment implements
 				// We have got all operations
 				ArrayList<Operation> arri = e.getExtras()
 						.getParcelableArrayList("data");
+				
+				Collections.reverse(arri);
 
 				operationsList.clear();
 				operationsList.addAll(arri);
