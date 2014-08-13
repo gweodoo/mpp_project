@@ -46,6 +46,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 	private ListView		listView;
 	private NewsAdapter		adapter;
 	private SwipeRefreshLayout swipeRefresh;
+	private boolean showProgress = true;
 	
 
 	@Override
@@ -119,6 +120,8 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 		});
 		LinearLayout bottom = (LinearLayout) rlMain.findViewById(R.id.bottom);
 
+		
+		
 		// Adding roommate avatars
 		ImageView a1 = new ImageView(rootView.getContext());
 		a1.setImageDrawable(getResources().getDrawable(R.drawable.av1));
@@ -178,7 +181,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			progressDialog.setCancelable(true);
 		}
 
-		if (progressDialog != null && !progressDialog.isShowing())
+		if (progressDialog != null && !progressDialog.isShowing() && showProgress )
 			progressDialog.show();
 	}
 
@@ -212,11 +215,13 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 		new Handler().postDelayed(new Runnable() {
 
 			@Override public void run() {
+				showProgress = false;
 				swipeRefresh.setRefreshing(false);
 			}
 		}, 2000);
 		DatabaseHelper.getNewsByFlat(((MainActivity)getActivity()).getMyFlat());
 	}
+	
 
 	public class NewsAdapter extends ArrayAdapter<News> {
 

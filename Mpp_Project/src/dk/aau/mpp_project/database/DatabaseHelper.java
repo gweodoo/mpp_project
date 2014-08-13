@@ -327,13 +327,14 @@ public class DatabaseHelper {
 		ParseQuery<News> query = ParseQuery.getQuery(News.class);
 		query.whereEqualTo(News.FLAT, flat);
 		query.findInBackground(new FindCallback<News>() {
-			public void done(List<News> objectList, ParseException e) {
+			public void done(final List<News> objectList, ParseException e) {
 				if (e == null) {
 					Log.d(TAG, "# Retrieved " + objectList.size() + " news");
 
 					for (int i = 0; i < objectList.size(); i++) {
 						final News n = objectList.get(i);
-
+						
+						final int j = i;
 						n.getUser().fetchIfNeededInBackground(
 								new GetCallback<MyUser>() {
 
@@ -341,19 +342,19 @@ public class DatabaseHelper {
 									public void done(MyUser u,
 											ParseException arg1) {
 										n.setUser(u);
+										if (j == objectList.size() - 1) {
+											Bundle extras = new Bundle();
+											extras.putParcelableArrayList(
+													"data",
+													(ArrayList<? extends Parcelable>) objectList);
+											
+											EventBus.getDefault().post(
+													new FinishedEvent(true,
+															ACTION_GET_NEWS_FLATS, extras));
+										}
 									}
 								});
 
-						if (i == objectList.size() - 1) {
-							Bundle extras = new Bundle();
-							extras.putParcelableArrayList(
-									"data",
-									(ArrayList<? extends Parcelable>) objectList);
-
-							EventBus.getDefault().post(
-									new FinishedEvent(true,
-											ACTION_GET_NEWS_FLATS, extras));
-						}
 					}
 
 				} else {

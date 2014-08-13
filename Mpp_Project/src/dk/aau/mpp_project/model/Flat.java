@@ -1,5 +1,7 @@
 package dk.aau.mpp_project.model;
 
+import java.util.ArrayList;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -24,6 +26,7 @@ public class Flat extends ParseObject implements Parcelable {
 	private Double				rentAmount;
 	private String				photoName;
 	private ParseFile			photo;
+	private ArrayList<MyUser>	flatUsers;
 
 	public Flat() {
 	}
@@ -128,5 +131,13 @@ public class Flat extends ParseObject implements Parcelable {
 	@Override
 	public int describeContents() {
 		return 0;
+	}
+	
+	public ArrayList<MyUser> getFlatUsers() {
+		return flatUsers;
+	}
+
+	public void setFlatUsers(ArrayList<MyUser> flatUsers) {
+		this.flatUsers = flatUsers;
 	}
 }
