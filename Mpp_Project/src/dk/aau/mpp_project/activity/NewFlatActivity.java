@@ -10,15 +10,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import de.greenrobot.event.EventBus;
@@ -32,7 +27,6 @@ import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 
 public class NewFlatActivity extends Activity {
@@ -284,6 +278,9 @@ public class NewFlatActivity extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
+			else {
+				viewHolder.flatImage.setImageDrawable(getResources().getDrawable(R.drawable.flat1small));
 			}
 			viewHolder.flatTitle.setText(flat.getName());
 

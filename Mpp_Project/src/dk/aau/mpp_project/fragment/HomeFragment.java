@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -18,8 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-
-import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parse.ParseException;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
@@ -87,18 +86,21 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 					display.getSize(size);
 					int width = size.x;
 					b = Filter.rescale(b, width, false);
-					llMain.setBackgroundDrawable(new BitmapDrawable(Filter.fastblur(b, 20)));
+					llMain.setBackgroundDrawable(new BitmapDrawable(getResources(), Filter.fastblur(b, 20)));
 	//				viewHolder.flatImage.setBackgroundDrawable(new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(b, 1000, 100, true)));
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
+			else {
+				llMain.setBackgroundDrawable(getResources().getDrawable(R.drawable.flat1small));
+			}
 		}
 
 		TextView titleFlat = (TextView) rlMain.findViewById(R.id.titleFlat);
 		titleFlat.setText(flat.getName());
-
+		titleFlat.setTextColor(Color.WHITE);
 		ImageButton buttonLocation = (ImageButton) rlMain
 				.findViewById(R.id.buttonLocation);
 		buttonLocation.setOnClickListener(new View.OnClickListener() {
