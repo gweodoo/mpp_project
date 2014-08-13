@@ -259,6 +259,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 //			viewHolder.sender.setText("From "+news.getUser().getName());
 			viewHolder.comment.setText("\""+news.getComment()+"\"");
 			viewHolder.date.setText(news.getDate());
+//			viewHolder.photo.setImageDrawable(drawable)
 
 			return convertView;
 		}
