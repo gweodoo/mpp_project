@@ -325,9 +325,7 @@ public class DatabaseHelper {
 		EventBus.getDefault().post(new StartEvent(ACTION_GET_NEWS_FLATS));
 
 		ParseQuery<News> query = ParseQuery.getQuery(News.class);
-
 		query.whereEqualTo(News.FLAT, flat);
-
 		query.findInBackground(new FindCallback<News>() {
 			public void done(List<News> objectList, ParseException e) {
 				if (e == null) {
