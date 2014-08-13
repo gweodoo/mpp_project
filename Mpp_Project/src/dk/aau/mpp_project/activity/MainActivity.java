@@ -370,7 +370,7 @@ public class MainActivity extends FragmentActivity implements
 			case 1:
 				return R.drawable.ic_action_expsenses;
 			case 2:
-				return R.drawable.ic_action_plan;
+				return R.drawable.ic_action_loans;
 			case 3:
 				return R.drawable.ic_action_settings;
 			default:

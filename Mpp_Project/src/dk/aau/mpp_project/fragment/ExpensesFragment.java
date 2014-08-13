@@ -218,7 +218,7 @@ public class ExpensesFragment extends ListFragment implements
 		if (progressDialog != null && progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}
-
+		
 		// Success retreiving database
 		if (e.isSuccess()) {
 			// Check for what you wanted to retrieve

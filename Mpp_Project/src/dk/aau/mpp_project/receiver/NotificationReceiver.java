@@ -47,7 +47,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 				0, launchNotifiactionIntent, PendingIntent.FLAG_ONE_SHOT);
 
 		Notification.Builder builder = new Notification.Builder(context)
-				.setSmallIcon(R.drawable.ic_launcher)
+				.setSmallIcon(R.drawable.ic_stat_icon)
 				.setContentTitle(
 						context.getResources().getString(R.string.app_name))
 				.setContentText(msg).setContentIntent(pendingIntent);

@@ -52,8 +52,8 @@ public class MyApplication extends Application {
 		ParseFacebookUtils.initialize(getString(R.string.app_id));
 
 		// Needed for push notifications
-		PushService.setDefaultPushCallback(this, MainActivity.class);
-		PushService.subscribe(this, CHANNEL, MainActivity.class);
+		PushService.setDefaultPushCallback(this, MainActivity.class, R.drawable.ic_launcher);
+		PushService.subscribe(this, CHANNEL, MainActivity.class, R.drawable.ic_launcher);
 
 		// Installation of the phone (each phone as a unique installation)
 		ParseInstallation pi = ParseInstallation.getCurrentInstallation();
