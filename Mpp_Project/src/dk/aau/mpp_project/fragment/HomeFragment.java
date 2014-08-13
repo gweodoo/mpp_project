@@ -359,11 +359,12 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,
 			viewHolder.comment.setText("\"" + news.getComment() + "\"");
 			viewHolder.date.setText(news.getDate());
 			viewHolder.photo.addShadow();
-			UrlImageViewHelper.setUrlDrawable(viewHolder.photo,
-					"http://graph.facebook.com/"
-							+ news.getUser().getFacebookId()
-							+ "/picture?type=large", R.drawable.image_user,
-					3600000);
+			viewHolder.photo.setImageDrawable(MainActivity.getUserDetails(news.getUser()).getPhotoView().getDrawable());
+//			UrlImageViewHelper.setUrlDrawable(viewHolder.photo,
+//					"http://graph.facebook.com/"
+//							+ news.getUser().getFacebookId()
+//							+ "/picture?type=large", R.drawable.image_user,
+//					3600000);
 
 			return convertView;
 		}

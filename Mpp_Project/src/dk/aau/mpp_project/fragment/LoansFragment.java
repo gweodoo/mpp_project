@@ -147,11 +147,13 @@ public class LoansFragment extends Fragment implements FragmentEventHandler,Swip
             amount.setText((new DecimalFormat("#.00")).format(cur.getAmount())+" €");
 
             //setting users pictures (you and the other one)
-//			Resources r = getResources();
-//			int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
-//			Drawable d = new ScaleDrawable(getResources().getDrawable(R.drawable.image_user), 0, 50, 50).getDrawable();
-//			UrlImageViewHelper.setUrlDrawable(picYou, "http://graph.facebook.com/" + ((MainActivity) mActivity).getMyUser().getFacebookId() + "/picture?width="+px+"&height="+px, d, 3600000);
+			Resources r = getResources();
+			int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
+			Drawable d = new ScaleDrawable(getResources().getDrawable(R.drawable.image_user), 0, 50, 50).getDrawable();
+			UrlImageViewHelper.setUrlDrawable(picYou, "http://graph.facebook.com/" + ((MainActivity) mActivity).getMyUser().getFacebookId() + "/picture?width="+px+"&height="+px, d, 3600000);
 
+//			picYou.setImageDrawable(MainActivity.getUserDetails(user))
+			
 			Log.i("TOOT", "" + ((MainActivity) mActivity).getMyUser().getFacebookId());
 //			picYou.setBorderWidth(3);
 //			picYou.setBorderColor(Color.WHITE);
@@ -177,6 +179,7 @@ public class LoansFragment extends Fragment implements FragmentEventHandler,Swip
 //				Resources r2 = getResources();
 //				int px2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r2.getDisplayMetrics());
 //				Drawable d2 = new ScaleDrawable(getResources().getDrawable(R.drawable.image_user), 0, 50, 50).getDrawable();
+                picUser.setImageDrawable(MainActivity.getUserDetails(cur.getTo()).getPhotoView().getDrawable());
 //				UrlImageViewHelper.setUrlDrawable(picUser, "http://graph.facebook.com/" + cur.getTo().getFacebookId() + "/picture?width=" + px2 + "&height=" + px2, d2, 3600000);
 //				picUser.setBorderWidth(3);
 //				picUser.setBorderColor(Color.WHITE);
@@ -190,7 +193,8 @@ public class LoansFragment extends Fragment implements FragmentEventHandler,Swip
 				Resources r2 = getResources();
 				int px2 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r2.getDisplayMetrics());
 				Drawable d2 = new ScaleDrawable(getResources().getDrawable(R.drawable.image_user), 0, 50, 50).getDrawable();
-				UrlImageViewHelper.setUrlDrawable(picUser, "http://graph.facebook.com/" + cur.getLender().getFacebookId() + "/picture?width=" + px2 + "&height=" + px2, d2, 3600000);
+				picUser.setImageDrawable(MainActivity.getUserDetails(cur.getLender()).getPhotoView().getDrawable());
+//				UrlImageViewHelper.setUrlDrawable(picUser, "http://graph.facebook.com/" + cur.getLender().getFacebookId() + "/picture?width=" + px2 + "&height=" + px2, d2, 3600000);
 //				picUser.setBorderWidth(3);
 //				picUser.setBorderColor(Color.WHITE);
 //				picUser.setPadding(10, 10, 10, 10);

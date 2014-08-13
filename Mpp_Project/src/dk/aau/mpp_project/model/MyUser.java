@@ -18,13 +18,6 @@ public class MyUser extends ParseUser implements Parcelable {
 	public final static String  PHOTO       = "picture";
 	
 	private ImageView			photoView;
-    public ImageView getPhotoView() {
-		return photoView;
-	}
-
-	public void setPhotoView(ImageView photoView) {
-		this.photoView = photoView;
-	}
 
 	private String				facebookId;
 	private String				birthday;
@@ -120,5 +113,13 @@ public class MyUser extends ParseUser implements Parcelable {
 		if (getObjectId() != null ? !getObjectId().equals(myUser.getObjectId()) : myUser.getObjectId() != null) return false;
 
 		return true;
+	}
+	
+    public ImageView getPhotoView() {
+		return photoView;
+	}
+
+	public void setPhotoView(ImageView photoView) {
+		this.photoView = photoView;
 	}
 }
