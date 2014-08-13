@@ -17,14 +17,14 @@
         android:layout_centerHorizontal="true"/>
 
 	<ImageView
-		android:id="@+id/logo"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-        android:contentDescription="@null"
-		android:src="@drawable/av4"
-        android:layout_above="@+id/loginButton"
-        android:layout_alignLeft="@+id/loginButton"
-        android:layout_alignStart="@+id/loginButton"
-        android:layout_marginBottom="92dp"/>
+	    android:id="@+id/logo"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/loginButton"
+	    android:layout_alignLeft="@+id/loginButton"
+	    android:layout_alignStart="@+id/loginButton"
+	    android:layout_marginBottom="92dp"
+	    android:contentDescription="@null"
+	    android:src="@color/grey_light" />
 
 </RelativeLayout>
