@@ -3,6 +3,8 @@ package dk.aau.mpp_project.activity;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+import org.json.JSONException;
+
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
@@ -18,6 +20,7 @@ import dk.aau.mpp_project.filter.Filter;
 import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -118,17 +121,19 @@ public class FlatLoginActivity extends Activity {
 			if (DatabaseHelper.ACTION_GET_FLAT_BY_ID.equals(e.getAction())) {
                 flat = e.getExtras().getParcelable("data");
                 ParseUser currentUser = ParseUser.getCurrentUser();
-                System.out.println("JOIN FLAT");
                 DatabaseHelper.joinFlat((MyUser)currentUser, flat, flatPassword.getText().toString());
 			}
-			if (DatabaseHelper.ACTION_JOIN_FLAT.equals(e.getAction())) {
-//				Toast.makeText(getApplicationContext(), "logged in flat", Toast.LENGTH_LONG).show();
-				Intent intent = new Intent(this, MainActivity.class);
-				startActivity(intent);
+			else if (DatabaseHelper.ACTION_JOIN_FLAT.equals(e.getAction())) {
+				DatabaseHelper.getUsersByFlat(flat);
 			}
-			else{
-//				Toast.makeText(getApplicationContext(), "Joining flat...", Toast.LENGTH_LONG).show();
-//				flat = e.getExtras().getParcelable("data");
+			else if(DatabaseHelper.ACTION_GET_USERS_IN_FLAT.equals(e.getAction())){
+				MyUser currentUser = (MyUser) ParseUser.getCurrentUser();
+				try {
+					DatabaseHelper.parseSendPushToAll(MyApplication.CHANNEL, currentUser.getName()+" joined the flat "+flat.getName());
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				MyApplication.setOption(MyApplication.CURRENT_FLAT,
 						flat.getObjectId());
 				Intent data = new Intent();
@@ -136,11 +141,8 @@ public class FlatLoginActivity extends Activity {
 				data.putExtra("should_check", true);
 				setResult(RESULT_OK);
 				finish();
-//				Intent data = new Intent(getApplicationContext(), MainActivity.class);
-//				data.putExtra("data", flat.getObjectId().toString());
-//				setResult(RESULT_OK, data);
-//				startActivity(data);
-//				finish();
+			}
+			else{
 			}
 		}
 		// Error occured

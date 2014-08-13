@@ -1,13 +1,17 @@
 package dk.aau.mpp_project.activity;
 
+import org.json.JSONException;
+
 import com.parse.ParseUser;
 
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
 import dk.aau.mpp_project.model.Flat;
+import dk.aau.mpp_project.model.MyUser;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -97,7 +101,7 @@ public class ChangePasswordActivity extends Activity {
 			progressDialog.show();
 	}
 
-	public void onEventMainThread(FinishedEvent e) {
+	public void onEventMainThread(FinishedEvent e)  {
 		Log.d(TAG, "# FinishedEvent");
 
 		if (progressDialog != null && progressDialog.isShowing()) {
@@ -109,9 +113,14 @@ public class ChangePasswordActivity extends Activity {
 
 			// Check for what you wanted to retrieve
 			if (DatabaseHelper.ACTION_UPDATE_FLAT.equals(e.getAction())) {
-
 				EventBus.getDefault().unregister(this);
-
+				MyUser currentUser = (MyUser) ParseUser.getCurrentUser();
+				try {
+					DatabaseHelper.parseSendPushToAll(MyApplication.CHANNEL, currentUser.getName()+" changed the flat password.");
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				setResult(RESULT_OK);
 				finish();
 			} else if (DatabaseHelper.ACTION_GET_FLAT_BY_ID.equals(e

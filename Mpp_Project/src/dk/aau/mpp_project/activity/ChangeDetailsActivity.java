@@ -1,5 +1,7 @@
 package dk.aau.mpp_project.activity;
 
+import org.json.JSONException;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -15,10 +17,12 @@ import com.parse.ParseUser;
 
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
 import dk.aau.mpp_project.model.Flat;
+import dk.aau.mpp_project.model.MyUser;
 
 public class ChangeDetailsActivity extends Activity {
 
@@ -140,6 +144,14 @@ public class ChangeDetailsActivity extends Activity {
 
 				if (progressDialog != null && progressDialog.isShowing()) {
 					progressDialog.dismiss();
+				}
+				
+				MyUser currentUser = (MyUser) ParseUser.getCurrentUser();
+				try {
+					DatabaseHelper.parseSendPushToAll(MyApplication.CHANNEL, currentUser.getName()+" changed flat details.");
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 
 				EventBus.getDefault().unregister(this);

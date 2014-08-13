@@ -19,6 +19,7 @@ import android.util.Log;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -56,6 +57,8 @@ public class DatabaseHelper {
 	public static final String	ACTION_GET_OPERATIONS_FLATS	= "ACTION_GET_OPERATIONS_FLATS";
 	public static final String	ACTION_GET_USERS_IN_FLAT	= "ACTION_GET_USERS_IN_FLAT";
 	public static final String	ACTION_LEAVE_FLAT			= "ACTION_LEAVE_FLAT";
+	
+	public static ArrayList<MyUser> users;
 
 	public static void createOperation(Flat flat, Operation operation) {
 		// ParseObject operationObject = new ParseObject(OPERATION);
@@ -514,5 +517,28 @@ public class DatabaseHelper {
 		push.setQuery(pushQuery);
 		push.setData(data);
 		push.sendInBackground();
+	}
+	
+	public static void parseSendPushToAll(String channel,
+			String msg) throws JSONException {
+		MyUser currentUser = (MyUser) ParseUser.getCurrentUser();
+
+		for(MyUser u : users){
+			
+			if(u.getObjectId().equals(currentUser.getObjectId()))
+				continue;
+			
+			ParseQuery<ParseInstallation> pushQuery = ParseInstallation.getQuery();
+			pushQuery.whereEqualTo("channels", channel);
+			pushQuery.whereEqualTo("facebookId", u.getFacebookId());
+	
+			JSONObject data = new JSONObject(
+					"{\"action\":\"colloc.action.push\",\"msg\": \"" + msg + "\" }");
+	
+			ParsePush push = new ParsePush();
+			push.setQuery(pushQuery);
+			push.setData(data);
+			push.sendInBackground();
+		}
 	}
 }

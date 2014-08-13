@@ -221,7 +221,7 @@ public class MainActivity extends FragmentActivity implements
 					flatUsers.add((MyUser) p);
 				}
 				myFlat.setFlatUsers(flatUsers);
-
+				DatabaseHelper.users=flatUsers;
 				initMenu();
 				initTabsPlease();
 			}
