@@ -146,8 +146,6 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 		adapter = new NewsAdapter(getActivity(), R.layout.layout_item_news,
 				newsList);
 		listView.setAdapter(adapter);
-
-		onRefresh();
 		
 		return rootView;
 	}

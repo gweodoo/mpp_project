@@ -169,8 +169,6 @@ public class ExpensesFragment extends ListFragment implements
 			}
 		});
 		
-		onRefresh();
-
 		return expensesView;
 	}
 

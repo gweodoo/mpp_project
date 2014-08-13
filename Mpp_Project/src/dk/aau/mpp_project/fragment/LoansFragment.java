@@ -61,8 +61,6 @@ public class LoansFragment extends Fragment implements FragmentEventHandler,Swip
         //getting the cardListview
         tableView = (CardListView)curView.findViewById(R.id.cardListLoans);
         
-        onRefresh();
-
         return curView;
     }
 
