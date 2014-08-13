@@ -57,7 +57,6 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 		swipeRefresh = (SwipeRefreshLayout)rootView.findViewById(R.id.swipe_container);
 		swipeRefresh.setOnRefreshListener(this);
 		swipeRefresh.setColorScheme(android.R.color.holo_blue_bright, android.R.color.holo_green_light,  android.R.color.holo_orange_light, android.R.color.holo_red_light);
-		newsList = new ArrayList<News>();
 
 		// getting information about the current environment
 		final MyUser user = ((MainActivity) getActivity()).getMyUser();
@@ -153,11 +152,10 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 		bottom.addView(a4, 3);
 
 		listView.addHeaderView(rlMain);
-
+		newsList = new ArrayList<News>();
 		adapter = new NewsAdapter(getActivity(), R.layout.layout_item_news,
 				newsList);
 		listView.setAdapter(adapter);
-
 		return rootView;
 	}
 

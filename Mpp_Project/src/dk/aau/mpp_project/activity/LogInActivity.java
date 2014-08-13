@@ -106,9 +106,8 @@ public class LogInActivity extends Activity {
 					@Override
 					public void onCompleted(GraphUser user, Response response) {
 						if (user != null) {
-							ParseFile pic = new ParseFile("picture.jpg", (new byte[10]));
 							final MyUser myUser = new MyUser(user.getId(), user
-									.getName(), user.getBirthday(), pic);
+									.getName(), user.getBirthday());
 
 							Log.v(TAG,
 									"# FACEBOOK ID : " + myUser.getFacebookId());
