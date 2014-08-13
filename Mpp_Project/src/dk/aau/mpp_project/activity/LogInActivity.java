@@ -3,11 +3,15 @@ package dk.aau.mpp_project.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+
 import com.facebook.FacebookRequestError;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -37,7 +41,11 @@ public class LogInActivity extends Activity {
 		
 		initView();
 		initListener();
-
+		
+//		ImageView logo = (ImageView) findViewById(R.id.icon);
+//		Drawable icon = new ScaleDrawable(getResources().getDrawable(R.drawable.icon_big), 0, 500, 500);
+//		logo.setImageDrawable(icon);
+		
 		// Check if there is a currently logged in user
 		// and they are linked to a Facebook account.
 		ParseUser currentUser = ParseUser.getCurrentUser();
