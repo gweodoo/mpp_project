@@ -2,8 +2,8 @@ package dk.aau.mpp_project.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.parse.ParseClassName;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 @ParseClassName("_User")
@@ -14,24 +14,28 @@ public class MyUser extends ParseUser implements Parcelable {
 	public final static String	BIRTHDAY	= "birthday";
 	public final static String	NAME		= "name";
     public final static String  FLAT        = "flat";
+	public final static String  PHOTO       = "picture";
 
     private String				facebookId;
 	private String				birthday;
 	private String				name;
+	private ParseFile photo;
 
 	public MyUser() {
 	}
 
-	public MyUser(String facebookId, String name, String birthday) {
+	public MyUser(String facebookId, String name, String birthday, ParseFile photo) {
 		super();
 
 		this.facebookId = facebookId;
 		this.name = name;
 		this.birthday = birthday;
+		this.photo = photo;
 
 		setBirthday(birthday);
 		setFacebookId(facebookId);
 		setName(name);
+		setPhoto(photo);
 	}
 
 	public String getFacebookId() {
@@ -59,6 +63,14 @@ public class MyUser extends ParseUser implements Parcelable {
 	public void setName(String name) {
 		this.name = name;
 		put(NAME, name);
+	}
+
+	public ParseFile getPhoto() {
+		return getParseFile(PHOTO);
+	}
+
+	public void setPhoto(ParseFile photo) {
+		put(PHOTO, photo);
 	}
 
 	// public int getAge() {
