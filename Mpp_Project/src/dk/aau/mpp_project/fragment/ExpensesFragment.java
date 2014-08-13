@@ -2,15 +2,15 @@ package dk.aau.mpp_project.fragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import org.json.JSONException;
 
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -19,12 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
@@ -214,6 +211,24 @@ public class ExpensesFragment extends ListFragment implements
 			progressDialog.setIndeterminate(true);
 			progressDialog.setMessage("Loading...");
 			progressDialog.setCancelable(true);
+			
+			progressDialog.setOnCancelListener(new OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					showProgress = false;
+					swipeRefresh.setRefreshing(false);
+				}
+			});
+			
+			progressDialog.setOnDismissListener(new OnDismissListener() {
+				
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					showProgress = false;
+					swipeRefresh.setRefreshing(false);
+				}
+			});
 		}
 
 		if (progressDialog != null && !progressDialog.isShowing()

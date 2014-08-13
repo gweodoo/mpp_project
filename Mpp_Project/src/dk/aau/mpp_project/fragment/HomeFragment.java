@@ -2,7 +2,10 @@ package dk.aau.mpp_project.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.res.Resources;
 import android.graphics.*;
 import android.graphics.Bitmap.Config;
@@ -40,27 +43,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class HomeFragment extends Fragment implements FragmentEventHandler,SwipeRefreshLayout.OnRefreshListener {
+public class HomeFragment extends Fragment implements FragmentEventHandler,
+		SwipeRefreshLayout.OnRefreshListener {
 
-	public String			name	= "Home";
-	private ProgressDialog	progressDialog;
-	private ArrayList<News>	newsList;
+	public String				name			= "Home";
+	private ProgressDialog		progressDialog;
+	private ArrayList<News>		newsList;
 
-	private ListView		listView;
-	private NewsAdapter		adapter;
-	private PhotoAdapter	photoAdapter;
-	private SwipeRefreshLayout swipeRefresh;
-	private boolean showProgress = true;
-	
+	private ListView			listView;
+	private NewsAdapter			adapter;
+	private PhotoAdapter		photoAdapter;
+	private SwipeRefreshLayout	swipeRefresh;
+	private boolean				showProgress	= true;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		LinearLayout rootView = (LinearLayout) inflater.inflate(
 				R.layout.fragment_section_home, container, false);
-		swipeRefresh = (SwipeRefreshLayout)rootView.findViewById(R.id.swipe_container);
+		swipeRefresh = (SwipeRefreshLayout) rootView
+				.findViewById(R.id.swipe_container);
 		swipeRefresh.setOnRefreshListener(this);
-		swipeRefresh.setColorScheme(android.R.color.holo_blue_bright, android.R.color.holo_green_light,  android.R.color.holo_orange_light, android.R.color.holo_red_light);
+		swipeRefresh.setColorScheme(android.R.color.holo_blue_bright,
+				android.R.color.holo_green_light,
+				android.R.color.holo_orange_light,
+				android.R.color.holo_red_light);
 
 		// getting information about the current environment
 		final MyUser user = ((MainActivity) getActivity()).getMyUser();
@@ -78,35 +85,41 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 				R.layout.layout_home_top_view, null, false);
 
 		RelativeLayout llMain = (RelativeLayout) rlMain.findViewById(R.id.main);
-		
+
 		Display display = getActivity().getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
 		int width = size.x;
-		
-//		llMain.measure(width, 500);
-//		llMain.setBackgroundResource(R.drawable.flat1small);
-		if(flat!=null){
-			if(flat.getPhoto()!=null){
+
+		// llMain.measure(width, 500);
+		// llMain.setBackgroundResource(R.drawable.flat1small);
+		if (flat != null) {
+			if (flat.getPhoto() != null) {
 				try {
 					BitmapFactory.Options options = new BitmapFactory.Options();
 					options.inPreferredConfig = Config.RGB_565;
 					options.inSampleSize = 2;
-					
-					Bitmap b = BitmapFactory.decodeByteArray(flat.getPhoto().getData() , 0, flat.getPhoto().getData().length, options);
-					
+
+					Bitmap b = BitmapFactory.decodeByteArray(flat.getPhoto()
+							.getData(), 0, flat.getPhoto().getData().length,
+							options);
+
 					b = Filter.rescale(b, width, false);
-					if(b.getHeight()>400)
-						b = Bitmap.createBitmap(b, 0, b.getHeight()-400, b.getWidth(), 400);
-					llMain.setBackgroundDrawable(new BitmapDrawable(getResources(), Filter.fastblur(b, 20)));
-	//				viewHolder.flatImage.setBackgroundDrawable(new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(b, 1000, 100, true)));
+					if (b.getHeight() > 400)
+						b = Bitmap.createBitmap(b, 0, b.getHeight() - 400,
+								b.getWidth(), 400);
+					llMain.setBackgroundDrawable(new BitmapDrawable(
+							getResources(), Filter.fastblur(b, 20)));
+					// viewHolder.flatImage.setBackgroundDrawable(new
+					// BitmapDrawable(getResources(),
+					// Bitmap.createScaledBitmap(b, 1000, 100, true)));
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}
-			else {
-				llMain.setBackgroundDrawable(getResources().getDrawable(R.drawable.flat1small));
+			} else {
+				llMain.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.flat1small));
 			}
 		}
 
@@ -128,33 +141,40 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			}
 		});
 		LinearLayout bottom = (LinearLayout) rlMain.findViewById(R.id.bottom);
-		
-		System.out.println("number of users "+ flat.getFlatUsers().size());
+
+		System.out.println("number of users " + flat.getFlatUsers().size());
 		int i = 0;
-		for(final MyUser u : flat.getFlatUsers()){
-			System.out.println("ID again: "+u.getFacebookId());
+		for (final MyUser u : flat.getFlatUsers()) {
+			System.out.println("ID again: " + u.getFacebookId());
 			// Adding roommate avatars
-			
-			CircleImageView userImage = new CircleImageView(rootView.getContext());
+
+			CircleImageView userImage = new CircleImageView(
+					rootView.getContext());
 			Resources r = getResources();
-			int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
-			Drawable d = new ScaleDrawable(getResources().getDrawable(R.drawable.image_user), 0, 50, 50).getDrawable();
-			UrlImageViewHelper.setUrlDrawable(userImage, "http://graph.facebook.com/"+u.getFacebookId()+"/picture?width="+px+"&height="+px, d, 3600000);
+			int px = (int) TypedValue.applyDimension(
+					TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
+			Drawable d = new ScaleDrawable(getResources().getDrawable(
+					R.drawable.image_user), 0, 50, 50).getDrawable();
+			UrlImageViewHelper.setUrlDrawable(userImage,
+					"http://graph.facebook.com/" + u.getFacebookId()
+							+ "/picture?width=" + px + "&height=" + px, d,
+					3600000);
 			userImage.setBorderWidth(3);
 			userImage.setBorderColor(Color.WHITE);
 			userImage.setPadding(10, 10, 10, 10);
-			
+
 			userImage.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
-					String url = "https://www.facebook.com/"+u.getFacebookId();
+					String url = "https://www.facebook.com/"
+							+ u.getFacebookId();
 					Intent i = new Intent(Intent.ACTION_VIEW);
 					i.setData(Uri.parse(url));
 					startActivity(i);
 				}
 			});
-			
+
 			bottom.addView(userImage, i);
 			i++;
 		}
@@ -164,7 +184,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 		adapter = new NewsAdapter(getActivity(), R.layout.layout_item_news,
 				newsList);
 		listView.setAdapter(adapter);
-		
+
 		return rootView;
 	}
 
@@ -186,9 +206,28 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			progressDialog.setIndeterminate(true);
 			progressDialog.setMessage("Loading...");
 			progressDialog.setCancelable(true);
+			
+			progressDialog.setOnCancelListener(new OnCancelListener() {
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					showProgress = false;
+					swipeRefresh.setRefreshing(false);
+				}
+			});
+
+			progressDialog.setOnDismissListener(new OnDismissListener() {
+
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					showProgress = false;
+					swipeRefresh.setRefreshing(false);
+				}
+			});
 		}
 
-		if (progressDialog != null && !progressDialog.isShowing() && showProgress )
+		if (progressDialog != null && !progressDialog.isShowing()
+				&& showProgress)
 			progressDialog.show();
 	}
 
@@ -209,7 +248,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 				newsList.addAll(tmp);
 
 				adapter.notifyDataSetChanged();
-				
+
 				showProgress = false;
 				swipeRefresh.setRefreshing(false);
 
@@ -222,10 +261,11 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 
 	@Override
 	public void onRefresh() {
-		
-		DatabaseHelper.getNewsByFlat(((MainActivity) getActivity()).getMyFlat());
+
+		DatabaseHelper
+				.getNewsByFlat(((MainActivity) getActivity()).getMyFlat());
 	}
-	
+
 	public class PhotoAdapter extends ArrayAdapter<MyUser> {
 
 		public class ViewHolder {
@@ -262,8 +302,10 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			}
 			MyUser u = this.getItem(position);
 
-			UrlImageViewHelper.setUrlDrawable(viewHolder.photo, "http://graph.facebook.com/"+u.getFacebookId()+"/picture?type=large", R.drawable.image_user, 3600000);
-
+			UrlImageViewHelper.setUrlDrawable(viewHolder.photo,
+					"http://graph.facebook.com/" + u.getFacebookId()
+							+ "/picture?type=large", R.drawable.image_user,
+					3600000);
 
 			return convertView;
 		}
@@ -275,7 +317,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			public CircularImageView	photo;
 			public TextView				comment;
 			public TextView				date;
-			public TextView             sender;
+			public TextView				sender;
 		}
 
 		private Context	context;
@@ -312,11 +354,14 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			}
 			News news = this.getItem(position);
 
-			viewHolder.comment.setText("\""+news.getComment()+"\"");
+			viewHolder.comment.setText("\"" + news.getComment() + "\"");
 			viewHolder.date.setText(news.getDate());
 			viewHolder.photo.addShadow();
-			UrlImageViewHelper.setUrlDrawable(viewHolder.photo, "http://graph.facebook.com/"+news.getUser().getFacebookId()+"/picture?type=large", R.drawable.image_user, 3600000);
-
+			UrlImageViewHelper.setUrlDrawable(viewHolder.photo,
+					"http://graph.facebook.com/"
+							+ news.getUser().getFacebookId()
+							+ "/picture?type=large", R.drawable.image_user,
+					3600000);
 
 			return convertView;
 		}
