@@ -108,12 +108,7 @@ public class LoansFragment extends Fragment implements FragmentEventHandler,Swip
 
 	@Override
 	public void onRefresh() {
-		new Handler().postDelayed(new Runnable() {
 
-			@Override public void run() {
-				swipeRefresh.setRefreshing(false);
-			}
-		}, 2000);
 		refreshItemsList();
 	}
 
@@ -228,6 +223,8 @@ public class LoansFragment extends Fragment implements FragmentEventHandler,Swip
         if (e.isSuccess()) {
             //getting specific data according request type
             if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e.getAction())) {
+            	swipeRefresh.setRefreshing(false);
+            	
                 tabOperations = e.getExtras().getParcelableArrayList("data");
                 fillListView();
             }
