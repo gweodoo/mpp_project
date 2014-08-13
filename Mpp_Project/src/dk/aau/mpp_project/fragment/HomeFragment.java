@@ -96,7 +96,8 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 					Bitmap b = BitmapFactory.decodeByteArray(flat.getPhoto().getData() , 0, flat.getPhoto().getData().length, options);
 					
 					b = Filter.rescale(b, width, false);
-					b = Bitmap.createBitmap(b, 0, b.getHeight()-400, b.getWidth(), 400);
+					if(b.getHeight()>400)
+						b = Bitmap.createBitmap(b, 0, b.getHeight()-400, b.getWidth(), 400);
 					llMain.setBackgroundDrawable(new BitmapDrawable(getResources(), Filter.fastblur(b, 20)));
 	//				viewHolder.flatImage.setBackgroundDrawable(new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(b, 1000, 100, true)));
 				} catch (ParseException e) {
