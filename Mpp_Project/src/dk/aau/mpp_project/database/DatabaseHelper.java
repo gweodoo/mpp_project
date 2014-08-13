@@ -9,6 +9,8 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Base64;
@@ -386,21 +388,20 @@ public class DatabaseHelper {
 							+ " user for this flat");
 
 					List<String> userIds = new ArrayList<String>();
-
-					for (ParseObject o : objectList) {
-						MyUser f = (MyUser) o.get(FillingTable.USER);
-
-						userIds.add(f.getObjectId());
-						Log.v(TAG, "# My User ID : " + f.getObjectId());
+//					final ArrayList<MyUser> userList = new ArrayList<MyUser>();
+					for(ParseObject o : objectList) {
+						MyUser u = (MyUser) o.get(FillingTable.USER);
+						
+						userIds.add(u.getObjectId());
 					}
+					
+					
 
-					ParseQuery<MyUser> query2 = ParseQuery
-							.getQuery(MyUser.class);
+					ParseQuery<MyUser> query2 = ParseQuery.getQuery(MyUser.class);
 					query2.whereContainedIn("objectId", userIds);
 
 					query2.findInBackground(new FindCallback<MyUser>() {
-						public void done(List<MyUser> objectList,
-								ParseException e) {
+						public void done(List<MyUser> objectList, ParseException e) {
 							if (e == null) {
 								Log.d(TAG, "# Retrieved " + objectList.size()
 										+ " users");
@@ -412,13 +413,12 @@ public class DatabaseHelper {
 
 								EventBus.getDefault().post(
 										new FinishedEvent(true,
-												ACTION_GET_USERS_IN_FLAT,
-												extras));
+												ACTION_GET_USERS_IN_FLAT, extras));
 
 							} else {
 								Log.d(TAG, "Error: " + e.getMessage());
-								EventBus.getDefault()
-										.post(new FinishedEvent(false,
+								EventBus.getDefault().post(
+										new FinishedEvent(false,
 												ACTION_GET_USERS_IN_FLAT, null));
 							}
 						}
@@ -427,6 +427,46 @@ public class DatabaseHelper {
 			}
 		});
 	}
+
+
+//						Log.v(TAG, "# My User ID : " + f.getObjectId());
+//				}
+//			}
+//		});
+
+//					ParseQuery<MyUser> query2 = ParseQuery
+//							.getQuery(MyUser.class);
+//					query2.whereContainedIn("objectId", userIds);
+
+//					query2.findInBackground(new FindCallback<MyUser>() {
+//						public void done(List<MyUser> objectList,
+//								ParseException e) {
+//							if (e == null) {
+//								Log.d(TAG, "# Retrieved " + objectList.size()
+//										+ " users");
+//
+//								Bundle extras = new Bundle();
+//								extras.putParcelableArrayList(
+//										"data",
+//										(ArrayList<? extends Parcelable>) objectList);
+//
+//								EventBus.getDefault().post(
+//										new FinishedEvent(true,
+//												ACTION_GET_USERS_IN_FLAT,
+//												extras));
+//
+//							} else {
+//								Log.d(TAG, "Error: " + e.getMessage());
+//								EventBus.getDefault()
+//										.post(new FinishedEvent(false,
+//												ACTION_GET_USERS_IN_FLAT, null));
+//							}
+//						}
+//					});
+////				}
+////			}
+////		});
+//	}
 
 	public static void getOperationsByFlat(Flat flat) {
 		EventBus.getDefault().post(new StartEvent(ACTION_GET_OPERATIONS_FLATS));

@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -206,13 +207,25 @@ public class MainActivity extends FragmentActivity implements
 
 			// Check for what you wanted to retrieve
 			if (DatabaseHelper.ACTION_GET_FLAT_BY_ID.equals(e.getAction())) {
-				EventBus.getDefault().unregister(this);
+//				EventBus.getDefault().unregister(this);
 
 				myFlat = e.getExtras().getParcelable("data");
+				DatabaseHelper.getUsersByFlat(myFlat);
+			}
+			if (DatabaseHelper.ACTION_GET_USERS_IN_FLAT.equals(e.getAction())) {
+				EventBus.getDefault().unregister(this);
+				ArrayList<Parcelable> objectList =  e.getExtras().getParcelableArrayList("data");
+				ArrayList<MyUser> flatUsers = new ArrayList<MyUser>();// = e.getExtras().getParcelableArrayList("data");
+				for(Parcelable p : objectList){
+					System.out.println("USerId: "+((MyUser)p).getFacebookId());
+					flatUsers.add((MyUser) p);
+				}
+				myFlat.setFlatUsers(flatUsers);
 
 				initMenu();
 				initTabsPlease();
 			}
+			
 		}
 		// Error occured
 		else {

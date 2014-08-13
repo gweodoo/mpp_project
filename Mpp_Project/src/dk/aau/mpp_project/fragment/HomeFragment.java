@@ -119,37 +119,21 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 		});
 		LinearLayout bottom = (LinearLayout) rlMain.findViewById(R.id.bottom);
 
-		
-		
-		// Adding roommate avatars
-		ImageView a1 = new ImageView(rootView.getContext());
-		a1.setImageDrawable(getResources().getDrawable(R.drawable.av1));
-		a1.setAdjustViewBounds(true);
-		a1.setMaxHeight(200);
-		a1.setMaxWidth(200);
-
-		ImageView a2 = new ImageView(rootView.getContext());
-		a2.setImageDrawable(getResources().getDrawable(R.drawable.av2));
-		a2.setAdjustViewBounds(true);
-		a2.setMaxHeight(200);
-		a2.setMaxWidth(200);
-
-		ImageView a3 = new ImageView(rootView.getContext());
-		a3.setImageDrawable(getResources().getDrawable(R.drawable.av3));
-		a3.setAdjustViewBounds(true);
-		a3.setMaxHeight(200);
-		a3.setMaxWidth(200);
-
-		ImageView a4 = new ImageView(rootView.getContext());
-		a4.setImageDrawable(getResources().getDrawable(R.drawable.av4));
-		a4.setAdjustViewBounds(true);
-		a4.setMaxHeight(200);
-		a4.setMaxWidth(200);
-
-		bottom.addView(a1, 0);
-		bottom.addView(a2, 1);
-		bottom.addView(a3, 2);
-		bottom.addView(a4, 3);
+		System.out.println("number of users "+ flat.getFlatUsers().size());
+		int i = 0;
+		for(MyUser u : flat.getFlatUsers()){
+			System.out.println("ID again: "+u.getFacebookId());
+			// Adding roommate avatars
+			ImageView userImage = new ImageView(rootView.getContext());
+			UrlImageViewHelper.setUrlDrawable(userImage, "http://graph.facebook.com/"+u.getFacebookId()+"/picture?type=large", R.drawable.image_user, 3600000);
+//			userImage.setImageDrawable(getResources().getDrawable(R.drawable.av1));
+			userImage.setAdjustViewBounds(true);
+//			userImage.setMaxHeight(200);
+//			userImage.setMaxWidth(200);
+			
+			bottom.addView(userImage, i);
+			i++;
+		}
 
 		listView.addHeaderView(rlMain);
 		newsList = new ArrayList<News>();
