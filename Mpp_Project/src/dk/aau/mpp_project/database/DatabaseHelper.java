@@ -41,7 +41,7 @@ public class DatabaseHelper {
 	
 	public static ArrayList<MyUser> users;
 
-	public static void createOperation(Flat flat, Operation operation) {
+	public static void createOperation(Operation operation) {
 		// ParseObject operationObject = new ParseObject(OPERATION);
 		// operationObject.put(Operation.LENDER, operation.getLender());
 		// operationObject.put(Operation.TO, operation.getTo());
@@ -50,7 +50,7 @@ public class DatabaseHelper {
 		// operationObject.put(Operation.IS_PAID, operation.getIsPaid());
 		// operationObject.put(Operation.FLAT, flat);
 
-		operation.put(Operation.FLAT, flat);
+		//operation.put(Operation.FLAT, flat);
 
 		operation.saveInBackground();
 	}

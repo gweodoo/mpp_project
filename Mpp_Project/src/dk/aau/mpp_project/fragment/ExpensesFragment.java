@@ -1,10 +1,10 @@
 package dk.aau.mpp_project.fragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnMultiChoiceClickListener;
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -14,8 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,23 +34,21 @@ import dk.aau.mpp_project.model.MyUser;
 import dk.aau.mpp_project.model.Operation;
 
 public class ExpensesFragment extends ListFragment implements
-		FragmentEventHandler, OnMultiChoiceClickListener {
+		FragmentEventHandler {
 
 	private Flat					flat;
 
 	private ArrayList<Operation>	operationsList	= new ArrayList<Operation>();
 	private OperationAdapter		operationAdapter;
 
-	private ArrayList<MyUser>		selectedUsers	= new ArrayList<MyUser>();
-
 	private ProgressDialog			progressDialog;
 	private EditText				commentText, amountText;
-
-	private boolean[]				selected;
 
 	// spinner photo
 	private Spinner					spinnerPeople;
 	private SpinnerAdapter			spinnerAdapter;
+
+	private MyUser					selectedUser;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,10 +56,10 @@ public class ExpensesFragment extends ListFragment implements
 		View expensesView = inflater.inflate(R.layout.fragment_expenses,
 				container, false);
 
-		spinnerPeople = (Spinner) expensesView.findViewById(R.id.peopleSpinner);
 		commentText = (EditText) expensesView.findViewById(R.id.commentText);
 		amountText = (EditText) expensesView.findViewById(R.id.amountText);
 		ImageButton bt = (ImageButton) expensesView.findViewById(R.id.okButton);
+		spinnerPeople = (Spinner) expensesView.findViewById(R.id.peopleSpinner);
 
 		flat = ((MainActivity) getActivity()).getMyFlat();
 
@@ -80,8 +80,6 @@ public class ExpensesFragment extends ListFragment implements
 
 		// Set spinnerAdapter to spinner
 		spinnerPeople.setAdapter(spinnerAdapter);
-		
-		spinnerAdapter.notifyDataSetChanged();
 
 		// Listener called when spinner item selected
 		spinnerPeople.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -89,13 +87,9 @@ public class ExpensesFragment extends ListFragment implements
 			public void onItemSelected(AdapterView<?> parentView, View v,
 					int position, long id) {
 
-				MyUser user = spinnerAdapter.getItem(position);
+				selectedUser = spinnerAdapter.getItem(position);
 
-				Toast.makeText(getActivity(),
-						"# User Selected : " + user.getName(),
-						Toast.LENGTH_SHORT).show();
-
-				selectedUsers.add(user);
+				Log.v("Tag", "# Selected : " + selectedUser.getName());
 			}
 
 			@Override
@@ -115,14 +109,13 @@ public class ExpensesFragment extends ListFragment implements
 			@Override
 			public void onClick(View v) {
 
-				MyUser lender = ((MainActivity) getActivity()).getMyUser();
+				if (amountText.getText().toString().trim().length() > 0
+						&& commentText.getText().toString().trim().length() > 0) {
+					MyUser lender = ((MainActivity) getActivity()).getMyUser();
 
-				// We create an operation object
-				Operation temp = null;
+					// We create an operation object
 
-				Log.v("TAG", "# User Size : " + flat.getFlatUsers().size());
-
-				for (MyUser to : flat.getFlatUsers()) {
+					// for (MyUser to : flat.getFlatUsers()) {
 					// if (shareMate.get(0).equals("ALL")) {
 					// temp = new Operation(flat, lender, to,
 					// Double.valueOf(amountText.getText().toString()
@@ -140,23 +133,28 @@ public class ExpensesFragment extends ListFragment implements
 					// DatabaseHelper.createOperation(flat, temp);
 					// }
 					// }
-					temp = new Operation(flat, lender, to, Double
-							.valueOf(amountText.getText().toString().trim()),
-							"", commentText.getText().toString().trim(), false);
+					Operation temp = new Operation(flat, lender, selectedUser,
+							Double.valueOf(amountText.getText().toString()
+									.trim()), "", commentText.getText()
+									.toString().trim(), false);
 
-					DatabaseHelper.createOperation(flat, temp);
+					DatabaseHelper.createOperation(temp);
+					// }
+					// We fill it
+					Log.i("ExpensesFragment",
+							"FlatId = "
+									+ flat
+									+ " - User = "
+									+ lender
+									+ " - Amount = "
+									+ Double.valueOf(amountText.getText()
+											.toString()));
+					commentText.setText("");
+					amountText.setText("");
+				} else {
+					Toast.makeText(getActivity(), "Fields missing",
+							Toast.LENGTH_SHORT).show();
 				}
-				// We fill it
-				Log.i("ExpensesFragment",
-						"FlatId = "
-								+ flat
-								+ " - User = "
-								+ lender
-								+ " - Amount = "
-								+ Double.valueOf(amountText.getText()
-										.toString()));
-				commentText.setText("");
-				amountText.setText("");
 			}
 		});
 
@@ -209,37 +207,49 @@ public class ExpensesFragment extends ListFragment implements
 				operationAdapter.notifyDataSetChanged();
 
 				Log.i("ExpensesFragment", "Operation :" + operationsList.size());
-				Toast.makeText(getActivity(),
-						"Operation :" + operationsList.size(),
-						Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
-
-//	public void setListData(ArrayList<MyUser> list) {
-//
-//		// Now i have taken static values by loop.
-//		// For further inhancement we can take data by webservice / json / xml;
-//
-//		for (MyUser user : list) {
-//
-//			// Take Model Object in ArrayList
-//			customListViewValuesArr.add(user);
-//
-//		}
-//
-//		Log.i("ExpensesFragment", "nombre elements dans la list de Users: "
-//				+ list.size());
-//
-//		spinnerAdapter.notifyDataSetChanged();
-//
-//	}
-
-	@Override
-	public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-		if (isChecked)
-			selected[which] = true;
-		else
-			selected[which] = false;
-	}
+	//
+	// public class UserAdapter extends ArrayAdapter<MyUser> {
+	//
+	// public class ViewHolder {
+	// public ImageView image;
+	// public TextView name;
+	// }
+	//
+	// private int resource;
+	// private LayoutInflater inflater;
+	//
+	// public UserAdapter(Context context, int resource, List<MyUser> objects) {
+	// super(context, resource, objects);
+	//
+	// this.resource = resource;
+	// inflater = LayoutInflater.from(context);
+	// }
+	//
+	// @Override
+	// public View getView(int position, View convertView, ViewGroup parent) {
+	// ViewHolder viewHolder = null;
+	//
+	// if (convertView == null) {
+	// viewHolder = new ViewHolder();
+	//
+	// convertView = inflater.inflate(resource, parent, false);
+	//
+	// viewHolder.image = (ImageView) convertView.findViewById(R.id.image);
+	// viewHolder.name = (TextView) convertView.findViewById(R.id.spinnerUser);
+	//
+	// convertView.setTag(viewHolder);
+	// } else {
+	// viewHolder = (ViewHolder) convertView.getTag();
+	// }
+	//
+	// MyUser user = getItem(position);
+	//
+	// viewHolder.name
+	//
+	// return convertView;
+	// }
+	// }
 }

@@ -59,7 +59,6 @@ public class SpinnerAdapter extends ArrayAdapter<MyUser> {
 		MyUser user = getItem(position);
 
 		TextView spinnerUser = (TextView) row.findViewById(R.id.spinnerUser);
-		TextView sub = (TextView) row.findViewById(R.id.sub);
 		ImageView companyLogo = (ImageView) row.findViewById(R.id.image);
 
 		// if (position == 0) {
@@ -70,8 +69,7 @@ public class SpinnerAdapter extends ArrayAdapter<MyUser> {
 		// } else {
 		// Set values for spinner each row
 		spinnerUser.setText(user.getName());
-		companyLogo.setImageResource(res.getIdentifier(
-				"dk.aau.mpp_project:drawable/" + "image_user", null, null));
+		companyLogo.setImageResource(R.drawable.ic_launcher);
 		// }
 
 		return row;
