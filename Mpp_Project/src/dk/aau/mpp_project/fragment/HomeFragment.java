@@ -4,12 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
+import android.graphics.*;
 import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
@@ -24,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parse.ParseException;
 import de.greenrobot.event.EventBus;
@@ -35,13 +30,13 @@ import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
 import dk.aau.mpp_project.filter.CircleImageView;
 import dk.aau.mpp_project.filter.Filter;
-import dk.aau.mpp_project.filter.RoundedImageView;
 import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
 import dk.aau.mpp_project.model.News;
 import dk.aau.mpp_project.widget.CircularImageView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements FragmentEventHandler,SwipeRefreshLayout.OnRefreshListener {
@@ -190,7 +185,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e.getAction())) {
 				ArrayList<News> tmp = e.getExtras().getParcelableArrayList(
 						"data");
-
+				Collections.reverse(tmp);
 				newsList.clear();
 				newsList.addAll(tmp);
 
@@ -207,12 +202,13 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 	public void onRefresh() {
 		new Handler().postDelayed(new Runnable() {
 
-			@Override public void run() {
+			@Override
+			public void run() {
 				showProgress = false;
 				swipeRefresh.setRefreshing(false);
 			}
 		}, 2000);
-		DatabaseHelper.getNewsByFlat(((MainActivity)getActivity()).getMyFlat());
+		DatabaseHelper.getNewsByFlat(((MainActivity) getActivity()).getMyFlat());
 	}
 	
 	public class PhotoAdapter extends ArrayAdapter<MyUser> {

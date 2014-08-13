@@ -1,40 +1,22 @@
 package dk.aau.mpp_project.database;
 
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Base64;
+import android.util.Log;
+import com.parse.*;
+import de.greenrobot.event.EventBus;
+import dk.aau.mpp_project.event.FinishedEvent;
+import dk.aau.mpp_project.event.StartEvent;
+import dk.aau.mpp_project.model.*;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Base64;
-import android.util.Log;
-
-import com.parse.DeleteCallback;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseInstallation;
-import com.parse.ParseObject;
-import com.parse.ParsePush;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
-import de.greenrobot.event.EventBus;
-import dk.aau.mpp_project.event.FinishedEvent;
-import dk.aau.mpp_project.event.StartEvent;
-import dk.aau.mpp_project.model.FillingTable;
-import dk.aau.mpp_project.model.Flat;
-import dk.aau.mpp_project.model.MyUser;
-import dk.aau.mpp_project.model.News;
-import dk.aau.mpp_project.model.Operation;
 
 public class DatabaseHelper {
 
@@ -222,8 +204,9 @@ public class DatabaseHelper {
 
 	}
 
-	public static void createNews(Flat flat, MyUser user, News news) {
+	public static void createNews(Flat flat, MyUser user, String comment) {
 
+		News news = new News(flat, user, comment);
 		news.saveInBackground();
 	}
 

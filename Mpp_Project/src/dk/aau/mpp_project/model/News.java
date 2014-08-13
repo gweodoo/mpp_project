@@ -36,18 +36,13 @@ public class News extends ParseObject implements Parcelable {
 		setFlat(flat);
 		setUser(user);
 
-		String date = (new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-				.format(new Date()));
-		setDate(date);
 	}
 
 	public String getDate() {
 		Date date = getCreatedAt();
-		return date.toString();
-	}
 
-	public void setDate(String date) {
-		put(DATE, date);
+		String dateStr = new SimpleDateFormat("dd-MM-yy HH:mm").format(date);
+		return dateStr;
 	}
 
 	public Flat getFlat() {
