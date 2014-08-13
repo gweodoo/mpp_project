@@ -1,71 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/RelativeLayout1"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+	android:id="@+id/RelativeLayout1"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/photo_label" >
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="50dp" >
 
-        <EditText
-            android:id="@+id/commentText"
-            android:layout_width="133dp"
-            android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="Comment" >
+		<EditText
+			android:id="@+id/commentText"
+			android:layout_width="133dp"
+			android:layout_height="match_parent"
+			android:ems="10"
+			android:hint="Comment" >
 
-            <requestFocus />
-        </EditText>
+			<requestFocus />
+		</EditText>
 
-        <EditText
-            android:id="@+id/amountText"
-            android:layout_width="100dp"
-            android:inputType="numberDecimal"
-            android:layout_height="match_parent"
-            android:hint="$" />
+		<EditText
+			android:id="@+id/amountText"
+			android:layout_width="100dp"
+			android:layout_height="match_parent"
+			android:hint="$"
+			android:inputType="numberDecimal" />
 
-        <Spinner
-            android:id="@+id/peopleSpinner"
-            android:layout_width="98dp"
-            android:layout_height="match_parent"
-            android:choiceMode="multipleChoice"
- 
-            android:layout_weight="1" />
+		<Spinner
+			android:id="@+id/peopleSpinner"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:choiceMode="multipleChoice" />
 
-        <ImageButton
-            android:id="@+id/okButton"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="4dp"
-            android:background="@drawable/selector_button"
-            android:src="@drawable/ic_action_add_expense"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp" />
+		<ImageButton
+			android:id="@+id/okButton"
+			style="?android:attr/buttonStyleSmall"
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			android:layout_gravity="center_vertical"
+			android:layout_marginRight="4dp"
+			android:background="@drawable/selector_button"
+			android:src="@drawable/ic_action_add_expense"
+			android:textColor="#FFFFFF"
+			android:textSize="30sp" />
+	</LinearLayout>
 
-    </LinearLayout>
+	<TextView
+		android:id="@+id/photo_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="14dp"
+		android:text="Last expenses:"
+		android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/photo_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="14dp"
-        android:text="Last expenses:"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" >
-
-    </ListView>
+	<ListView
+		android:id="@android:id/list"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent" >
+	</ListView>
 
 </LinearLayout>
