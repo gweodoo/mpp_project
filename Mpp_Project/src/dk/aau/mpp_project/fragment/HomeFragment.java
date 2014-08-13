@@ -18,6 +18,7 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
@@ -125,7 +126,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 		
 		System.out.println("number of users "+ flat.getFlatUsers().size());
 		int i = 0;
-		for(MyUser u : flat.getFlatUsers()){
+		for(final MyUser u : flat.getFlatUsers()){
 			System.out.println("ID again: "+u.getFacebookId());
 			// Adding roommate avatars
 			
@@ -137,6 +138,18 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			userImage.setBorderWidth(3);
 			userImage.setBorderColor(Color.WHITE);
 			userImage.setPadding(10, 10, 10, 10);
+			
+			userImage.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					String url = "https://www.facebook.com/"+u.getFacebookId();
+					Intent i = new Intent(Intent.ACTION_VIEW);
+					i.setData(Uri.parse(url));
+					startActivity(i);
+				}
+			});
+			
 			bottom.addView(userImage, i);
 			i++;
 		}
