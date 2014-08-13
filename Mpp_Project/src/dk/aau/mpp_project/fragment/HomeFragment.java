@@ -19,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.parse.ParseException;
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
@@ -266,9 +268,8 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			viewHolder.comment.setText("\""+news.getComment()+"\"");
 			viewHolder.date.setText(news.getDate());
 //			viewHolder.photo.setImageDrawable(drawable)
-			System.out.println(news.getUser());
 //			MyUser user = (MyUser) news.get(News.USER);
-			UrlImageViewHelper.setUrlDrawable((CircularImageView)convertView.findViewById(R.id.photo), "http://graph.facebook.com/"+news.getUser().getFacebookId()+"/picture?type=large", R.drawable.image_user, 3600000);
+			UrlImageViewHelper.setUrlDrawable(viewHolder.photo, "http://graph.facebook.com/"+news.getUser().getFacebookId()+"/picture?type=large", R.drawable.image_user, 3600000);
 
 
 			return convertView;
