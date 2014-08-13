@@ -9,6 +9,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
@@ -111,6 +112,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 		TextView titleFlat = (TextView) rlMain.findViewById(R.id.titleFlat);
 		titleFlat.setText(flat.getName());
 		titleFlat.setTextColor(Color.WHITE);
+		titleFlat.setTypeface(null, Typeface.BOLD);
 		ImageButton buttonLocation = (ImageButton) rlMain
 				.findViewById(R.id.buttonLocation);
 		buttonLocation.setOnClickListener(new View.OnClickListener() {
