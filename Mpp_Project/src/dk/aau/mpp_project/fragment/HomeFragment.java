@@ -155,6 +155,9 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,
 					TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
 			Drawable d = new ScaleDrawable(getResources().getDrawable(
 					R.drawable.image_user), 0, 50, 50).getDrawable();
+			
+			userImage.setImageDrawable(d);
+			
 			UrlImageViewHelper.setUrlDrawable(userImage,
 					"http://graph.facebook.com/" + u.getFacebookId()
 							+ "/picture?width=" + px + "&height=" + px, d,
