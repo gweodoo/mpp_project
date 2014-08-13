@@ -29,6 +29,7 @@ import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
 import dk.aau.mpp_project.filter.Filter;
+import dk.aau.mpp_project.filter.RoundedImageView;
 import dk.aau.mpp_project.model.Flat;
 import dk.aau.mpp_project.model.MyUser;
 import dk.aau.mpp_project.model.News;
@@ -45,6 +46,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 
 	private ListView		listView;
 	private NewsAdapter		adapter;
+	private PhotoAdapter	photoAdapter;
 	private SwipeRefreshLayout swipeRefresh;
 	private boolean showProgress = true;
 	
@@ -118,19 +120,20 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			}
 		});
 		LinearLayout bottom = (LinearLayout) rlMain.findViewById(R.id.bottom);
-
+		
 		System.out.println("number of users "+ flat.getFlatUsers().size());
 		int i = 0;
 		for(MyUser u : flat.getFlatUsers()){
 			System.out.println("ID again: "+u.getFacebookId());
 			// Adding roommate avatars
-			ImageView userImage = new ImageView(rootView.getContext());
-			UrlImageViewHelper.setUrlDrawable(userImage, "http://graph.facebook.com/"+u.getFacebookId()+"/picture?type=large", R.drawable.image_user, 3600000);
+			
+			RoundedImageView userImage = new RoundedImageView(rootView.getContext());
+			UrlImageViewHelper.setUrlDrawable(userImage, "http://graph.facebook.com/"+u.getFacebookId()+"/picture?type=large", 3600000);
 //			userImage.setImageDrawable(getResources().getDrawable(R.drawable.av1));
 			userImage.setAdjustViewBounds(true);
+			userImage.setPadding(5, 0, 5, 0);
 //			userImage.setMaxHeight(200);
 //			userImage.setMaxWidth(200);
-			
 			bottom.addView(userImage, i);
 			i++;
 		}
@@ -204,6 +207,48 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 		DatabaseHelper.getNewsByFlat(((MainActivity)getActivity()).getMyFlat());
 	}
 	
+	public class PhotoAdapter extends ArrayAdapter<MyUser> {
+
+		public class ViewHolder {
+			public CircularImageView	photo;
+		}
+
+		private Context	context;
+		private int		resource;
+
+		public PhotoAdapter(Context context, int resource, List<MyUser> objects) {
+			super(context, resource, objects);
+
+			this.context = context;
+			this.resource = resource;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ViewHolder viewHolder = null;
+
+			if (convertView == null) {
+				LayoutInflater inflater = (LayoutInflater) context
+						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				convertView = inflater.inflate(resource, parent, false);
+
+				viewHolder = new ViewHolder();
+
+				viewHolder.photo = (CircularImageView) convertView
+						.findViewById(R.id.user_photo);
+
+				convertView.setTag(viewHolder);
+			} else {
+				viewHolder = (ViewHolder) convertView.getTag();
+			}
+			MyUser u = this.getItem(position);
+
+			UrlImageViewHelper.setUrlDrawable(viewHolder.photo, "http://graph.facebook.com/"+u.getFacebookId()+"/picture?type=large", R.drawable.image_user, 3600000);
+
+
+			return convertView;
+		}
+	}
 
 	public class NewsAdapter extends ArrayAdapter<News> {
 
@@ -248,14 +293,8 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			}
 			News news = this.getItem(position);
 
-//			Log.i("PARSE", "" + news);
-//			Log.i("PARSE", ""+news.getUser());
-//			Log.i("PARSE", ""+news.getUser().getName());
-//			viewHolder.sender.setText("From "+news.getUser().getName());
 			viewHolder.comment.setText("\""+news.getComment()+"\"");
 			viewHolder.date.setText(news.getDate());
-//			viewHolder.photo.setImageDrawable(drawable)
-//			MyUser user = (MyUser) news.get(News.USER);
 			UrlImageViewHelper.setUrlDrawable(viewHolder.photo, "http://graph.facebook.com/"+news.getUser().getFacebookId()+"/picture?type=large", R.drawable.image_user, 3600000);
 
 
