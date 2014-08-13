@@ -30,21 +30,24 @@ import java.util.ArrayList;
 public class ExpensesFragment extends ListFragment implements
 		FragmentEventHandler, OnMultiChoiceClickListener {
 
-	private ArrayList<Operation> myArray = new ArrayList<Operation>();
-	private OperationAdapter mAdapter;
-	private Spinner idPeople;
-	private ProgressDialog progressDialog;
-	private EditText commentText, amountText;
-	private ArrayList<String> shareMate = new ArrayList<String>();
-	private ArrayList<MyUser> usersList;
-	private boolean[] selected;
-	private Flat flat;
+	private Flat					flat;
+
+	private ArrayList<Operation>	operationsList			= new ArrayList<Operation>();
+	private OperationAdapter		operationAdapter;
+
+	private ArrayList<String>		shareMate				= new ArrayList<String>();
+
+	private ProgressDialog			progressDialog;
+	private EditText				commentText, amountText;
+
+	private boolean[]				selected;
 
 	// spinner photo
-	public ArrayList<SpinnerModel> CustomListViewValuesArr = new ArrayList<SpinnerModel>();
-	TextView output = null;
-	SpinnerAdapter adapter;
-	MainActivity activity = null;
+	private ArrayList<SpinnerModel>	customListViewValuesArr	= new ArrayList<SpinnerModel>();
+	private Spinner					spinnerPeople;
+	private SpinnerAdapter			spinnerAdapter;
+
+	private MainActivity			activity				= null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,16 +55,15 @@ public class ExpensesFragment extends ListFragment implements
 		View expensesView = inflater.inflate(R.layout.fragment_expenses,
 				container, false);
 
-		idPeople = (Spinner) expensesView.findViewById(R.id.peopleSpinner);
+		spinnerPeople = (Spinner) expensesView.findViewById(R.id.peopleSpinner);
 		commentText = (EditText) expensesView.findViewById(R.id.commentText);
 		amountText = (EditText) expensesView.findViewById(R.id.amountText);
 		ImageButton bt = (ImageButton) expensesView.findViewById(R.id.okButton);
 
-		// DatabaseHelper.getUsersByFlat(((MainActivity)getActivity()).getMyFlat());
 		flat = ((MainActivity) getActivity()).getMyFlat();
 
-		mAdapter = new OperationAdapter(getActivity(),
-				R.layout.layout_expensesitem, myArray);
+		operationAdapter = new OperationAdapter(getActivity(),
+				R.layout.layout_expensesitem, operationsList);
 
 		// Spinner PHOTO
 		activity = (MainActivity) getActivity();
@@ -70,18 +72,18 @@ public class ExpensesFragment extends ListFragment implements
 			EventBus.getDefault().register(this);
 
 		DatabaseHelper.getOperationsByFlat(flat);
-		DatabaseHelper.getUsersByFlat(flat);
 
 		Resources res = getResources();
-		// Create custom adapter object ( see below CustomAdapter.java )
-		adapter = new SpinnerAdapter(activity, R.layout.spinner_rows,
-				CustomListViewValuesArr, res);
+		// Create custom spinnerAdapter object ( see below
+		// CustooperationAdapter.java )
+		spinnerAdapter = new SpinnerAdapter(activity, R.layout.spinner_rows,
+				customListViewValuesArr, res);
 
-		// Set adapter to spinner
-		idPeople.setAdapter(adapter);
+		// Set spinnerAdapter to spinner
+		spinnerPeople.setAdapter(spinnerAdapter);
 
 		// Listener called when spinner item selected
-		idPeople.setOnItemSelectedListener(new OnItemSelectedListener() {
+		spinnerPeople.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parentView, View v,
 					int position, long id) {
@@ -109,49 +111,46 @@ public class ExpensesFragment extends ListFragment implements
 
 		// FIN Spinner PHOTO
 
-		mAdapter = new OperationAdapter(getActivity(),
-				R.layout.layout_expensesitem, myArray);
-		setListAdapter(mAdapter);
-
-		mAdapter.notifyDataSetChanged();
-		// TODO Auto-generated method stub
+		operationAdapter = new OperationAdapter(getActivity(),
+				R.layout.layout_expensesitem, operationsList);
+		setListAdapter(operationAdapter);
 
 		// We add a listener on the add button
 		bt.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 
-				MyUser user = ((MainActivity) getActivity()).getMyUser();
-				Flat flatId = ((MainActivity) getActivity()).getMyFlat();
+				MyUser lender = ((MainActivity) getActivity()).getMyUser();
 
 				// shareMate.add("0");
 
 				// We create an operation object
-				Operation temp;
-				// We get the users of flats
-				DatabaseHelper.getUsersByFlat(flatId);
+				Operation temp = null;
 
-				for (MyUser item : usersList) {
+				for (MyUser to : flat.getFlatUsers()) {
 					if (shareMate.get(0).equals("ALL")) {
-						temp = new Operation(flatId, user, item, Double
-								.valueOf(amountText.getText().toString()), "",
-								commentText.getText().toString(), false);
-						DatabaseHelper.createOperation(flatId, temp);
+						temp = new Operation(flat, lender, to,
+								Double.valueOf(amountText.getText().toString()
+										.trim()), "", commentText.getText()
+										.toString().trim(), false);
+						
+						DatabaseHelper.createOperation(flat, temp);
 					} else {
-						if (item.getName().equals(shareMate.get(0))) {
-							temp = new Operation(flatId, user, item, Double
-									.valueOf(amountText.getText().toString()),
-									"", commentText.getText().toString(), false);
-							DatabaseHelper.createOperation(flatId, temp);
+						if (to.getName().equals(shareMate.get(0))) {
+							temp = new Operation(flat, lender, to, Double
+									.valueOf(amountText.getText().toString().trim()),
+									"", commentText.getText().toString().trim(), false);
+							
+							DatabaseHelper.createOperation(flat, temp);
 						}
 					}
 				}
 				// We fill it
 				Log.i("ExpensesFragment",
 						"FlatId = "
-								+ flatId
+								+ flat
 								+ " - User = "
-								+ user
+								+ lender
 								+ " - Amount = "
 								+ Double.valueOf(amountText.getText()
 										.toString()));
@@ -198,50 +197,20 @@ public class ExpensesFragment extends ListFragment implements
 		// Success retreiving database
 		if (e.isSuccess()) {
 			// Check for what you wanted to retrieve
-			if (DatabaseHelper.ACTION_GET_USERS_IN_FLAT.equals(e.getAction())) {
-				// You know what you need (List or simple object)
-				// If List: ArrayList<Flat> flatsList =
-				// e.getExtras().getParcelableArrayList("data");
-				// If Object only : Flat flat =
-				// e.getExtras().getParcelable("data");
-
-				usersList = e.getExtras().getParcelableArrayList("data");
-
-				// Set data in arraylist
-				setListData(usersList);
-
-				for (MyUser item : usersList)
-					Log.i("ExpensesFragment", "User :" + item.getName());
-
-				// if (flatsList.size() == 0) {
-				// goToNewFlatActivity();
-				// } else if (flatsList.size() == 1) {
-				// goToMainActivity(flatsList.get(0));
-				// } else if (flatsList.size() > 1) {
-				// goToNewFlatActivity(flatsList);
-				// }
-
-				// for (Flat f : flatsList)
-				// Log.v(TAG,
-				// "# Flat : " + f.getName() + " : "
-				// + f.getRentAmount() + "$");
-
-			} else if (DatabaseHelper.ACTION_GET_NEWS_FLATS.equals(e
-					.getAction())) {
-
-			} else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
-					.getAction())) {
+			if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS
+					.equals(e.getAction())) {
 				// We have got all operations
 				ArrayList<Operation> arri = e.getExtras()
 						.getParcelableArrayList("data");
 
-				myArray.addAll(arri);
-				mAdapter.notifyDataSetChanged();
+				operationsList.clear();
+				operationsList.addAll(arri);
+				operationAdapter.notifyDataSetChanged();
 
-				Log.i("ExpensesFragment", "Operation :" + myArray.size());
-				Toast.makeText(getActivity(), "Operation :" + myArray.size(),
+				Log.i("ExpensesFragment", "Operation :" + operationsList.size());
+				Toast.makeText(getActivity(),
+						"Operation :" + operationsList.size(),
 						Toast.LENGTH_SHORT).show();
-
 			}
 		}
 	}
@@ -261,15 +230,15 @@ public class ExpensesFragment extends ListFragment implements
 			sched.setImage("image_user");
 
 			// Take Model Object in ArrayList
-			CustomListViewValuesArr.add(sched);
+			customListViewValuesArr.add(sched);
 
 		}
 		Toast.makeText(getActivity(),
-				"nombre elements: " + CustomListViewValuesArr.size(),
+				"nombre elements: " + customListViewValuesArr.size(),
 				Toast.LENGTH_SHORT).show();
 		Log.i("ExpensesFragment", "nombre elements dans la list de Users: "
-				+ CustomListViewValuesArr.size());
-		adapter.notifyDataSetChanged();
+				+ customListViewValuesArr.size());
+		spinnerAdapter.notifyDataSetChanged();
 
 	}
 
