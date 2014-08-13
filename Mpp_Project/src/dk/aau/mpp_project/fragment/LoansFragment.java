@@ -5,7 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +32,7 @@ import java.util.ArrayList;
  * This class, representing a fragment, displays all information about expenses for a specific user, the current one
  * Each item displayed contains a check box, allowing lender to agree when he have been refunded
  */
-public class LoansFragment extends Fragment implements FragmentEventHandler {
+public class LoansFragment extends Fragment implements FragmentEventHandler,SwipeRefreshLayout.OnRefreshListener {
     /**
      * Class members
      */
@@ -39,6 +41,7 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
     private CardListView tableView;
     private ProgressDialog progressDialog;
     private ArrayList<Operation> tabOperations;
+	private SwipeRefreshLayout swipeRefresh;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -51,26 +54,13 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
 
         //calling current fragment view
         curView = inflater.inflate(R.layout.fragment_section_loans, container, false);
+		swipeRefresh = (SwipeRefreshLayout)curView.findViewById(R.id.swipe_container);
+		swipeRefresh.setOnRefreshListener(this);
+		swipeRefresh.setColorScheme(android.R.color.holo_blue_bright, android.R.color.holo_green_light,  android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
         //getting the cardListview
         tableView = (CardListView)curView.findViewById(R.id.cardListLoans);
 
-        //adding header text
-        TextView t = new TextView(mActivity);
-        t.setTextSize(20);
-        t.setText("Last loans :");
-        t.setPadding(30, 50, 0, 30);
-        tableView.addHeaderView(t);
-
-
-        //defining refresh button behavior
-        ((Button)(curView.findViewById(R.id.refreshButton))).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //refresh function calling
-                refreshItemsList();
-            }
-        });
         return curView;
     }
 
@@ -109,7 +99,18 @@ public class LoansFragment extends Fragment implements FragmentEventHandler {
         EventBus.getDefault().unregister(this);
     }
 
-    /**
+	@Override
+	public void onRefresh() {
+		new Handler().postDelayed(new Runnable() {
+
+			@Override public void run() {
+				swipeRefresh.setRefreshing(false);
+			}
+		}, 2000);
+		refreshItemsList();
+	}
+
+	/**
      * After the cardslib using, we redefine our own card model, thanks to some layouts
      */
     public class CustomCard extends Card {
