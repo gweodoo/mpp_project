@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import dk.aau.mpp_project.R;
 import dk.aau.mpp_project.model.MyUser;
-import dk.aau.mpp_project.model.SpinnerModel;
 
 import android.content.Context;
 import android.content.res.Resources;
