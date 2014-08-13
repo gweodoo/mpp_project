@@ -78,6 +78,13 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 				R.layout.layout_home_top_view, null, false);
 
 		RelativeLayout llMain = (RelativeLayout) rlMain.findViewById(R.id.main);
+		
+		Display display = getActivity().getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int width = size.x;
+		
+//		llMain.measure(width, 500);
 //		llMain.setBackgroundResource(R.drawable.flat1small);
 		if(flat!=null){
 			if(flat.getPhoto()!=null){
@@ -88,10 +95,6 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 					
 					Bitmap b = BitmapFactory.decodeByteArray(flat.getPhoto().getData() , 0, flat.getPhoto().getData().length, options);
 					
-					Display display = getActivity().getWindowManager().getDefaultDisplay();
-					Point size = new Point();
-					display.getSize(size);
-					int width = size.x;
 					b = Filter.rescale(b, width, false);
 					llMain.setBackgroundDrawable(new BitmapDrawable(getResources(), Filter.fastblur(b, 20)));
 	//				viewHolder.flatImage.setBackgroundDrawable(new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(b, 1000, 100, true)));
