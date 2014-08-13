@@ -3,17 +3,21 @@ package dk.aau.mpp_project.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +32,7 @@ import dk.aau.mpp_project.activity.MainActivity;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
 import dk.aau.mpp_project.event.StartEvent;
+import dk.aau.mpp_project.filter.CircleImageView;
 import dk.aau.mpp_project.filter.Filter;
 import dk.aau.mpp_project.filter.RoundedImageView;
 import dk.aau.mpp_project.model.Flat;
@@ -127,13 +132,14 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 			System.out.println("ID again: "+u.getFacebookId());
 			// Adding roommate avatars
 			
-			RoundedImageView userImage = new RoundedImageView(rootView.getContext());
-			UrlImageViewHelper.setUrlDrawable(userImage, "http://graph.facebook.com/"+u.getFacebookId()+"/picture?type=large", 3600000);
-//			userImage.setImageDrawable(getResources().getDrawable(R.drawable.av1));
-			userImage.setAdjustViewBounds(true);
-			userImage.setPadding(5, 0, 5, 0);
-//			userImage.setMaxHeight(200);
-//			userImage.setMaxWidth(200);
+			CircleImageView userImage = new CircleImageView(rootView.getContext());
+			Resources r = getResources();
+			int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, r.getDisplayMetrics());
+			Drawable d = new ScaleDrawable(getResources().getDrawable(R.drawable.image_user), 0, 50, 50).getDrawable();
+			UrlImageViewHelper.setUrlDrawable(userImage, "http://graph.facebook.com/"+u.getFacebookId()+"/picture?width="+px+"&height="+px, d, 3600000);
+			userImage.setBorderWidth(3);
+			userImage.setBorderColor(Color.WHITE);
+			userImage.setPadding(10, 10, 10, 10);
 			bottom.addView(userImage, i);
 			i++;
 		}
@@ -295,6 +301,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 
 			viewHolder.comment.setText("\""+news.getComment()+"\"");
 			viewHolder.date.setText(news.getDate());
+			viewHolder.photo.addShadow();
 			UrlImageViewHelper.setUrlDrawable(viewHolder.photo, "http://graph.facebook.com/"+news.getUser().getFacebookId()+"/picture?type=large", R.drawable.image_user, 3600000);
 
 

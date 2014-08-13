@@ -52,7 +52,7 @@ public class CircleImageView extends ImageView {
     public CircleImageView(Context context) {
         super(context);
 
-        init();
+//        init();
     }
 
     public CircleImageView(Context context, AttributeSet attrs) {
@@ -69,7 +69,7 @@ public class CircleImageView extends ImageView {
 
         a.recycle();
 
-        init();
+//        init();
     }
 
     private void init() {
@@ -96,6 +96,8 @@ public class CircleImageView extends ImageView {
 
     @Override
     protected void onDraw(Canvas canvas) {
+    	init();
+    	
         if (getDrawable() == null) {
             return;
         }
