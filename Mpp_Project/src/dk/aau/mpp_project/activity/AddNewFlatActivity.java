@@ -1,24 +1,5 @@
 package dk.aau.mpp_project.activity;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-
-import com.parse.ParseFile;
-import com.parse.ParseUser;
-
-import de.greenrobot.event.EventBus;
-import dk.aau.mpp_project.R;
-import dk.aau.mpp_project.application.MyApplication;
-import dk.aau.mpp_project.database.DatabaseHelper;
-import dk.aau.mpp_project.event.FinishedEvent;
-import dk.aau.mpp_project.event.StartEvent;
-import dk.aau.mpp_project.filter.Filter;
-import dk.aau.mpp_project.model.Flat;
-import dk.aau.mpp_project.model.MyUser;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -26,9 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.graphics.Bitmap.Config;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -39,6 +23,21 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+import com.parse.ParseFile;
+import com.parse.ParseUser;
+import de.greenrobot.event.EventBus;
+import dk.aau.mpp_project.R;
+import dk.aau.mpp_project.application.MyApplication;
+import dk.aau.mpp_project.database.DatabaseHelper;
+import dk.aau.mpp_project.event.FinishedEvent;
+import dk.aau.mpp_project.event.StartEvent;
+import dk.aau.mpp_project.filter.Filter;
+import dk.aau.mpp_project.model.Flat;
+import dk.aau.mpp_project.model.MyUser;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class AddNewFlatActivity extends Activity {
 
@@ -135,6 +134,7 @@ public class AddNewFlatActivity extends Activity {
 							img);
 					DatabaseHelper.createFlat((MyUser) currentUser, flat,
 							password.getText().toString());
+					DatabaseHelper.createNews(flat, (MyUser)currentUser, "Flat Creation");
 
 				}
 

@@ -10,16 +10,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.parse.ParseUser;
-
 import de.greenrobot.event.EventBus;
 import dk.aau.mpp_project.R;
-import dk.aau.mpp_project.activity.ChangeDetailsActivity;
-import dk.aau.mpp_project.activity.ChangePasswordActivity;
-import dk.aau.mpp_project.activity.LogInActivity;
-import dk.aau.mpp_project.activity.MainActivity;
-import dk.aau.mpp_project.activity.NewFlatActivity;
+import dk.aau.mpp_project.activity.*;
 import dk.aau.mpp_project.application.MyApplication;
 import dk.aau.mpp_project.database.DatabaseHelper;
 import dk.aau.mpp_project.event.FinishedEvent;
@@ -88,6 +82,7 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 	protected void onChangePasswordClicked() {
 		Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
 
+		DatabaseHelper.createNews(((MainActivity)getActivity()).getMyFlat(), ((MainActivity)getActivity()).getMyUser(), "password Update");
 		Flat flat = ((MainActivity) getActivity()).getMyFlat();
 		intent.putExtra("objectId", flat.getObjectId());
 		getActivity().startActivityForResult(intent,
@@ -96,7 +91,7 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 
 	protected void onChangeDetailsFlatClicked() {
 		Intent intent = new Intent(getActivity(), ChangeDetailsActivity.class);
-
+		DatabaseHelper.createNews(((MainActivity)getActivity()).getMyFlat(), ((MainActivity)getActivity()).getMyUser(), "Details Update");
 		Flat flat = ((MainActivity) getActivity()).getMyFlat();
 		intent.putExtra("objectId", flat.getObjectId());
 		intent.putExtra("name", flat.getName());
@@ -181,7 +176,7 @@ public class SettingsFragment extends Fragment implements FragmentEventHandler {
 				// e.getExtras().getParcelableArrayList("data");
 				// If Object only : Flat flat =
 				// e.getExtras().getParcelable("data");
-
+				DatabaseHelper.createNews(((MainActivity)getActivity()).getMyFlat(), ((MainActivity)getActivity()).getMyUser(), "Flat leaving");
 				MyApplication.setOption(MyApplication.CURRENT_FLAT, "-1");
 
 				Intent intent = new Intent(getActivity(), NewFlatActivity.class);
