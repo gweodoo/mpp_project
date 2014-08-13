@@ -190,14 +190,7 @@ public class ExpensesFragment extends ListFragment implements
 
 	@Override
 	public void onRefresh() {
-		new Handler().postDelayed(new Runnable() {
 
-			@Override
-			public void run() {
-				showProgress = false;
-				swipeRefresh.setRefreshing(false);
-			}
-		}, 2000);
 		DatabaseHelper.getOperationsByFlat(flat);
 	}
 
@@ -239,6 +232,9 @@ public class ExpensesFragment extends ListFragment implements
 			// Check for what you wanted to retrieve
 			if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS
 					.equals(e.getAction())) {
+				showProgress = false;
+				swipeRefresh.setRefreshing(false);
+				
 				// We have got all operations
 				ArrayList<Operation> arri = e.getExtras()
 						.getParcelableArrayList("data");

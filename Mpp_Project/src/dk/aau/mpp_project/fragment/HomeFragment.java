@@ -209,6 +209,9 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 				newsList.addAll(tmp);
 
 				adapter.notifyDataSetChanged();
+				
+				showProgress = false;
+				swipeRefresh.setRefreshing(false);
 
 			} else if (DatabaseHelper.ACTION_GET_OPERATIONS_FLATS.equals(e
 					.getAction())) {
@@ -219,14 +222,7 @@ public class HomeFragment extends Fragment implements FragmentEventHandler,Swipe
 
 	@Override
 	public void onRefresh() {
-		new Handler().postDelayed(new Runnable() {
-
-			@Override
-			public void run() {
-				showProgress = false;
-				swipeRefresh.setRefreshing(false);
-			}
-		}, 2000);
+		
 		DatabaseHelper.getNewsByFlat(((MainActivity) getActivity()).getMyFlat());
 	}
 	
